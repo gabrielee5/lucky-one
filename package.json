@@ -1,0 +1,26 @@
+{
+  "name": "lottery-v1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile",
+    "deploy:local": "npx hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "npx hardhat run scripts/deploy.js --network sepolia",
+    "node": "npx hardhat node",
+    "console": "npx hardhat console",
+    "frontend": "cd frontend && npm run dev",
+    "frontend:build": "cd frontend && npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@chainlink/contracts": "^1.4.0",
+    "@nomicfoundation/hardhat-toolbox": "^6.0.0",
+    "@openzeppelin/contracts": "^5.3.0",
+    "dotenv": "^17.2.0",
+    "hardhat": "^2.25.0"
+  }
+}
