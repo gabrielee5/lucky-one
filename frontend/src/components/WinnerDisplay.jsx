@@ -20,11 +20,11 @@ const WinnerDisplay = ({
 
   if (!pastWinners.length) {
     return (
-      <div className={`bg-gray-800 border border-gray-700 rounded-lg p-6 ${className}`}>
+      <div className={`bg-gradient-to-br from-slate-800/80 to-slate-700/60 border border-slate-600/50 rounded-2xl p-8 backdrop-blur-sm ${className}`}>
         <div className="text-center">
-          <Trophy className="w-12 h-12 text-gray-400 mx-auto mb-3 opacity-50" />
-          <h3 className="text-lg font-semibold text-white mb-2">No Past Winners Yet</h3>
-          <p className="text-gray-400 text-sm">
+          <Trophy className="w-16 h-16 text-gray-400 mx-auto mb-4 opacity-50" />
+          <h3 className="text-xl font-bold text-white mb-2">No Past Winners Yet</h3>
+          <p className="text-gray-400 text-base font-medium">
             Be the first to win the lottery!
           </p>
         </div>
@@ -33,104 +33,104 @@ const WinnerDisplay = ({
   }
 
   return (
-    <div className={`bg-gray-800 border border-gray-700 rounded-lg p-6 ${className}`}>
-      <div className="flex items-center gap-2 mb-6">
-        <Trophy className="w-6 h-6 text-yellow-400" />
-        <h3 className="text-xl font-bold text-white">Winners & Prizes</h3>
+    <div className={`bg-gradient-to-br from-slate-800/80 to-slate-700/60 border border-slate-600/50 rounded-2xl p-8 backdrop-blur-sm ${className}`}>
+      <div className="flex items-center gap-3 mb-8">
+        <Trophy className="w-8 h-8 text-yellow-400" />
+        <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Winners & Prizes</h3>
       </div>
 
       {userWinnings.length > 0 && (
-        <div className="bg-green-900/20 border border-green-500 rounded-lg p-4 mb-6">
-          <div className="flex items-center gap-2 text-green-400 mb-3">
-            <Gift className="w-5 h-5" />
-            <span className="font-medium">You Have Unclaimed Prizes!</span>
+        <div className="bg-gradient-to-br from-green-900/30 to-green-800/20 border border-green-500/50 rounded-xl p-6 mb-8">
+          <div className="flex items-center gap-3 text-green-400 mb-4">
+            <Gift className="w-6 h-6" />
+            <span className="font-bold text-lg">You Have Unclaimed Prizes!</span>
           </div>
-          <div className="space-y-2 mb-4">
+          <div className="space-y-3 mb-6">
             {userWinnings.map((winner, index) => (
-              <div key={index} className="flex justify-between items-center text-sm">
-                <span className="text-green-300">
+              <div key={index} className="flex justify-between items-center text-base">
+                <span className="text-green-300 font-medium">
                   Round #{winner.roundId?.toString()}
                 </span>
-                <span className="text-green-300 font-medium">
+                <span className="text-green-300 font-bold">
                   {formatEther(winner.prizePool)} ETH
                 </span>
               </div>
             ))}
           </div>
-          <div className="flex justify-between items-center mb-4 pt-2 border-t border-green-500">
-            <span className="text-green-300 font-medium">Total Claimable:</span>
-            <span className="text-green-300 font-bold text-lg">
+          <div className="flex justify-between items-center mb-6 pt-4 border-t border-green-500">
+            <span className="text-green-300 font-semibold text-lg">Total Claimable:</span>
+            <span className="text-green-300 font-bold text-xl">
               {claimablePrize.toFixed(4)} ETH
             </span>
           </div>
           <button
             onClick={() => onClaimPrize(userWinnings[0].roundId)}
             disabled={loading}
-            className="w-full px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-800 disabled:cursor-not-allowed text-white rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="w-full px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 disabled:from-green-800 disabled:to-emerald-800 disabled:cursor-not-allowed text-white rounded-xl font-bold transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center gap-3"
           >
             {loading ? (
               <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 Claiming...
               </>
             ) : (
               <>
-                <Gift className="w-4 h-4" />
+                <Gift className="w-5 h-5" />
                 Claim Prize
               </>
             )}
           </button>
           {error && (
-            <div className="mt-3 bg-red-900/20 border border-red-500 rounded-lg p-3">
-              <div className="flex items-center gap-2 text-red-400">
-                <AlertCircle className="w-4 h-4" />
-                <span className="text-sm">{error}</span>
+            <div className="mt-4 bg-gradient-to-br from-red-900/30 to-red-800/20 border border-red-500/50 rounded-xl p-4">
+              <div className="flex items-center gap-3 text-red-400">
+                <AlertCircle className="w-5 h-5" />
+                <span className="text-sm font-semibold">{error}</span>
               </div>
             </div>
           )}
         </div>
       )}
 
-      <div className="space-y-3">
-        <h4 className="text-lg font-semibold text-white">Recent Winners</h4>
-        <div className="max-h-64 overflow-y-auto">
+      <div className="space-y-4">
+        <h4 className="text-xl font-bold text-white">Recent Winners</h4>
+        <div className="max-h-80 overflow-y-auto space-y-4">
           {pastWinners.slice(0, 10).map((winner, index) => (
-            <div key={index} className="bg-gray-700 rounded-lg p-4 mb-3">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-yellow-600 rounded-full flex items-center justify-center">
-                    <Trophy className="w-4 h-4 text-white" />
+            <div key={index} className="bg-gradient-to-br from-slate-700/50 to-slate-600/30 border border-slate-600/50 rounded-xl p-6 backdrop-blur-sm">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                    <Trophy className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="text-white font-medium">
+                    <p className="text-white font-bold text-lg">
                       Round #{winner.roundId?.toString()}
                     </p>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-gray-400 text-sm font-medium">
                       {formatAddress(winner.winner)}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-white font-semibold">
+                  <p className="text-white font-bold text-lg">
                     {formatEther(winner.prizePool)} ETH
                   </p>
                   <p className="text-gray-400 text-sm">
                     {winner.prizeClaimed ? (
-                      <span className="flex items-center gap-1 text-green-400">
-                        <CheckCircle className="w-3 h-3" />
+                      <span className="flex items-center gap-1 text-green-400 font-medium">
+                        <CheckCircle className="w-4 h-4" />
                         Claimed
                       </span>
                     ) : (
-                      <span className="text-yellow-400">Unclaimed</span>
+                      <span className="text-yellow-400 font-medium">Unclaimed</span>
                     )}
                   </p>
                 </div>
               </div>
               <div className="flex justify-between items-center text-sm text-gray-400">
-                <span>Total Tickets: {winner.totalTickets?.toString()}</span>
+                <span className="font-medium">Total Tickets: {winner.totalTickets?.toString()}</span>
                 <span>
                   {winner.winner.toLowerCase() === userAddress?.toLowerCase() && (
-                    <span className="text-green-400 font-medium">You Won!</span>
+                    <span className="text-green-400 font-bold">You Won!</span>
                   )}
                 </span>
               </div>
@@ -139,11 +139,11 @@ const WinnerDisplay = ({
         </div>
       </div>
 
-      <div className="mt-6 pt-4 border-t border-gray-700">
-        <div className="text-sm text-gray-400 space-y-1">
-          <p>• Winners are selected using Chainlink VRF for fairness</p>
-          <p>• Prize must be claimed manually by the winner</p>
-          <p>• All transactions are transparent on the blockchain</p>
+      <div className="mt-8 pt-6 border-t border-slate-600/50">
+        <div className="text-sm text-gray-400 space-y-2">
+          <p className="font-medium">• Winners are selected using Chainlink VRF for fairness</p>
+          <p className="font-medium">• Prize must be claimed manually by the winner</p>
+          <p className="font-medium">• All transactions are transparent on the blockchain</p>
         </div>
       </div>
     </div>

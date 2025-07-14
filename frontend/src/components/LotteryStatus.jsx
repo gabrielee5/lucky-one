@@ -12,14 +12,14 @@ const LotteryStatus = ({
 }) => {
   if (loading) {
     return (
-      <div className={`bg-gray-800 border border-gray-700 rounded-lg p-6 ${className}`}>
+      <div className={`bg-gradient-to-br from-slate-800/80 to-slate-700/60 border border-slate-600/50 rounded-2xl p-8 backdrop-blur-sm ${className}`}>
         <div className="animate-pulse">
-          <div className="h-6 bg-gray-700 rounded mb-4"></div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="h-20 bg-gray-700 rounded"></div>
-            <div className="h-20 bg-gray-700 rounded"></div>
-            <div className="h-20 bg-gray-700 rounded"></div>
-            <div className="h-20 bg-gray-700 rounded"></div>
+          <div className="h-8 bg-gradient-to-r from-slate-700 to-slate-600 rounded-xl mb-6"></div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="h-24 bg-gradient-to-br from-slate-700 to-slate-600 rounded-xl"></div>
+            <div className="h-24 bg-gradient-to-br from-slate-700 to-slate-600 rounded-xl"></div>
+            <div className="h-24 bg-gradient-to-br from-slate-700 to-slate-600 rounded-xl"></div>
+            <div className="h-24 bg-gradient-to-br from-slate-700 to-slate-600 rounded-xl"></div>
           </div>
         </div>
       </div>
@@ -28,22 +28,22 @@ const LotteryStatus = ({
 
   if (error) {
     return (
-      <div className={`bg-red-900/20 border border-red-500 rounded-lg p-6 ${className}`}>
-        <div className="flex items-center gap-2 text-red-400">
-          <AlertCircle className="w-5 h-5" />
-          <span>Error loading lottery data</span>
+      <div className={`bg-gradient-to-br from-red-900/30 to-red-800/20 border border-red-500/50 rounded-2xl p-8 backdrop-blur-sm ${className}`}>
+        <div className="flex items-center gap-3 text-red-400 mb-3">
+          <AlertCircle className="w-6 h-6" />
+          <span className="font-semibold text-lg">Error loading lottery data</span>
         </div>
-        <p className="text-red-300 text-sm mt-2">{error}</p>
+        <p className="text-red-300 text-sm">{error}</p>
       </div>
     );
   }
 
   if (!lotteryData) {
     return (
-      <div className={`bg-gray-800 border border-gray-700 rounded-lg p-6 ${className}`}>
+      <div className={`bg-gradient-to-br from-slate-800/80 to-slate-700/60 border border-slate-600/50 rounded-2xl p-8 backdrop-blur-sm ${className}`}>
         <div className="text-center text-gray-400">
-          <Trophy className="w-12 h-12 mx-auto mb-3 opacity-50" />
-          <p>No lottery data available</p>
+          <Trophy className="w-16 h-16 mx-auto mb-4 opacity-50" />
+          <p className="text-lg font-medium">No lottery data available</p>
         </div>
       </div>
     );
@@ -66,66 +66,66 @@ const LotteryStatus = ({
   const stateColor = getLotteryStateColor(state);
 
   return (
-    <div className={`bg-gray-800 border border-gray-700 rounded-lg p-6 ${className}`}>
-      <div className="flex items-center justify-between mb-6">
+    <div className={`bg-gradient-to-br from-slate-800/80 to-slate-700/60 border border-slate-600/50 rounded-2xl p-8 backdrop-blur-sm ${className}`}>
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-1">
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent mb-2">
             Lottery Round #{roundId?.toString()}
           </h2>
-          <div className="flex items-center gap-2">
-            <span className={`px-2 py-1 rounded text-sm font-medium ${stateColor} bg-gray-700`}>
+          <div className="flex items-center gap-3">
+            <span className={`px-3 py-1 rounded-xl text-sm font-semibold ${stateColor} backdrop-blur-sm`}>
               {stateText}
             </span>
             {state === 0 && (
-              <span className="text-green-400 text-sm">• Live</span>
+              <span className="text-green-400 text-sm font-medium animate-pulse">• Live</span>
             )}
           </div>
         </div>
         <div className="text-right">
-          <div className="text-3xl font-bold text-white">
+          <div className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
             {formatEther(prizePool)} ETH
           </div>
-          <div className="text-gray-400 text-sm">Prize Pool</div>
+          <div className="text-gray-300 text-base font-medium">Prize Pool</div>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-gray-700 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Clock className="w-5 h-5 text-blue-400" />
-            <span className="text-gray-300 text-sm">Time Remaining</span>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+        <div className="bg-gradient-to-br from-blue-600/20 to-blue-500/10 border border-blue-500/30 rounded-xl p-5 backdrop-blur-sm">
+          <div className="flex items-center gap-3 mb-3">
+            <Clock className="w-6 h-6 text-blue-400" />
+            <span className="text-gray-300 text-sm font-medium">Time Remaining</span>
           </div>
-          <div className="text-white font-semibold">
+          <div className="text-white font-bold text-lg">
             {state === 0 ? timeRemaining : 'Ended'}
           </div>
         </div>
 
-        <div className="bg-gray-700 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Users className="w-5 h-5 text-green-400" />
-            <span className="text-gray-300 text-sm">Total Tickets</span>
+        <div className="bg-gradient-to-br from-green-600/20 to-green-500/10 border border-green-500/30 rounded-xl p-5 backdrop-blur-sm">
+          <div className="flex items-center gap-3 mb-3">
+            <Users className="w-6 h-6 text-green-400" />
+            <span className="text-gray-300 text-sm font-medium">Total Tickets</span>
           </div>
-          <div className="text-white font-semibold">
+          <div className="text-white font-bold text-lg">
             {totalTickets?.toString() || '0'}
           </div>
         </div>
 
-        <div className="bg-gray-700 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <DollarSign className="w-5 h-5 text-yellow-400" />
-            <span className="text-gray-300 text-sm">Ticket Price</span>
+        <div className="bg-gradient-to-br from-yellow-600/20 to-yellow-500/10 border border-yellow-500/30 rounded-xl p-5 backdrop-blur-sm">
+          <div className="flex items-center gap-3 mb-3">
+            <DollarSign className="w-6 h-6 text-yellow-400" />
+            <span className="text-gray-300 text-sm font-medium">Ticket Price</span>
           </div>
-          <div className="text-white font-semibold">
+          <div className="text-white font-bold text-lg">
             {ticketPrice ? formatEther(ticketPrice) : '0.01'} ETH
           </div>
         </div>
 
-        <div className="bg-gray-700 rounded-lg p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <Trophy className="w-5 h-5 text-purple-400" />
-            <span className="text-gray-300 text-sm">Winner</span>
+        <div className="bg-gradient-to-br from-purple-600/20 to-purple-500/10 border border-purple-500/30 rounded-xl p-5 backdrop-blur-sm">
+          <div className="flex items-center gap-3 mb-3">
+            <Trophy className="w-6 h-6 text-purple-400" />
+            <span className="text-gray-300 text-sm font-medium">Winner</span>
           </div>
-          <div className="text-white font-semibold">
+          <div className="text-white font-bold text-lg">
             {winner && winner !== '0x0000000000000000000000000000000000000000' ? (
               <span className="text-green-400">
                 {winner.slice(0, 6)}...{winner.slice(-4)}
@@ -138,19 +138,19 @@ const LotteryStatus = ({
       </div>
 
       {winner && winner !== '0x0000000000000000000000000000000000000000' && (
-        <div className="bg-green-900/20 border border-green-500 rounded-lg p-4 mb-4">
-          <div className="flex items-center gap-2 text-green-400 mb-2">
-            <Trophy className="w-5 h-5" />
-            <span className="font-medium">Winner Selected!</span>
+        <div className="bg-gradient-to-br from-green-900/30 to-green-800/20 border border-green-500/50 rounded-xl p-6 mb-6">
+          <div className="flex items-center gap-3 text-green-400 mb-3">
+            <Trophy className="w-6 h-6" />
+            <span className="font-bold text-lg">Winner Selected!</span>
           </div>
-          <p className="text-green-300 text-sm">
+          <p className="text-green-300 text-base font-medium">
             Winner: {winner}
           </p>
-          <p className="text-green-300 text-sm">
+          <p className="text-green-300 text-base font-medium">
             Prize: {formatEther(prizePool)} ETH
           </p>
           {prizeClaimed && (
-            <p className="text-green-400 text-sm mt-1">
+            <p className="text-green-400 text-base mt-2 font-semibold">
               ✓ Prize claimed
             </p>
           )}
@@ -158,12 +158,12 @@ const LotteryStatus = ({
       )}
 
       {state === 1 && (
-        <div className="bg-yellow-900/20 border border-yellow-500 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-yellow-400">
-            <AlertCircle className="w-5 h-5 animate-pulse" />
-            <span className="font-medium">Calculating Winner...</span>
+        <div className="bg-gradient-to-br from-yellow-900/30 to-yellow-800/20 border border-yellow-500/50 rounded-xl p-6">
+          <div className="flex items-center gap-3 text-yellow-400">
+            <AlertCircle className="w-6 h-6 animate-pulse" />
+            <span className="font-bold text-lg">Calculating Winner...</span>
           </div>
-          <p className="text-yellow-300 text-sm mt-1">
+          <p className="text-yellow-300 text-base mt-2">
             The lottery has ended and we're selecting the winner using Chainlink VRF.
             This may take a few minutes.
           </p>
@@ -171,12 +171,12 @@ const LotteryStatus = ({
       )}
 
       {state === 0 && Number(endTime) <= currentTime && (
-        <div className="bg-orange-900/20 border border-orange-500 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-orange-400">
-            <Clock className="w-5 h-5" />
-            <span className="font-medium">Lottery Ended</span>
+        <div className="bg-gradient-to-br from-orange-900/30 to-orange-800/20 border border-orange-500/50 rounded-xl p-6">
+          <div className="flex items-center gap-3 text-orange-400">
+            <Clock className="w-6 h-6" />
+            <span className="font-bold text-lg">Lottery Ended</span>
           </div>
-          <p className="text-orange-300 text-sm mt-1">
+          <p className="text-orange-300 text-base mt-2">
             The lottery period has ended. Waiting for someone to trigger the winner selection.
           </p>
         </div>

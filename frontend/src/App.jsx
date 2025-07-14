@@ -179,21 +179,27 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+    <div className="min-h-screen bg-transparent">
       <div className="container mx-auto px-4 py-8">
-        <header className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Coins className="w-10 h-10 text-blue-400" />
-            <h1 className="text-4xl font-bold text-white">Decentralized Lottery</h1>
+        <header className="text-center mb-12">
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="relative">
+              <Coins className="w-14 h-14 text-yellow-400 animate-pulse" />
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-ping"></div>
+            </div>
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-yellow-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Decentralized Lottery
+            </h1>
           </div>
-          <p className="text-gray-400 text-lg">
+          <p className="text-gray-300 text-xl font-medium mb-2">
             Provably fair lottery powered by Chainlink VRF
           </p>
-          <div className="flex items-center justify-center gap-4 mt-4">
+          <div className="w-24 h-1 bg-gradient-to-r from-yellow-400 to-purple-400 rounded-full mx-auto mb-8"></div>
+          <div className="flex items-center justify-center gap-4 mt-6">
             <button
               onClick={handleRefresh}
               disabled={refreshing}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 text-white rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
             >
               <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
               Refresh
@@ -203,7 +209,7 @@ function App() {
                 href={`${CONTRACT_CONFIG.NETWORKS[CONTRACT_CONFIG.NETWORK_NAME]?.blockExplorer}/address/${CONTRACT_ADDRESS}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
               >
                 <ExternalLink className="w-4 h-4" />
                 View Contract
@@ -265,12 +271,12 @@ function App() {
         </div>
 
         {/* Footer */}
-        <footer className="mt-12 text-center text-gray-400">
-          <div className="border-t border-gray-700 pt-8">
-            <p className="mb-2">
+        <footer className="mt-16 text-center text-gray-400">
+          <div className="border-t border-slate-600/50 pt-8">
+            <p className="mb-3 text-lg font-medium">
               Built with React, Ethers.js, and Chainlink VRF
             </p>
-            <p className="text-sm">
+            <p className="text-base font-medium">
               This is a decentralized application. Always verify contract addresses and understand the risks.
             </p>
           </div>
