@@ -1,6 +1,7 @@
 import React from 'react';
-import { Clock, Users, DollarSign, Trophy, AlertCircle } from 'lucide-react';
+import { Clock, Users, DollarSign, Trophy, AlertCircle, Wallet } from 'lucide-react';
 import { formatEther, formatTimeRemaining, getLotteryStateText, getLotteryStateColor } from '../utils/helpers';
+import { formatCurrency, LOTTERY_CONSTANTS } from '../utils/contractABI';
 
 const LotteryStatus = ({ 
   lotteryData, 
@@ -8,6 +9,8 @@ const LotteryStatus = ({
   loading, 
   error, 
   currentTime,
+  accumulatedFees,
+  isOwner,
   className = "" 
 }) => {
   if (loading) {
@@ -83,9 +86,9 @@ const LotteryStatus = ({
         </div>
         <div className="text-right">
           <div className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-            {formatEther(prizePool)} ETH
+            {formatCurrency(formatEther(prizePool))}
           </div>
-          <div className="text-gray-300 text-base font-medium">Prize Pool</div>
+          <div className="text-gray-300 text-base font-medium">Prize Pool (95%)</div>
         </div>
       </div>
 
@@ -116,7 +119,7 @@ const LotteryStatus = ({
             <span className="text-gray-300 text-sm font-medium">Ticket Price</span>
           </div>
           <div className="text-white font-bold text-lg">
-            {ticketPrice ? formatEther(ticketPrice) : '0.01'} ETH
+            {ticketPrice ? formatCurrency(formatEther(ticketPrice)) : formatCurrency(LOTTERY_CONSTANTS.TICKET_PRICE)}
           </div>
         </div>
 
@@ -137,6 +140,33 @@ const LotteryStatus = ({
         </div>
       </div>
 
+      {isOwner && (
+        <div className="bg-gradient-to-br from-indigo-900/30 to-indigo-800/20 border border-indigo-500/50 rounded-xl p-6 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Wallet className="w-6 h-6 text-indigo-400" />
+              <div>
+                <span className="font-bold text-lg text-indigo-400">Owner Panel</span>
+                <p className="text-indigo-300 text-sm">You are the lottery owner</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-indigo-400">
+                {accumulatedFees ? formatCurrency(formatEther(accumulatedFees)) : formatCurrency('0')}
+              </div>
+              <div className="text-indigo-300 text-sm">Accumulated Fees (5%)</div>
+            </div>
+          </div>
+          <div className="mt-4 pt-4 border-t border-indigo-500/30">
+            <p className="text-indigo-300 text-sm">
+              • You earn 5% of all ticket sales as fees
+              • 95% goes to the prize pool
+              • Use withdrawFees() to claim your accumulated fees
+            </p>
+          </div>
+        </div>
+      )}
+
       {winner && winner !== '0x0000000000000000000000000000000000000000' && (
         <div className="bg-gradient-to-br from-green-900/30 to-green-800/20 border border-green-500/50 rounded-xl p-6 mb-6">
           <div className="flex items-center gap-3 text-green-400 mb-3">
@@ -147,7 +177,7 @@ const LotteryStatus = ({
             Winner: {winner}
           </p>
           <p className="text-green-300 text-base font-medium">
-            Prize: {formatEther(prizePool)} ETH
+            Prize: {formatCurrency(formatEther(prizePool))}
           </p>
           {prizeClaimed && (
             <p className="text-green-400 text-base mt-2 font-semibold">

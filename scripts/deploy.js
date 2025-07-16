@@ -1,9 +1,33 @@
 const { ethers } = require("hardhat");
 const { verify } = require("../utils/verify");
 
-const SEPOLIA_VRF_COORDINATOR = "0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625";
-const SEPOLIA_GAS_LANE = "0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c";
-const CALLBACK_GAS_LIMIT = 500000;
+// Network-specific VRF configurations
+const NETWORK_CONFIGS = {
+  sepolia: {
+    vrfCoordinator: process.env.SEPOLIA_VRF_COORDINATOR_V2,
+    gasLane: process.env.SEPOLIA_VRF_GAS_LANE,
+    subscriptionId: process.env.SEPOLIA_VRF_SUBSCRIPTION_ID,
+    callbackGasLimit: process.env.SEPOLIA_VRF_CALLBACK_GAS_LIMIT || 500000
+  },
+  polygonAmoy: {
+    vrfCoordinator: process.env.AMOY_VRF_COORDINATOR_V2,
+    gasLane: process.env.AMOY_VRF_GAS_LANE,
+    subscriptionId: process.env.AMOY_VRF_SUBSCRIPTION_ID,
+    callbackGasLimit: process.env.AMOY_VRF_CALLBACK_GAS_LIMIT || 500000
+  },
+  polygonMumbai: {
+    vrfCoordinator: process.env.MUMBAI_VRF_COORDINATOR_V2,
+    gasLane: process.env.MUMBAI_VRF_GAS_LANE,
+    subscriptionId: process.env.MUMBAI_VRF_SUBSCRIPTION_ID,
+    callbackGasLimit: process.env.MUMBAI_VRF_CALLBACK_GAS_LIMIT || 500000
+  },
+  polygon: {
+    vrfCoordinator: process.env.POLYGON_VRF_COORDINATOR_V2,
+    gasLane: process.env.POLYGON_VRF_GAS_LANE,
+    subscriptionId: process.env.POLYGON_VRF_SUBSCRIPTION_ID,
+    callbackGasLimit: process.env.POLYGON_VRF_CALLBACK_GAS_LIMIT || 500000
+  }
+};
 
 async function main() {
   const [deployer] = await ethers.getSigners();
@@ -13,7 +37,7 @@ async function main() {
   const networkName = hre.network.name;
   console.log("Network:", networkName);
 
-  let vrfCoordinator, subscriptionId, gasLane;
+  let vrfCoordinator, subscriptionId, gasLane, callbackGasLimit;
 
   if (networkName === "hardhat" || networkName === "localhost") {
     console.log("Deploying to local network - setting up mock VRF Coordinator");
@@ -36,23 +60,27 @@ async function main() {
     await vrfCoordinatorV2Mock.fundSubscription(subscriptionId, ethers.parseEther("1"));
     
     gasLane = "0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c";
+    callbackGasLimit = 500000;
     
     console.log("Mock VRF Coordinator deployed to:", vrfCoordinator);
     console.log("Subscription ID:", subscriptionId);
     
-  } else if (networkName === "sepolia") {
-    console.log("Deploying to Sepolia testnet");
+  } else if (NETWORK_CONFIGS[networkName]) {
+    console.log(`Deploying to ${networkName}`);
     
-    vrfCoordinator = SEPOLIA_VRF_COORDINATOR;
-    subscriptionId = process.env.VRF_SUBSCRIPTION_ID;
-    gasLane = SEPOLIA_GAS_LANE;
+    const config = NETWORK_CONFIGS[networkName];
+    vrfCoordinator = config.vrfCoordinator;
+    subscriptionId = config.subscriptionId;
+    gasLane = config.gasLane;
+    callbackGasLimit = config.callbackGasLimit;
     
     if (!subscriptionId) {
-      throw new Error("VRF_SUBSCRIPTION_ID not set in environment variables");
+      throw new Error(`VRF_SUBSCRIPTION_ID not set for ${networkName} in environment variables`);
     }
     
-    console.log("Using Sepolia VRF Coordinator:", vrfCoordinator);
+    console.log("Using VRF Coordinator:", vrfCoordinator);
     console.log("Subscription ID:", subscriptionId);
+    console.log("Gas Lane:", gasLane);
     
   } else {
     throw new Error(`Unsupported network: ${networkName}`);
@@ -65,7 +93,7 @@ async function main() {
     vrfCoordinator,
     subscriptionId,
     gasLane,
-    CALLBACK_GAS_LIMIT
+    callbackGasLimit
   );
 
   await lottery.waitForDeployment();
@@ -79,13 +107,19 @@ async function main() {
     console.log("Added lottery contract as VRF consumer");
   }
 
-  // Verify contract on Etherscan for testnet/mainnet
+  // Verify contract on block explorers for testnet/mainnet
   if (networkName === "sepolia" && process.env.ETHERSCAN_API_KEY) {
     console.log("Waiting for block confirmations...");
     await lottery.deploymentTransaction().wait(6);
     
     console.log("Verifying contract on Etherscan...");
-    await verify(lotteryAddress, [vrfCoordinator, subscriptionId, gasLane, CALLBACK_GAS_LIMIT]);
+    await verify(lotteryAddress, [vrfCoordinator, subscriptionId, gasLane, callbackGasLimit]);
+  } else if ((networkName === "polygonAmoy" || networkName === "polygonMumbai" || networkName === "polygon") && process.env.POLYGONSCAN_API_KEY) {
+    console.log("Waiting for block confirmations...");
+    await lottery.deploymentTransaction().wait(5);
+    
+    console.log("Verifying contract on Polygonscan...");
+    await verify(lotteryAddress, [vrfCoordinator, subscriptionId, gasLane, callbackGasLimit]);
   }
 
   // Log deployment info
@@ -96,7 +130,7 @@ async function main() {
   console.log("VRF Coordinator:", vrfCoordinator);
   console.log("Subscription ID:", subscriptionId);
   console.log("Gas Lane:", gasLane);
-  console.log("Callback Gas Limit:", CALLBACK_GAS_LIMIT);
+  console.log("Callback Gas Limit:", callbackGasLimit);
   
   // Get current lottery info
   const currentRoundId = await lottery.getCurrentRoundId();
@@ -116,7 +150,7 @@ async function main() {
     vrfCoordinator,
     subscriptionId: subscriptionId.toString(),
     gasLane,
-    callbackGasLimit: CALLBACK_GAS_LIMIT,
+    callbackGasLimit: callbackGasLimit,
     deployedAt: new Date().toISOString(),
     deployer: deployer.address
   };

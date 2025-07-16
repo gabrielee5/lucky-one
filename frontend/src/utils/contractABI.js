@@ -7,9 +7,9 @@ export const LOTTERY_ABI = [
         "type": "address"
       },
       {
-        "internalType": "uint64",
+        "internalType": "uint256",
         "name": "subscriptionId",
-        "type": "uint64"
+        "type": "uint256"
       },
       {
         "internalType": "bytes32",
@@ -40,6 +40,49 @@ export const LOTTERY_ABI = [
     ],
     "name": "OnlyCoordinatorCanFulfill",
     "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ReentrancyGuardReentrantCall",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "roundId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "feeAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "FeeCollected",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "FeeWithdrawn",
+    "type": "event"
   },
   {
     "anonymous": false,
@@ -186,6 +229,10 @@ export const LOTTERY_ABI = [
     "type": "event"
   },
   {
+    "stateMutability": "payable",
+    "type": "fallback"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -227,6 +274,19 @@ export const LOTTERY_ABI = [
   },
   {
     "inputs": [],
+    "name": "getAccumulatedFees",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getContractBalance",
     "outputs": [
       {
@@ -261,7 +321,7 @@ export const LOTTERY_ABI = [
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -315,7 +375,7 @@ export const LOTTERY_ABI = [
         "type": "bool"
       },
       {
-        "internalType": "uint8",
+        "internalType": "enum DecentralizedLottery.LotteryState",
         "name": "",
         "type": "uint8"
       }
@@ -333,7 +393,7 @@ export const LOTTERY_ABI = [
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -402,7 +462,7 @@ export const LOTTERY_ABI = [
         "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -437,8 +497,11 @@ export const LOTTERY_ABI = [
     "type": "function"
   },
   {
-    "stateMutability": "payable",
-    "type": "fallback"
+    "inputs": [],
+    "name": "withdrawFees",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
     "stateMutability": "payable",
@@ -453,11 +516,11 @@ export const LOTTERY_STATE = {
 };
 
 export const CONTRACT_CONFIG = {
-  // Default to localhost for development
-  CHAIN_ID: 31337,
-  NETWORK_NAME: "localhost",
-  RPC_URL: "http://127.0.0.1:8545",
-  CONTRACT_ADDRESS: "", // Will be set after deployment
+  // Default to Polygon Amoy for development
+  CHAIN_ID: 80002,
+  NETWORK_NAME: "polygonAmoy",
+  RPC_URL: "https://rpc-amoy.polygon.technology/",
+  CONTRACT_ADDRESS: "0xaE3214F7b7ba132FEE0227F0a6828018Db8d83E9", // Amoy testnet address
   
   // Network configurations
   NETWORKS: {
@@ -465,13 +528,58 @@ export const CONTRACT_CONFIG = {
       chainId: 31337,
       name: "localhost",
       rpcUrl: "http://127.0.0.1:8545",
-      blockExplorer: ""
+      blockExplorer: "",
+      currency: "ETH"
     },
     sepolia: {
       chainId: 11155111,
       name: "sepolia",
       rpcUrl: "https://eth-sepolia.g.alchemy.com/v2/YOUR-API-KEY",
-      blockExplorer: "https://sepolia.etherscan.io"
+      blockExplorer: "https://sepolia.etherscan.io",
+      currency: "ETH"
+    },
+    polygonAmoy: {
+      chainId: 80002,
+      name: "Polygon Amoy",
+      rpcUrl: "https://rpc-amoy.polygon.technology/",
+      blockExplorer: "https://amoy.polygonscan.com",
+      currency: "MATIC",
+      contractAddress: "0xaE3214F7b7ba132FEE0227F0a6828018Db8d83E9"
+    },
+    polygonMumbai: {
+      chainId: 80001,
+      name: "Polygon Mumbai",
+      rpcUrl: "https://rpc-mumbai.maticvigil.com/",
+      blockExplorer: "https://mumbai.polygonscan.com",
+      currency: "MATIC",
+      deprecated: true
+    },
+    polygon: {
+      chainId: 137,
+      name: "Polygon",
+      rpcUrl: "https://polygon-rpc.com/",
+      blockExplorer: "https://polygonscan.com",
+      currency: "MATIC"
     }
   }
+};
+
+// Helper function to get network by chain ID
+export function getNetworkByChainId(chainId) {
+  return Object.values(CONTRACT_CONFIG.NETWORKS).find(network => network.chainId === chainId);
+}
+
+// Helper function to format currency
+export function formatCurrency(amount, network = 'polygonAmoy') {
+  const config = CONTRACT_CONFIG.NETWORKS[network];
+  return `${amount} ${config?.currency || 'ETH'}`;
+}
+
+// Contract constants
+export const LOTTERY_CONSTANTS = {
+  TICKET_PRICE: "0.01", // MATIC
+  LOTTERY_DURATION: 7 * 24 * 60 * 60, // 7 days in seconds
+  MAX_TICKETS_PER_PURCHASE: 100,
+  OWNER_FEE_PERCENTAGE: 5, // 5%
+  PRIZE_POOL_PERCENTAGE: 95 // 95%
 };

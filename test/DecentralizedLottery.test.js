@@ -97,7 +97,9 @@ describe("DecentralizedLottery", function () {
 
       const [, , , totalTickets, prizePool] = await lottery.getLotteryRound(1);
       expect(totalTickets).to.equal(ticketCount * 2);
-      expect(prizePool).to.equal(totalCost * 2n);
+      // With 5% fee, prize pool should be 95% of total cost
+      const expectedPrizePool = (totalCost * 2n * 95n) / 100n;
+      expect(prizePool).to.equal(expectedPrizePool);
     });
   });
 
@@ -173,7 +175,12 @@ describe("DecentralizedLottery", function () {
     it("Should not allow non-winner to claim prize", async function () {
       await vrfCoordinator.fulfillRandomWords(1, await lottery.getAddress());
       
-      await expect(lottery.connect(player1).claimPrize(1))
+      const [, , , , , winner] = await lottery.getLotteryRound(1);
+      
+      // Use a different player than the winner
+      const nonWinner = winner === player1.address ? player2 : player1;
+      
+      await expect(lottery.connect(nonWinner).claimPrize(1))
         .to.be.revertedWith("Not the winner");
     });
 
@@ -201,7 +208,9 @@ describe("DecentralizedLottery", function () {
       
       expect(roundId).to.equal(1);
       expect(totalTickets).to.equal(15);
-      expect(prizePool).to.equal(ticketPrice * 15n);
+      // With 5% fee, prize pool should be 95% of total ticket sales
+      const expectedPrizePool = (ticketPrice * 15n * 95n) / 100n;
+      expect(prizePool).to.equal(expectedPrizePool);
       expect(winner).to.equal(ethers.ZeroAddress);
       expect(ended).to.equal(false);
       expect(prizeClaimed).to.equal(false);
@@ -242,6 +251,50 @@ describe("DecentralizedLottery", function () {
       const ownerBalanceAfter = await ethers.provider.getBalance(owner.address);
       
       expect(ownerBalanceAfter).to.be.greaterThan(ownerBalanceBefore);
+    });
+
+    it("Should accumulate owner fees correctly", async function () {
+      const ticketCount = 10;
+      const totalCost = ticketPrice * BigInt(ticketCount);
+      
+      // Buy tickets
+      await lottery.connect(player1).buyTickets(ticketCount, { value: totalCost });
+      await lottery.connect(player2).buyTickets(ticketCount, { value: totalCost });
+      
+      // Expected fee is 5% of total sales
+      const expectedFee = (totalCost * 2n * 5n) / 100n;
+      const accumulatedFees = await lottery.connect(owner).getAccumulatedFees();
+      expect(accumulatedFees).to.equal(expectedFee);
+    });
+
+    it("Should allow owner to withdraw accumulated fees", async function () {
+      const ticketCount = 10;
+      const totalCost = ticketPrice * BigInt(ticketCount);
+      
+      // Buy tickets to accumulate fees
+      await lottery.connect(player1).buyTickets(ticketCount, { value: totalCost });
+      
+      const ownerBalanceBefore = await ethers.provider.getBalance(owner.address);
+      const accumulatedFees = await lottery.connect(owner).getAccumulatedFees();
+      
+      await lottery.connect(owner).withdrawFees();
+      
+      const ownerBalanceAfter = await ethers.provider.getBalance(owner.address);
+      expect(ownerBalanceAfter).to.be.greaterThan(ownerBalanceBefore);
+      
+      // Check that accumulated fees are reset
+      const accumulatedFeesAfter = await lottery.connect(owner).getAccumulatedFees();
+      expect(accumulatedFeesAfter).to.equal(0);
+    });
+
+    it("Should not allow non-owner to withdraw fees", async function () {
+      await expect(lottery.connect(player1).withdrawFees())
+        .to.be.revertedWith("Not the contract owner");
+    });
+
+    it("Should not allow non-owner to view accumulated fees", async function () {
+      await expect(lottery.connect(player1).getAccumulatedFees())
+        .to.be.revertedWith("Not the contract owner");
     });
   });
 

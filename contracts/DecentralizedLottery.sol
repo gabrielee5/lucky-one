@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
     VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
     bytes32 private immutable i_gasLane;
-    uint64 private immutable i_subscriptionId;
+    uint256 private immutable i_subscriptionId;
     uint32 private immutable i_callbackGasLimit;
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
@@ -16,9 +16,11 @@ contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
     uint256 private constant TICKET_PRICE = 0.01 ether;
     uint256 private constant LOTTERY_DURATION = 7 days;
     uint256 private constant MAX_TICKETS_PER_PURCHASE = 100;
+    uint256 private constant OWNER_FEE_PERCENTAGE = 5; // 5% fee for owner
 
     address private s_owner;
     uint256 private s_currentRoundId;
+    uint256 private s_accumulatedFees; // Accumulated owner fees
     mapping(uint256 => LotteryRound) private s_lotteryRounds;
     mapping(uint256 => mapping(address => uint256)) private s_playerTickets;
     mapping(uint256 => uint256) private s_requestIdToRoundId;
@@ -48,6 +50,8 @@ contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
     event WinnerSelected(uint256 indexed roundId, address indexed winner, uint256 prizeAmount);
     event PrizeClaimed(uint256 indexed roundId, address indexed winner, uint256 amount);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event FeeWithdrawn(address indexed owner, uint256 amount);
+    event FeeCollected(uint256 indexed roundId, uint256 feeAmount);
 
     modifier onlyOwner() {
         require(msg.sender == s_owner, "Not the contract owner");
@@ -61,7 +65,7 @@ contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
 
     constructor(
         address vrfCoordinatorV2,
-        uint64 subscriptionId,
+        uint256 subscriptionId,
         bytes32 gasLane,
         uint32 callbackGasLimit
     ) VRFConsumerBaseV2(vrfCoordinatorV2) {
@@ -86,11 +90,17 @@ contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
             currentRound.players.push(msg.sender);
         }
 
+        // Calculate owner fee (5% of ticket purchase)
+        uint256 ownerFee = (msg.value * OWNER_FEE_PERCENTAGE) / 100;
+        uint256 prizeAmount = msg.value - ownerFee;
+        
         s_playerTickets[s_currentRoundId][msg.sender] += ticketCount;
         currentRound.totalTickets += ticketCount;
-        currentRound.prizePool += msg.value;
+        currentRound.prizePool += prizeAmount;
+        s_accumulatedFees += ownerFee;
 
         emit TicketsPurchased(msg.sender, s_currentRoundId, ticketCount, msg.value);
+        emit FeeCollected(s_currentRoundId, ownerFee);
     }
 
     function endLottery() external {
@@ -103,7 +113,7 @@ contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
         
         uint256 requestId = i_vrfCoordinator.requestRandomWords(
             i_gasLane,
-            i_subscriptionId,
+            uint64(i_subscriptionId), // Cast to uint64 for VRF v2 compatibility
             REQUEST_CONFIRMATIONS,
             i_callbackGasLimit,
             NUM_WORDS
@@ -249,10 +259,27 @@ contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
         return s_owner;
     }
 
+    function withdrawFees() external onlyOwner {
+        require(s_accumulatedFees > 0, "No fees to withdraw");
+        
+        uint256 feeAmount = s_accumulatedFees;
+        s_accumulatedFees = 0;
+        
+        (bool success, ) = payable(s_owner).call{value: feeAmount}("");
+        require(success, "Fee withdrawal failed");
+        
+        emit FeeWithdrawn(s_owner, feeAmount);
+    }
+    
+    function getAccumulatedFees() external view onlyOwner returns (uint256) {
+        return s_accumulatedFees;
+    }
+
     function emergencyWithdraw() external onlyOwner {
         require(address(this).balance > 0, "No funds to withdraw");
         
         uint256 balance = address(this).balance;
+        s_accumulatedFees = 0; // Reset fees in emergency
         (bool success, ) = payable(s_owner).call{value: balance}("");
         require(success, "Emergency withdrawal failed");
     }
