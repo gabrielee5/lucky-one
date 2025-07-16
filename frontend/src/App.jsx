@@ -9,7 +9,7 @@ import WinnerDisplay from './components/WinnerDisplay';
 import { CONTRACT_CONFIG } from './utils/contractABI';
 
 // Set contract address here after deployment
-const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Replace with actual deployed address
+const CONTRACT_ADDRESS = "0xaE3214F7b7ba132FEE0227F0a6828018Db8d83E9"; // Replace with actual deployed address
 
 function App() {
   const [currentTime, setCurrentTime] = useState(Math.floor(Date.now() / 1000));
