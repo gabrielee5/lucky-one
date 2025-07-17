@@ -50,7 +50,7 @@ export const useLotteryData = () => {
           winner: roundData[5],
           ended: roundData[6],
           prizeClaimed: roundData[7],
-          state: roundData[8]
+          state: Number(roundData[8]) // Ensure state is converted to number
         },
         playerTickets: playerTickets.toString(),
         players: players || [],
