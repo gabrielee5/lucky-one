@@ -16,6 +16,7 @@ const useWalletStore = create((set, get) => ({
   // Actions
   connect: async () => {
     set({ isConnecting: true, error: null })
+    localStorage.setItem('wallet-attempted', 'true')
     
     try {
       if (!window.ethereum) {
