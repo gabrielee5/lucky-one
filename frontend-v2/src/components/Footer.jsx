@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <h3 className="text-xl font-bold text-primary-400">Decentralized Lottery</h3>
+            <h3 className="text-xl font-bold text-primary-400">Lucky One</h3>
             <p className="text-sm text-gray-400">
               Fair, transparent, and secure lottery powered by blockchain technology.
             </p>
@@ -103,7 +103,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-sm text-gray-400">
-              © 2024 Decentralized Lottery. All rights reserved.
+              © 2025 Lucky One. All rights reserved.
             </div>
             <motion.div 
               className="flex items-center gap-1 text-sm text-gray-400 mt-4 md:mt-0"
@@ -111,7 +111,7 @@ const Footer = () => {
             >
               <span>Made with</span>
               <Heart className="w-4 h-4 text-red-400" />
-              <span>for the decentralized future</span>
+              <span>for all my fellow degens.</span>
             </motion.div>
           </div>
         </div>

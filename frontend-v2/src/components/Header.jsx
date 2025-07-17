@@ -23,11 +23,11 @@ const Header = () => {
           className="text-center"
         >
           <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary-400 via-violet-400 to-purple-400 bg-clip-text text-transparent mb-4 text-glow">
-            Decentralized Lottery
+            Lucky One
           </h1>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Experience the future of fair gaming with blockchain-powered transparency,
-            instant payouts, and provable randomness.
+            Transparent odds, massive potential.
+            More players = bigger jackpots. Feeling lucky?
           </p>
         </motion.div>
       </div>
