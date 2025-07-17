@@ -4,7 +4,7 @@ import WalletConnectDiscrete from './WalletConnectDiscrete'
 
 const Header = () => {
   return (
-    <header className="relative z-10 px-4 py-6">
+    <header className="relative z-[50] px-4 py-6">
       <div className="max-w-7xl mx-auto">
         {/* Top bar with wallet */}
         <div className="flex justify-between items-center mb-8">

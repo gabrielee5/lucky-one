@@ -25,7 +25,7 @@ const ConnectionStatusBar = () => {
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -50 }}
-          className="bg-yellow-500/10 border-b border-yellow-500/20 backdrop-blur-sm"
+          className="bg-yellow-500/10 border-b border-yellow-500/20 backdrop-blur-sm relative z-[40]"
         >
           <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex items-center justify-between">
@@ -63,7 +63,7 @@ const ConnectionStatusBar = () => {
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -50 }}
-          className="bg-gray-800/50 border-b border-gray-700/50 backdrop-blur-sm"
+          className="bg-gray-800/50 border-b border-gray-700/50 backdrop-blur-sm relative z-[40]"
         >
           <div className="max-w-7xl mx-auto px-4 py-2">
             <div className="flex items-center justify-center gap-2">

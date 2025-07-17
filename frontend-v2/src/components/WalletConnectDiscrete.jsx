@@ -101,7 +101,7 @@ const WalletConnectDiscrete = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute top-full mt-2 left-0 right-0 z-50 bg-red-500/20 border border-red-500/30 rounded-lg p-3"
+              className="absolute top-full mt-2 left-0 right-0 z-[60] bg-red-500/20 border border-red-500/30 rounded-lg p-3"
             >
               <div className="flex items-center gap-2 text-red-400">
                 <AlertCircle className="w-4 h-4" />
@@ -142,7 +142,7 @@ const WalletConnectDiscrete = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full mt-2 right-0 z-50 w-72 bg-gray-800/95 backdrop-blur-md border border-gray-700/50 rounded-lg shadow-xl overflow-hidden"
+            className="absolute top-full mt-2 right-0 z-[60] w-72 bg-gray-800/95 backdrop-blur-md border border-gray-700/50 rounded-lg shadow-xl overflow-hidden"
           >
             {/* Header */}
             <div className="p-4 border-b border-gray-700/50">
@@ -226,7 +226,7 @@ const WalletConnectDiscrete = () => {
       {/* Click outside to close */}
       {isDropdownOpen && (
         <div 
-          className="fixed inset-0 z-40" 
+          className="fixed inset-0 z-[55]" 
           onClick={() => setIsDropdownOpen(false)}
         />
       )}
