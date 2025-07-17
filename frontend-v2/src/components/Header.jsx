@@ -22,7 +22,7 @@ const Header = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary-400 via-violet-400 to-purple-400 bg-clip-text text-transparent mb-4 text-glow">
             Decentralized Lottery
           </h1>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">

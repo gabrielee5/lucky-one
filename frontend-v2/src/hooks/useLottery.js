@@ -14,53 +14,68 @@ export const useLotteryData = () => {
     async () => {
       if (!contract) return null
 
-      const [
-        currentRoundId,
-        ticketPrice,
-        maxTickets,
-        lotteryDuration
-      ] = await Promise.all([
-        contract.getCurrentRoundId(),
-        contract.getTicketPrice(),
-        contract.getMaxTicketsPerPurchase(),
-        contract.getLotteryDuration()
-      ])
+      try {
+        const [
+          currentRoundId,
+          ticketPrice,
+          maxTickets,
+          lotteryDuration
+        ] = await Promise.all([
+          contract.getCurrentRoundId(),
+          contract.getTicketPrice(),
+          contract.getMaxTicketsPerPurchase(),
+          contract.getLotteryDuration()
+        ])
 
-      const roundData = await contract.getLotteryRound(currentRoundId)
-      
-      let playerTickets = 0
-      let players = []
-      
-      if (address) {
-        playerTickets = await contract.getPlayerTickets(address, currentRoundId)
-        players = await contract.getPlayers(currentRoundId)
-      }
+        const roundData = await contract.getLotteryRound(currentRoundId)
+        
+        let playerTickets = 0
+        let players = []
+        
+        if (address) {
+          try {
+            playerTickets = await contract.getPlayerTickets(address, currentRoundId)
+            players = await contract.getPlayers(currentRoundId)
+          } catch (playerError) {
+            console.warn('Failed to fetch player data:', playerError)
+            // Continue without player data
+          }
+        }
 
-      return {
-        currentRoundId: currentRoundId.toString(),
-        ticketPrice: ethers.formatEther(ticketPrice),
-        maxTickets: maxTickets.toString(),
-        lotteryDuration: lotteryDuration.toString(),
-        round: {
-          id: roundData[0].toString(),
-          startTime: Number(roundData[1]) * 1000, // Convert to milliseconds
-          endTime: Number(roundData[2]) * 1000,
-          totalTickets: roundData[3].toString(),
-          prizePool: ethers.formatEther(roundData[4]),
-          winner: roundData[5],
-          ended: roundData[6],
-          prizeClaimed: roundData[7],
-          state: Number(roundData[8]) // Ensure state is converted to number
-        },
-        playerTickets: playerTickets.toString(),
-        players: players || [],
-        totalPlayers: players ? players.length : 0
+        return {
+          currentRoundId: currentRoundId.toString(),
+          ticketPrice: ethers.formatEther(ticketPrice),
+          maxTickets: maxTickets.toString(),
+          lotteryDuration: lotteryDuration.toString(),
+          round: {
+            id: roundData[0].toString(),
+            startTime: Number(roundData[1]) * 1000, // Convert to milliseconds
+            endTime: Number(roundData[2]) * 1000,
+            totalTickets: roundData[3].toString(),
+            prizePool: ethers.formatEther(roundData[4]),
+            winner: roundData[5],
+            ended: roundData[6],
+            prizeClaimed: roundData[7],
+            state: Number(roundData[8]) // Ensure state is converted to number
+          },
+          playerTickets: playerTickets.toString(),
+          players: players || [],
+          totalPlayers: players ? players.length : 0
+        }
+      } catch (error) {
+        console.error('Failed to fetch lottery data:', error)
+        throw error
       }
     },
     {
       enabled: !!contract,
       refetchInterval: 5000, // Refresh every 5 seconds
-      refetchOnWindowFocus: true
+      refetchOnWindowFocus: true,
+      retry: 3,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+      onError: (error) => {
+        console.error('Lottery data query failed:', error)
+      }
     }
   )
 }

@@ -19,7 +19,7 @@ const WalletPrompt = () => {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
-          className="w-16 h-16 bg-primary-600/20 rounded-full flex items-center justify-center mx-auto mb-6"
+          className="w-16 h-16 bg-gradient-to-br from-primary-600/20 to-violet-600/20 border border-primary-500/30 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-purple-500/20"
         >
           <Wallet className="w-8 h-8 text-primary-400" />
         </motion.div>
@@ -32,7 +32,7 @@ const WalletPrompt = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="flex flex-col items-center">
-            <div className="w-12 h-12 bg-green-600/20 rounded-full flex items-center justify-center mb-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-green-600/20 to-emerald-600/20 border border-green-500/30 rounded-full flex items-center justify-center mb-3 shadow-lg shadow-green-500/20">
               <Shield className="w-6 h-6 text-green-400" />
             </div>
             <h3 className="font-semibold mb-1">Secure</h3>
@@ -42,7 +42,7 @@ const WalletPrompt = () => {
           </div>
           
           <div className="flex flex-col items-center">
-            <div className="w-12 h-12 bg-primary-600/20 rounded-full flex items-center justify-center mb-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary-600/20 to-violet-600/20 border border-primary-500/30 rounded-full flex items-center justify-center mb-3 shadow-lg shadow-purple-500/20">
               <Zap className="w-6 h-6 text-primary-400" />
             </div>
             <h3 className="font-semibold mb-1">Instant</h3>
@@ -52,7 +52,7 @@ const WalletPrompt = () => {
           </div>
           
           <div className="flex flex-col items-center">
-            <div className="w-12 h-12 bg-yellow-600/20 rounded-full flex items-center justify-center mb-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-yellow-600/20 to-orange-600/20 border border-yellow-500/30 rounded-full flex items-center justify-center mb-3 shadow-lg shadow-yellow-500/20">
               <Lock className="w-6 h-6 text-yellow-400" />
             </div>
             <h3 className="font-semibold mb-1">Private</h3>

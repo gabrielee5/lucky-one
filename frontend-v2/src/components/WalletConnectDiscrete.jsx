@@ -80,7 +80,7 @@ const WalletConnectDiscrete = () => {
         <motion.button
           onClick={handleConnect}
           disabled={isConnecting}
-          className="flex items-center gap-2 px-4 py-2 bg-primary-600/20 hover:bg-primary-600/30 border border-primary-600/30 rounded-lg transition-all duration-200 text-primary-300 hover:text-primary-200"
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600/20 to-violet-600/20 hover:from-primary-600/30 hover:to-violet-600/30 border border-primary-500/30 rounded-lg transition-all duration-200 text-primary-300 hover:text-primary-200 glow-button"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
@@ -119,7 +119,7 @@ const WalletConnectDiscrete = () => {
     <div className="relative">
       <motion.button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="flex items-center gap-2 px-3 py-2 bg-gray-800/50 hover:bg-gray-800/70 border border-gray-700/50 rounded-lg transition-all duration-200"
+        className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-gray-800/50 to-purple-800/30 hover:from-gray-800/70 hover:to-purple-800/50 border border-purple-500/30 rounded-lg transition-all duration-200"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
@@ -142,7 +142,7 @@ const WalletConnectDiscrete = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full mt-2 right-0 z-[60] w-72 bg-gray-800/95 backdrop-blur-md border border-gray-700/50 rounded-lg shadow-xl overflow-hidden"
+            className="absolute top-full mt-2 right-0 z-[60] w-72 bg-gradient-to-br from-gray-800/95 to-purple-900/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-xl overflow-hidden"
           >
             {/* Header */}
             <div className="p-4 border-b border-gray-700/50">

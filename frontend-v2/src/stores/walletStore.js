@@ -33,7 +33,15 @@ const useWalletStore = create((set, get) => ({
       const signer = await provider.getSigner()
       const address = await signer.getAddress()
       const network = await provider.getNetwork()
-      const balance = await provider.getBalance(address)
+      
+      // Try to get balance with retry logic
+      let balance
+      try {
+        balance = await provider.getBalance(address)
+      } catch (balanceError) {
+        console.warn('Initial balance fetch failed, will retry later:', balanceError)
+        balance = ethers.parseEther('0') // Default to 0 if balance fetch fails
+      }
 
       set({
         isConnected: true,
@@ -121,7 +129,47 @@ const useWalletStore = create((set, get) => ({
       set({ balance: ethers.formatEther(balance) })
     } catch (error) {
       console.error('Failed to update balance:', error)
+      // Try to reconnect with a different RPC if balance fetch fails
+      try {
+        await get().reconnectWithFallback()
+      } catch (reconnectError) {
+        console.error('Reconnection failed:', reconnectError)
+      }
     }
+  },
+
+  reconnectWithFallback: async () => {
+    const rpcUrls = LOTTERY_CONFIG.POLYGON_AMOY.rpcUrls
+    
+    for (const rpcUrl of rpcUrls) {
+      try {
+        console.log(`Trying RPC: ${rpcUrl}`)
+        const provider = new ethers.JsonRpcProvider(rpcUrl)
+        
+        // Test the connection
+        await provider.getNetwork()
+        
+        // If we get here, the RPC is working
+        const signer = await provider.getSigner()
+        const address = await signer.getAddress()
+        const balance = await provider.getBalance(address)
+        
+        set({
+          provider,
+          signer,
+          balance: ethers.formatEther(balance),
+          error: null
+        })
+        
+        console.log(`Successfully connected to ${rpcUrl}`)
+        return
+      } catch (error) {
+        console.error(`RPC ${rpcUrl} failed:`, error)
+        continue
+      }
+    }
+    
+    throw new Error('All RPC endpoints failed')
   },
 
   // Initialize wallet connection if previously connected
@@ -136,7 +184,15 @@ const useWalletStore = create((set, get) => ({
         const signer = await provider.getSigner()
         const address = await signer.getAddress()
         const network = await provider.getNetwork()
-        const balance = await provider.getBalance(address)
+        
+        // Try to get balance with error handling
+        let balance
+        try {
+          balance = await provider.getBalance(address)
+        } catch (balanceError) {
+          console.warn('Balance fetch failed during initialization:', balanceError)
+          balance = ethers.parseEther('0')
+        }
 
         set({
           isConnected: true,

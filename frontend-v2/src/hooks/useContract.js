@@ -9,14 +9,19 @@ export const useContract = () => {
   return useMemo(() => {
     if (!signer && !provider) return null
 
-    const contractProvider = signer || provider
-    const contract = new ethers.Contract(
-      LOTTERY_CONFIG.POLYGON_AMOY.lotteryAddress,
-      CONTRACT_ABI,
-      contractProvider
-    )
+    try {
+      const contractProvider = signer || provider
+      const contract = new ethers.Contract(
+        LOTTERY_CONFIG.POLYGON_AMOY.lotteryAddress,
+        CONTRACT_ABI,
+        contractProvider
+      )
 
-    return contract
+      return contract
+    } catch (error) {
+      console.error('Failed to create contract instance:', error)
+      return null
+    }
   }, [signer, provider])
 }
 
@@ -26,12 +31,17 @@ export const useContractRead = () => {
   return useMemo(() => {
     if (!provider) return null
 
-    const contract = new ethers.Contract(
-      LOTTERY_CONFIG.POLYGON_AMOY.lotteryAddress,
-      CONTRACT_ABI,
-      provider
-    )
+    try {
+      const contract = new ethers.Contract(
+        LOTTERY_CONFIG.POLYGON_AMOY.lotteryAddress,
+        CONTRACT_ABI,
+        provider
+      )
 
-    return contract
+      return contract
+    } catch (error) {
+      console.error('Failed to create contract instance:', error)
+      return null
+    }
   }, [provider])
 }

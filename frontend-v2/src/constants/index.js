@@ -2,7 +2,13 @@ export const LOTTERY_CONFIG = {
   POLYGON_AMOY: {
     name: 'Polygon Amoy Testnet',
     chainId: 80002,
-    rpcUrl: 'https://rpc-amoy.polygon.technology',
+    rpcUrls: [
+      'https://rpc-amoy.polygon.technology',
+      'https://polygon-amoy.drpc.org',
+      'https://amoy.polygonscan.com/rpc',
+      'https://polygon-amoy-bor-rpc.publicnode.com'
+    ],
+    rpcUrl: 'https://rpc-amoy.polygon.technology', // Keep for backward compatibility
     blockExplorer: 'https://amoy.polygonscan.com',
     lotteryAddress: '0xaE3214F7b7ba132FEE0227F0a6828018Db8d83E9',
     nativeCurrency: {
