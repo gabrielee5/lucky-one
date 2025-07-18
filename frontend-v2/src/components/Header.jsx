@@ -27,7 +27,12 @@ const Header = () => {
           </h1>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
             Transparent odds, massive potential.
-            More players = bigger jackpots. Feeling lucky?
+          </p>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            More players = bigger jackpots.
+          </p>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            Feeling lucky?
           </p>
         </motion.div>
       </div>
