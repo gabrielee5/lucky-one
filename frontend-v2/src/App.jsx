@@ -37,26 +37,30 @@ const App = () => {
             transition={{ delay: 0.2 }}
             className="space-y-8"
           >
-            {/* Wallet connection prompt */}
-            <WalletPrompt />
-
             {/* Prize Claim (only shows if user is winner) */}
             <PrizeClaim />
 
             {/* Main Dashboard */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Left Column - Lottery Status (Always visible) */}
-              <div className={`${isConnected ? 'lg:col-span-2' : 'lg:col-span-3'} space-y-6`}>
-                <LotteryStatus />
-              </div>
+            {isConnected ? (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Left Column - Lottery Status */}
+                <div className="lg:col-span-2 space-y-6">
+                  <LotteryStatus />
+                </div>
 
-              {/* Right Column - Actions (Only when wallet connected) */}
-              {isConnected && (
+                {/* Right Column - Actions */}
                 <div className="space-y-6">
                   <TicketPurchase />
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div className="max-w-4xl mx-auto">
+                <LotteryStatus />
+              </div>
+            )}
+
+            {/* Wallet connection prompt */}
+            <WalletPrompt />
 
             {/* History */}
             <div className="max-w-4xl mx-auto">
