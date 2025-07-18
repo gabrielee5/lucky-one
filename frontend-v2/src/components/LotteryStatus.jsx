@@ -92,7 +92,7 @@ const LotteryStatus = () => {
               <div 
                 className="progress-fill"
                 style={{ 
-                  width: `${Math.max(0, Math.min(100, (timeRemaining.total / (7 * 24 * 60 * 60 * 1000)) * 100))}%` 
+                  width: `${Math.max(0, Math.min(100, 100 - (timeRemaining.total / (7 * 24 * 60 * 60 * 1000)) * 100))}%` 
                 }}
               />
             </div>
