@@ -69,13 +69,7 @@ module.exports = {
     }
   },
   etherscan: {
-    apiKey: {
-      mainnet: ETHERSCAN_API_KEY,
-      sepolia: ETHERSCAN_API_KEY,
-      polygon: POLYGONSCAN_API_KEY,
-      polygonAmoy: POLYGONSCAN_API_KEY,
-      polygonMumbai: POLYGONSCAN_API_KEY
-    }
+    apiKey: ETHERSCAN_API_KEY
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
