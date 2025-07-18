@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { ExternalLink, Shield, Code, Heart } from 'lucide-react'
 import { LOTTERY_CONFIG } from '../constants'
 
-const Footer = () => {
+const Footer = ({ onNavigateToInfo }) => {
   return (
     <footer className="relative z-10 border-t border-gray-800 mt-16">
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -14,6 +14,9 @@ const Footer = () => {
             <p className="text-sm text-gray-400">
               Fair, transparent, and secure lottery powered by blockchain technology.
             </p>
+            <p className="text-sm text-gray-400">
+              Gamble responsibly. This is a testnet application.
+            </p>
           </div>
 
           {/* Quick Links */}
@@ -21,24 +24,36 @@ const Footer = () => {
             <h4 className="font-semibold text-gray-300">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
+                <button 
+                  onClick={() => onNavigateToInfo && onNavigateToInfo('how-it-works')}
+                  className="text-gray-400 hover:text-primary-400 transition-colors"
+                >
                   How It Works
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
+                <button 
+                  onClick={() => onNavigateToInfo && onNavigateToInfo('fair-play')}
+                  className="text-gray-400 hover:text-primary-400 transition-colors"
+                >
                   Fair Play
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
+                <button 
+                  onClick={() => onNavigateToInfo && onNavigateToInfo('faq')}
+                  className="text-gray-400 hover:text-primary-400 transition-colors"
+                >
                   FAQ
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">
+                <button 
+                  onClick={() => onNavigateToInfo && onNavigateToInfo('support')}
+                  className="text-gray-400 hover:text-primary-400 transition-colors"
+                >
                   Support
-                </a>
+                </button>
               </li>
             </ul>
           </div>
