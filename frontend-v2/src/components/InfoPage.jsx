@@ -238,7 +238,7 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
               </div>
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: When will I receive my prize?</h4>
-                <p>Prizes are autoPOLally distributed when you win. Check your wallet for incoming transactions.</p>
+                <p>Prizes are automatically distributed when you win. Check your wallet for incoming transactions.</p>
               </div>
             </div>
           `
