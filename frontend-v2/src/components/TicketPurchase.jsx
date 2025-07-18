@@ -65,7 +65,7 @@ const TicketPurchase = () => {
     if (isCalculating) return 'Lottery is calculating winner...'
     if (isClosed) return 'Lottery is closed'
     if (!isOpen) return `Lottery state: ${round.state} (not open)`
-    if (hasInsufficientBalance) return 'Insufficient MATIC balance'
+    // if (hasInsufficientBalance) return 'Insufficient MATIC balance'
     if (ticketCount <= 0) return 'Select at least 1 ticket'
     return null
   }
