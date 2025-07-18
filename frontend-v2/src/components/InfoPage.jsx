@@ -55,8 +55,8 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
             <p>Welcome to our decentralized lottery! Here's how to participate:</p>
             <ol>
               <li><strong>Connect Your Wallet:</strong> Use MetaMask or another Web3 wallet to connect to the Polygon Amoy testnet.</li>
-              <li><strong>Get Test MATIC:</strong> Visit the Polygon faucet to get free testnet tokens.</li>
-              <li><strong>Buy Tickets:</strong> Purchase lottery tickets using MATIC tokens.</li>
+              <li><strong>Get Test POL:</strong> Visit the Polygon faucet to get free testnet tokens.</li>
+              <li><strong>Buy Tickets:</strong> Purchase lottery tickets using POL tokens.</li>
               <li><strong>Wait for Draw:</strong> Each lottery round runs for a set duration.</li>
               <li><strong>Check Results:</strong> Winners are selected using Chainlink VRF for guaranteed fairness.</li>
             </ol>
@@ -67,7 +67,7 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
           content: `
             <p>Our lottery system operates on a simple but secure mechanism:</p>
             <ul>
-              <li><strong>Ticket Price:</strong> Fixed price per ticket in MATIC</li>
+              <li><strong>Ticket Price:</strong> Fixed price per ticket in POL</li>
               <li><strong>Draw Frequency:</strong> Regular draws with predetermined timing</li>
               <li><strong>Prize Pool:</strong> Accumulated from all ticket sales</li>
               <li><strong>Winner Selection:</strong> Completely random using Chainlink VRF</li>
@@ -180,7 +180,7 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
             <div class="space-y-4">
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: How do I participate?</h4>
-                <p>Connect your wallet, get test MATIC from the faucet, and buy tickets. It's that simple!</p>
+                <p>Connect your wallet, get test POL from the faucet, and buy tickets. It's that simple!</p>
               </div>
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: When are the draws?</h4>
@@ -214,7 +214,7 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
                 <p>Yes, the entire project is open source and available for review and contribution.</p>
               </div>
               <div>
-                <h4 class="font-semibold text-primary-400 mb-2">Q: How do I get test MATIC?</h4>
+                <h4 class="font-semibold text-primary-400 mb-2">Q: How do I get test POL?</h4>
                 <p>Visit the official Polygon faucet at faucet.polygon.technology to get free testnet tokens.</p>
               </div>
             </div>
@@ -230,7 +230,7 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
               </div>
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: Transaction failed</h4>
-                <p>Check that you have enough MATIC for gas fees and that you're on the correct network.</p>
+                <p>Check that you have enough POL for gas fees and that you're on the correct network.</p>
               </div>
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: I can't see my tickets</h4>
@@ -238,7 +238,7 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
               </div>
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: When will I receive my prize?</h4>
-                <p>Prizes are automatically distributed when you win. Check your wallet for incoming transactions.</p>
+                <p>Prizes are autoPOLally distributed when you win. Check your wallet for incoming transactions.</p>
               </div>
             </div>
           `

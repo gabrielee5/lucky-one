@@ -37,9 +37,9 @@ export const formatTimeRemaining = (timeData) => {
 
 export const formatPrizePool = (prizePool) => {
   const value = parseFloat(prizePool)
-  if (value === 0) return '0 MATIC'
-  if (value < 0.001) return '<0.001 MATIC'
-  return `${formatEther(prizePool)} MATIC`
+  if (value === 0) return '0 POL'
+  if (value < 0.001) return '<0.001 POL'
+  return `${formatEther(prizePool)} POL`
 }
 
 export const calculateWinChance = (userTickets, totalTickets) => {

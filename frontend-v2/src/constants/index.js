@@ -12,8 +12,8 @@ export const LOTTERY_CONFIG = {
     blockExplorer: 'https://amoy.polygonscan.com',
     lotteryAddress: '0xaE3214F7b7ba132FEE0227F0a6828018Db8d83E9',
     nativeCurrency: {
-      name: 'MATIC',
-      symbol: 'MATIC',
+      name: 'POL',
+      symbol: 'POL',
       decimals: 18,
     },
   },

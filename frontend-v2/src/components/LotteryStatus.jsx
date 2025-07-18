@@ -182,7 +182,7 @@ const LotteryStatus = () => {
             <Ticket className="w-5 h-5 text-primary-400" />
             <span className="text-sm text-gray-400">Ticket Price:</span>
           </div>
-          <div className="font-semibold">{ticketPrice} MATIC</div>
+          <div className="font-semibold">{ticketPrice} POL</div>
         </div>
       </div>
     </div>

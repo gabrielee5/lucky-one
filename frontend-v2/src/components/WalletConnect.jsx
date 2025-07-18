@@ -124,7 +124,7 @@ const WalletConnect = () => {
           <div>
             <div className="font-semibold">{formatAddress(address)}</div>
             <div className="text-sm text-gray-400">
-              {formatEther(balance, 4)} MATIC
+              {formatEther(balance, 4)} POL
             </div>
           </div>
         </div>

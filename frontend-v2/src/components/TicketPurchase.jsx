@@ -65,7 +65,7 @@ const TicketPurchase = () => {
     if (isCalculating) return 'Lottery is calculating winner...'
     if (isClosed) return 'Lottery is closed'
     if (!isOpen) return `Lottery state: ${round.state} (not open)`
-    // if (hasInsufficientBalance) return 'Insufficient MATIC balance'
+    // if (hasInsufficientBalance) return 'Insufficient POL balance'
     if (ticketCount <= 0) return 'Select at least 1 ticket'
     return null
   }
@@ -99,7 +99,7 @@ const TicketPurchase = () => {
         <div className="flex items-center justify-between mb-3">
           <label className="text-sm font-medium">Number of Tickets</label>
           <div className="text-sm text-gray-400">
-            {ticketPrice} MATIC each
+            {ticketPrice} POL each
           </div>
         </div>
         
@@ -164,12 +164,12 @@ const TicketPurchase = () => {
         </div>
         <div className="flex justify-between items-center mb-2">
           <span className="text-gray-400">Price per ticket</span>
-          <span>{ticketPrice} MATIC</span>
+          <span>{ticketPrice} POL</span>
         </div>
         <div className="h-px bg-gray-600 my-3"></div>
         <div className="flex justify-between items-center text-lg font-bold">
           <span>Total Cost</span>
-          <span className="text-primary-400">{totalCost} MATIC</span>
+          <span className="text-primary-400">{totalCost} POL</span>
         </div>
       </div>
 
@@ -208,7 +208,7 @@ const TicketPurchase = () => {
         <div className="mt-4 flex justify-between items-center text-sm text-gray-400">
           <span>Your Balance:</span>
           <span className={hasInsufficientBalance ? 'text-red-400' : ''}>
-            {formatEther(balance)} MATIC
+            {formatEther(balance)} POL
           </span>
         </div>
       )}
