@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ShoppingCart, Plus, Minus, AlertCircle, Clock, Loader2 } from 'lucide-react'
+import { ShoppingCart, Plus, Minus, AlertCircle, Clock, Loader2, Wallet } from 'lucide-react'
 import { useLotteryData, useBuyTickets } from '../hooks/useLottery'
 import { LOTTERY_STATES } from '../constants'
 import { formatEther, formatNumber } from '../utils/formatters'
@@ -189,6 +189,11 @@ const TicketPurchase = () => {
           <div className="flex items-center justify-center gap-2">
             <Loader2 className="w-5 h-5 animate-spin" />
             <span>Processing...</span>
+          </div>
+        ) : hasInsufficientBalance && isConnected && isOpen ? (
+          <div className="flex items-center justify-center gap-2">
+            <Wallet className="w-5 h-5" />
+            <span>Add funds to buy {formatNumber(ticketCount)} ticket{ticketCount > 1 ? 's' : ''}</span>
           </div>
         ) : (
           <div className="flex items-center justify-center gap-2">
