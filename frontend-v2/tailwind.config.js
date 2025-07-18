@@ -6,6 +6,11 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'sans': ['Space Mono', 'monospace'],
+        'mono': ['Space Mono', 'monospace'],
+        'barcode': ['Libre Barcode 128', 'monospace'],
+      },
       colors: {
         primary: {
           50: '#faf5ff',

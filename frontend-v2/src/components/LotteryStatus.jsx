@@ -59,7 +59,7 @@ const LotteryStatus = () => {
       {/* Header */}
       <div className="glass-card p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold">Lottery Round #{round.id}</h2>
+          <h2 className="text-2xl font-bold">Lottery Round <span className="font-barcode text-3xl">#{round.id}</span></h2>
           <div className={`flex items-center gap-2 ${getStatusColor()}`}>
             {getStatusIcon()}
             <span className="font-semibold">{LOTTERY_STATE_LABELS[round.state]}</span>
@@ -70,7 +70,7 @@ const LotteryStatus = () => {
         <div className="text-center mb-6">
           <div className="text-sm text-gray-400 mb-2">Prize Pool</div>
           <motion.div
-            className="text-4xl font-bold text-lottery-gold"
+            className="text-4xl font-bold text-lottery-gold font-mono"
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 200 }}
