@@ -32,10 +32,17 @@ export const useLotteryData = () => {
         let playerTickets = 0
         let players = []
         
+        // Always try to get players list for total count
+        try {
+          players = await contract.getPlayers(currentRoundId)
+        } catch (error) {
+          console.warn('Failed to fetch players list:', error)
+        }
+        
+        // Only get player-specific data if wallet is connected
         if (address) {
           try {
             playerTickets = await contract.getPlayerTickets(address, currentRoundId)
-            players = await contract.getPlayers(currentRoundId)
           } catch (playerError) {
             console.warn('Failed to fetch player data:', playerError)
             // Continue without player data

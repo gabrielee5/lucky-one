@@ -29,13 +29,14 @@ export const useContractRead = () => {
   const { provider } = useWalletStore()
 
   return useMemo(() => {
-    if (!provider) return null
-
     try {
+      // Use wallet provider if available, otherwise use default provider
+      const contractProvider = provider || new ethers.JsonRpcProvider(LOTTERY_CONFIG.POLYGON_AMOY.rpcUrl)
+      
       const contract = new ethers.Contract(
         LOTTERY_CONFIG.POLYGON_AMOY.lotteryAddress,
         CONTRACT_ABI,
-        provider
+        contractProvider
       )
 
       return contract

@@ -45,15 +45,17 @@ const App = () => {
 
             {/* Main Dashboard */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Left Column - Lottery Status */}
-              <div className="lg:col-span-2 space-y-6">
+              {/* Left Column - Lottery Status (Always visible) */}
+              <div className={`${isConnected ? 'lg:col-span-2' : 'lg:col-span-3'} space-y-6`}>
                 <LotteryStatus />
               </div>
 
-              {/* Right Column - Actions */}
-              <div className="space-y-6">
-                <TicketPurchase />
-              </div>
+              {/* Right Column - Actions (Only when wallet connected) */}
+              {isConnected && (
+                <div className="space-y-6">
+                  <TicketPurchase />
+                </div>
+              )}
             </div>
 
             {/* History */}
