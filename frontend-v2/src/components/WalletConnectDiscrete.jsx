@@ -198,7 +198,7 @@ const WalletConnectDiscrete = () => {
               </motion.button>
 
               <motion.a
-                href={getExplorerUrl(address)}
+                href={getExplorerUrl(address, 'address')}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-700/50 rounded-lg transition-colors text-gray-300"
