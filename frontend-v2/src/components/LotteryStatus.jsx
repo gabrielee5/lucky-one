@@ -166,7 +166,7 @@ const LotteryStatus = () => {
               <Crown className="w-5 h-5 text-purple-400" />
             </div>
             <div>
-              <div className="text-sm text-gray-400">Win Chance</div>
+              <div className="text-sm text-gray-400">Your Win Chance</div>
               <div className="text-xl font-bold">
                 {playerTickets > 0 ? `${winChance}%` : '0%'}
               </div>
