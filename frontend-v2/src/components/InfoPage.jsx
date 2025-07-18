@@ -117,6 +117,47 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
           `
         },
         {
+          title: 'How VRF Randomness Works',
+          content: `
+            <p>Understanding the technical details of our random number generation:</p>
+            <div class="space-y-4">
+              <div>
+                <h4 class="font-semibold text-primary-400 mb-2">Random Number Generation</h4>
+                <p>The VRF generates a single random number (uint256) with an astronomical range from 0 to 2^256 - 1. That's approximately 115,792,089,237,316,195,423,570,985,008,687,907,853,269,984,665,640,564,039,457,584,007,913,129,639,935 possible values!</p>
+              </div>
+              <div>
+                <h4 class="font-semibold text-primary-400 mb-2">Winner Selection Process</h4>
+                <p>Here's exactly how your lottery ticket becomes a winner:</p>
+                <ol>
+                  <li><strong>VRF Returns:</strong> For example, the random number might be 87,392,847,592,847,592,847,592,847,592,847</li>
+                  <li><strong>Modulo Operation:</strong> We calculate <code>randomNumber % totalTickets</code></li>
+                  <li><strong>If 100 tickets sold:</strong> 87,392,847,592,847,592,847,592,847,592,847 % 100 = 47</li>
+                  <li><strong>Ticket #47 wins!</strong> The contract finds who owns ticket #47</li>
+                </ol>
+              </div>
+              <div>
+                <h4 class="font-semibold text-primary-400 mb-2">Perfect Fairness</h4>
+                <p>Each ticket has exactly equal probability of winning:</p>
+                <ul>
+                  <li>With 100 tickets sold: each ticket has exactly 1/100 = 1% chance</li>
+                  <li>With 1,000 tickets sold: each ticket has exactly 1/1,000 = 0.1% chance</li>
+                  <li>More tickets = proportionally higher chance of winning</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-semibold text-primary-400 mb-2">Example Scenario</h4>
+                <p>If Alice bought 3 tickets, Bob bought 2 tickets, and Charlie bought 1 ticket:</p>
+                <ul>
+                  <li>Alice owns tickets 0, 1, 2 (50% chance to win)</li>
+                  <li>Bob owns tickets 3, 4 (33.3% chance to win)</li>
+                  <li>Charlie owns ticket 5 (16.7% chance to win)</li>
+                </ul>
+                <p>If the winning ticket number is 4, Bob wins! The system automatically finds who owns that ticket.</p>
+              </div>
+            </div>
+          `
+        },
+        {
           title: 'Smart Contract Security',
           content: `
             <p>Our smart contract implements multiple security measures:</p>
@@ -124,7 +165,7 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
               <li><strong>Reentrancy Protection:</strong> Prevents common attack vectors</li>
               <li><strong>Access Controls:</strong> Limited administrative functions</li>
               <li><strong>Emergency Pausing:</strong> Can pause in case of issues</li>
-              <li><strong>Upgradeable Architecture:</strong> Can fix bugs without losing funds</li>
+              <li><strong>Verified Contract:</strong> Source code is publicly verified on PolygonScan</li>
             </ul>
           `
         }
