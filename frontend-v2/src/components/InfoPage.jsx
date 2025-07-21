@@ -50,6 +50,48 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
       title: 'How It Works',
       sections: [
         {
+          title: 'Lottery Mechanics',
+          content: `
+            <p>Our lottery follows simple rules that anyone can understand:</p>
+
+            <div class="space-y-6">
+              <div class="bg-gray-800/30 p-4 rounded-lg border-l-4 border-primary-500">
+                <h4 class="font-semibold text-primary-400 mb-2">🎫 How to Play</h4>
+                <p>Each ticket costs a fixed amount of POL tokens. You can buy as many tickets as you want - more tickets = better chances of winning! Every ticket you own gives you an equal shot at the prize.</p>
+              </div>
+
+              <div class="bg-gray-800/30 p-4 rounded-lg border-l-4 border-green-500">
+                <h4 class="font-semibold text-green-400 mb-2">💰 Prize Pool</h4>
+                <p>The prize pool grows with every ticket sold. All the POL spent on tickets goes into one big pot. When the lottery ends, the entire prize pool goes to one lucky winner - no splitting, no house edge!</p>
+              </div>
+
+              <div class="bg-gray-800/30 p-4 rounded-lg border-l-4 border-blue-500">
+                <h4 class="font-semibold text-blue-400 mb-2">⏰ When Does It End?</h4>
+                <p>Each lottery round runs for a set amount of time (you can see the countdown on the main page). When the timer hits zero, no more tickets can be bought and the winner is automatically selected.</p>
+              </div>
+
+              <div class="bg-gray-800/30 p-4 rounded-lg border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">🏆 How Winners Are Chosen</h4>
+                <p>Think of it like a hat full of numbered tickets. Each ticket you buy gets a unique number. When the lottery ends, a completely random number is generated using Chainlink's secure system - whoever owns the ticket with that number wins everything!</p>
+              </div>
+
+              <div class="bg-gray-800/30 p-4 rounded-lg border-l-4 border-yellow-500">
+                <h4 class="font-semibold text-yellow-400 mb-2">💸 Getting Your Prize</h4>
+                <p>If you win, the prize is sent directly to your wallet automatically - no claims, no waiting, no paperwork. The smart contract handles everything instantly when the draw happens.</p>
+              </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-primary-900/20 rounded-lg">
+              <h4 class="font-semibold text-primary-300 mb-2">📊 Example: How Your Odds Work</h4>
+              <p class="text-sm text-gray-300">
+                If you buy 3 tickets and 100 tickets total are sold, you have a 3% chance of winning. 
+                If you buy 10 tickets out of 200 total, you have a 5% chance. 
+                Your winning probability = (your tickets ÷ total tickets) × 100%
+              </p>
+            </div>
+          `
+        },
+        {
           title: 'Getting Started',
           content: `
             <p>Welcome to our decentralized lottery! Here's how to participate:</p>
@@ -60,19 +102,6 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
               <li><strong>Wait for Draw:</strong> Each lottery round runs for a set duration.</li>
               <li><strong>Check Results:</strong> Winners are selected using Chainlink VRF for guaranteed fairness.</li>
             </ol>
-          `
-        },
-        {
-          title: 'Lottery Mechanics',
-          content: `
-            <p>Our lottery system operates on a simple but secure mechanism:</p>
-            <ul>
-              <li><strong>Ticket Price:</strong> Fixed price per ticket in POL</li>
-              <li><strong>Draw Frequency:</strong> Regular draws with predetermined timing</li>
-              <li><strong>Prize Pool:</strong> Accumulated from all ticket sales</li>
-              <li><strong>Winner Selection:</strong> Completely random using Chainlink VRF</li>
-              <li><strong>Automatic Payouts:</strong> Winners receive prizes automatically</li>
-            </ul>
           `
         },
         {
