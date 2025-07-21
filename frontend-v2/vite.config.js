@@ -5,7 +5,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3001,
-    open: true
+    open: true,
+    allowedHosts: [
+      '.ngrok-free.app',  // Allows any ngrok subdomain
+      'localhost'
+    ]
   },
   define: {
     global: 'globalThis'
