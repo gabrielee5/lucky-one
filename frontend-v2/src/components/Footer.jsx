@@ -92,6 +92,16 @@ const Footer = ({ onNavigateToInfo }) => {
                   Polygon Network <ExternalLink className="w-3 h-3" />
                 </a>
               </li>
+              <li>
+                <a 
+                  href="https://github.com/gabrielee5"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-1"
+                >
+                  GitHub <ExternalLink className="w-3 h-3" />
+                </a>
+              </li>
             </ul>
           </div>
 
