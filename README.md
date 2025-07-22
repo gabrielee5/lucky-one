@@ -108,7 +108,7 @@ npm run legacy-ui:build
 ### Player Commands
 ```bash
 # Buy lottery tickets (1-100 tickets)
-npm run buy-tickets:amoy -- --tickets=5
+TICKETS=5 npm run buy-tickets:amoy
 
 # Check your player info and history
 npm run player-info:amoy
@@ -117,7 +117,7 @@ npm run player-info:amoy
 npm run end-lottery:amoy
 
 # Claim prize if you won
-npm run claim-prize:amoy -- --round=1
+ROUND=1 npm run claim-prize:amoy
 ```
 
 ### Owner Commands

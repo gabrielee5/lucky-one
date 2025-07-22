@@ -5,9 +5,8 @@ async function main() {
   const [claimer] = await ethers.getSigners();
   const networkName = hre.network.name;
   
-  // Get parameters from command line arguments
-  const args = process.argv.slice(2);
-  const roundId = args.find(arg => arg.startsWith('--round='))?.split('=')[1];
+  // Get parameters from environment variables
+  const roundId = process.env.ROUND;
   
   console.log("🏆 === CLAIM LOTTERY PRIZE ===");
   console.log(`📍 Network: ${networkName}`);
@@ -225,12 +224,11 @@ if (process.argv.includes('--help') || process.argv.includes('-h')) {
   console.log("  Only the winner can claim, and only once per round.");
   console.log();
   console.log("Usage:");
-  console.log("  npm run claim-prize:amoy -- --round=1");
-  console.log("  npm run claim-prize:amoy -- --round=5");
+  console.log("  ROUND=1 npm run claim-prize:amoy");
+  console.log("  ROUND=5 npm run claim-prize:amoy");
   console.log();
-  console.log("Options:");
-  console.log("  --round=N      Round ID to claim prize from (required)");
-  console.log("  --help, -h     Show this help message");
+  console.log("Environment Variables:");
+  console.log("  ROUND=N        Round ID to claim prize from (required)");
   console.log();
   console.log("Requirements:");
   console.log("  • You must be the winner of the specified round");
@@ -239,8 +237,8 @@ if (process.argv.includes('--help') || process.argv.includes('-h')) {
   console.log("  • Lottery round must be ended");
   console.log();
   console.log("Examples:");
-  console.log("  npm run claim-prize:amoy -- --round=1       # Claim prize from round 1");
-  console.log("  npm run claim-prize:amoy -- --round=3       # Claim prize from round 3");
+  console.log("  ROUND=1 npm run claim-prize:amoy            # Claim prize from round 1");
+  console.log("  ROUND=3 npm run claim-prize:amoy            # Claim prize from round 3");
   console.log();
   console.log("Tips:");
   console.log("  • Check if you're a winner with: npm run status:amoy");

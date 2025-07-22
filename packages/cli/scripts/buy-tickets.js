@@ -5,10 +5,11 @@ async function main() {
   const [buyer] = await ethers.getSigners();
   const networkName = hre.network.name;
   
-  // Get parameters from command line arguments
+  // Get parameters from environment variables or command line arguments
+  // Hardhat passes extra args after the script name, so we look for them there
   const args = process.argv.slice(2);
-  const ticketCount = args.find(arg => arg.startsWith('--tickets='))?.split('=')[1] || '1';
-  const roundId = args.find(arg => arg.startsWith('--round='))?.split('=')[1];
+  const ticketCount = process.env.TICKETS || args.find(arg => arg.startsWith('tickets='))?.split('=')[1] || '1';
+  const roundId = process.env.ROUND || args.find(arg => arg.startsWith('round='))?.split('=')[1];
   
   console.log("🎟️  === BUY LOTTERY TICKETS ===");
   console.log(`📍 Network: ${networkName}`);
@@ -166,18 +167,18 @@ if (process.argv.includes('--usage') || process.argv.includes('--info')) {
   console.log("🎟️  Buy Lottery Tickets");
   console.log();
   console.log("Usage:");
-  console.log("  npm run buy-tickets:amoy -- --tickets=5");
-  console.log("  npm run buy-tickets:amoy -- --tickets=10 --round=2");
+  console.log("  TICKETS=5 npm run buy-tickets:amoy");
+  console.log("  TICKETS=10 ROUND=2 npm run buy-tickets:amoy");
   console.log();
-  console.log("Options:");
-  console.log("  --tickets=N    Number of tickets to buy (1-100, default: 1)");
-  console.log("  --round=N      Specific round ID (default: current round)");
-  console.log("  --usage, --info Show this help message");
+  console.log("Environment Variables:");
+  console.log("  TICKETS=N      Number of tickets to buy (1-100, default: 1)");
+  console.log("  ROUND=N        Specific round ID (default: current round)");
   console.log();
   console.log("Examples:");
-  console.log("  npm run buy-tickets:amoy -- --tickets=1     # Buy 1 ticket");
-  console.log("  npm run buy-tickets:amoy -- --tickets=25    # Buy 25 tickets");
-  console.log("  npm run buy-tickets:amoy -- --tickets=5 --round=1  # Buy 5 tickets for round 1");
+  console.log("  npm run buy-tickets:amoy                   # Buy 1 ticket (default)");
+  console.log("  TICKETS=5 npm run buy-tickets:amoy         # Buy 5 tickets");
+  console.log("  TICKETS=25 npm run buy-tickets:amoy        # Buy 25 tickets");
+  console.log("  TICKETS=5 ROUND=1 npm run buy-tickets:amoy # Buy 5 tickets for round 1");
   process.exit(0);
 }
 

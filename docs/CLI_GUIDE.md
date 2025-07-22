@@ -21,7 +21,7 @@ A comprehensive guide to all available CLI commands for interacting with the Dec
 npm run status:amoy
 
 # Buy lottery tickets
-npm run buy-tickets:amoy -- --tickets=5
+TICKETS=5 npm run buy-tickets:amoy
 
 # Check your player info
 npm run player-info:amoy
@@ -30,7 +30,7 @@ npm run player-info:amoy
 npm run end-lottery:amoy
 
 # Claim prize (if you won)
-npm run claim-prize:amoy -- --round=1
+ROUND=1 npm run claim-prize:amoy
 ```
 
 ### Owner Commands
@@ -49,26 +49,23 @@ npm run deploy:amoy
 Purchase lottery tickets for the current or specific round.
 
 ```bash
-npm run buy-tickets:amoy -- --tickets=N [--round=R]
+TICKETS=N [ROUND=R] npm run buy-tickets:amoy
 ```
 
-**Parameters:**
-- `--tickets=N`: Number of tickets to buy (1-100)
-- `--round=R`: Specific round ID (optional, default: current round)
+**Environment Variables:**
+- `TICKETS=N`: Number of tickets to buy (1-100, default: 1)
+- `ROUND=R`: Specific round ID (optional, default: current round)
 
 **Examples:**
 ```bash
-# Buy 1 ticket for current round
-npm run buy-tickets:amoy -- --tickets=1
+# Buy 1 ticket for current round (default)
+npm run buy-tickets:amoy
 
 # Buy 25 tickets for current round
-npm run buy-tickets:amoy -- --tickets=25
+TICKETS=25 npm run buy-tickets:amoy
 
 # Buy 5 tickets for specific round
-npm run buy-tickets:amoy -- --tickets=5 --round=2
-
-# See help
-npm run buy-tickets:amoy -- --help
+TICKETS=5 ROUND=2 npm run buy-tickets:amoy
 ```
 
 **Requirements:**
@@ -88,22 +85,19 @@ npm run buy-tickets:amoy -- --help
 Claim your winning prize from a completed lottery round.
 
 ```bash
-npm run claim-prize:amoy -- --round=N
+ROUND=N npm run claim-prize:amoy
 ```
 
-**Parameters:**
-- `--round=N`: Round ID to claim prize from (required)
+**Environment Variables:**
+- `ROUND=N`: Round ID to claim prize from (required)
 
 **Examples:**
 ```bash
 # Claim prize from round 1
-npm run claim-prize:amoy -- --round=1
+ROUND=1 npm run claim-prize:amoy
 
 # Claim prize from round 5
-npm run claim-prize:amoy -- --round=5
-
-# See help
-npm run claim-prize:amoy -- --help
+ROUND=5 npm run claim-prize:amoy
 ```
 
 **Requirements:**
