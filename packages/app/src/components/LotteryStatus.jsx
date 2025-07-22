@@ -1,12 +1,12 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Clock, Trophy, Users, Ticket, AlertCircle, Crown } from 'lucide-react'
+import { Clock, Trophy, Users, Ticket, AlertCircle, Crown, RefreshCw } from 'lucide-react'
 import { useLotteryData, useTimeRemaining } from '../hooks/useLottery'
 import { LOTTERY_STATES, LOTTERY_STATE_LABELS } from '../constants'
 import { formatTimeRemaining, formatPrizePool, formatNumber, calculateWinChance } from '../utils/formatters'
 
 const LotteryStatus = () => {
-  const { data: lotteryData, isLoading, error } = useLotteryData()
+  const { data: lotteryData, isLoading, error, refresh } = useLotteryData()
   const timeRemaining = useTimeRemaining(lotteryData?.round?.endTime)
 
   if (isLoading) {
@@ -60,9 +60,18 @@ const LotteryStatus = () => {
       <div className="glass-card p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">Round <span className="font-barcode text-3xl">#{round.id}</span></h2>
-          <div className={`flex items-center gap-2 ${getStatusColor()}`}>
-            {getStatusIcon()}
-            <span className="font-semibold">{LOTTERY_STATE_LABELS[round.state]}</span>
+          <div className="flex items-center gap-4">
+            <div className={`flex items-center gap-2 ${getStatusColor()}`}>
+              {getStatusIcon()}
+              <span className="font-semibold">{LOTTERY_STATE_LABELS[round.state]}</span>
+            </div>
+            <button
+              onClick={refresh}
+              className="p-2 text-gray-400 hover:text-white hover:bg-purple-600/20 rounded-lg transition-colors group"
+              title="Refresh lottery data"
+            >
+              <RefreshCw className="w-4 h-4 group-hover:animate-spin" />
+            </button>
           </div>
         </div>
 

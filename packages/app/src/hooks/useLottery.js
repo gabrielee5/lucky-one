@@ -4,13 +4,15 @@ import { ethers } from 'ethers'
 import { LOTTERY_STATES } from '../constants'
 import useWalletStore from '../stores/walletStore'
 import toast from 'react-hot-toast'
+import { useEffect } from 'react'
 
 export const useLotteryData = () => {
   const contract = useContractRead()
   const { address } = useWalletStore()
+  const queryClient = useQueryClient()
 
-  return useQuery(
-    ['lotteryData', address],
+  const query = useQuery(
+    ['lotteryData'],  // Remove address from cache key to prevent wallet-specific caching issues
     async () => {
       if (!contract) return null
 
@@ -76,8 +78,12 @@ export const useLotteryData = () => {
     },
     {
       enabled: !!contract,
-      refetchInterval: 5000, // Refresh every 5 seconds
+      refetchInterval: 3000, // Refresh every 3 seconds for more responsive updates
       refetchOnWindowFocus: true,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      staleTime: 1000, // Consider data stale after 1 second
+      cacheTime: 30000, // Keep in cache for 30 seconds (reduced from default 5 minutes)
       retry: 3,
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
       onError: (error) => {
@@ -85,6 +91,65 @@ export const useLotteryData = () => {
       }
     }
   )
+
+  // Add manual refresh function
+  const refresh = () => {
+    queryClient.invalidateQueries(['lotteryData'])
+  }
+
+  // Listen for contract events to auto-refresh data
+  useEffect(() => {
+    if (!contract) return
+
+    const onTicketsPurchased = () => {
+      console.log('Tickets purchased event detected, refreshing data...')
+      refresh()
+    }
+
+    const onLotteryEnded = () => {
+      console.log('Lottery ended event detected, refreshing data...')
+      refresh()
+    }
+
+    const onWinnerSelected = () => {
+      console.log('Winner selected event detected, refreshing data...')
+      refresh()
+    }
+
+    const onPrizeClaimed = () => {
+      console.log('Prize claimed event detected, refreshing data...')
+      refresh()
+    }
+
+    // Set up event listeners
+    try {
+      contract.on('TicketsPurchased', onTicketsPurchased)
+      contract.on('LotteryEnded', onLotteryEnded)
+      contract.on('WinnerSelected', onWinnerSelected)
+      contract.on('PrizeClaimed', onPrizeClaimed)
+
+      console.log('Contract event listeners set up successfully')
+    } catch (error) {
+      console.warn('Failed to set up contract event listeners:', error)
+    }
+
+    // Cleanup listeners on unmount
+    return () => {
+      try {
+        contract.off('TicketsPurchased', onTicketsPurchased)
+        contract.off('LotteryEnded', onLotteryEnded)
+        contract.off('WinnerSelected', onWinnerSelected)
+        contract.off('PrizeClaimed', onPrizeClaimed)
+      } catch (error) {
+        console.warn('Error cleaning up event listeners:', error)
+      }
+    }
+  }, [contract, refresh])
+
+  return {
+    ...query,
+    refresh
+  }
 }
 
 export const useBuyTickets = () => {
