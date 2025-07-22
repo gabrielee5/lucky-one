@@ -102,7 +102,31 @@ npm run app:build
 npm run legacy-ui:build
 ```
 
-### CLI Tools
+### Player Commands
+```bash
+# Buy lottery tickets (1-100 tickets)
+npm run buy-tickets:amoy -- --tickets=5
+
+# Check your player info and history
+npm run player-info:amoy
+
+# End lottery when time expires
+npm run end-lottery:amoy
+
+# Claim prize if you won
+npm run claim-prize:amoy -- --round=1
+```
+
+### Owner Commands
+```bash
+# Withdraw accumulated fees (owner only)
+npm run withdraw-fees:amoy
+
+# Check contract status and fees
+npm run status:amoy
+```
+
+### Utility & Development Tools
 ```bash
 # Test contract interaction
 npm run test:amoy
@@ -142,13 +166,18 @@ The contracts are optimized for gas efficiency:
   - End lottery: ~130,129 gas  
   - Claim prize: ~45,159 gas
 
+## 📚 Documentation
+
+- **[CLI Commands Guide](docs/CLI_GUIDE.md)** - Complete guide to all CLI commands
+- [Technical Guide](docs/TECHNICAL_GUIDE.md) - Smart contract implementation details
+- [Deployment Guide](docs/TESTNET_DEPLOYMENT_GUIDE.md) - How to deploy to networks
+- [Contract Verification](docs/VERIFICATION_GUIDE.md) - Verify contracts on explorers
+
 ## 🔗 Key Links
 
-- [Technical Guide](docs/TECHNICAL_GUIDE.md)
-- [Deployment Guide](docs/TESTNET_DEPLOYMENT_GUIDE.md)
-- [Contract Verification](docs/VERIFICATION_GUIDE.md)
 - [Polygon Amoy Explorer](https://amoy.polygonscan.com/)
 - [Chainlink VRF](https://vrf.chain.link/polygon-amoy)
+- [Polygon Faucet](https://faucet.polygon.technology/)
 
 ## 🛡️ Security
 
