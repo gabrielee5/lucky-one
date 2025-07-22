@@ -5,7 +5,7 @@ async function main() {
   console.log("🔧 Updating frontend configuration...");
   
   // Read the compiled contract ABI
-  const artifactPath = path.join(__dirname, '../artifacts/contracts/DecentralizedLottery.sol/DecentralizedLottery.json');
+  const artifactPath = path.join(__dirname, '../../contracts/artifacts/contracts/DecentralizedLottery.sol/DecentralizedLottery.json');
   const contractArtifact = JSON.parse(fs.readFileSync(artifactPath, 'utf8'));
   
   // Load deployment info for Amoy
@@ -99,7 +99,7 @@ export const LOTTERY_CONSTANTS = {
 `;
 
   // Write the updated configuration
-  const configPath = path.join(__dirname, '../frontend/src/utils/contractABI.js');
+  const configPath = path.join(__dirname, '../../app/src/utils/contractABI.js');
   fs.writeFileSync(configPath, frontendConfig);
   
   console.log("✅ Updated frontend/src/utils/contractABI.js");
@@ -112,13 +112,13 @@ export const LOTTERY_CONSTANTS = {
   console.log("\n🔍 Checking other frontend files...");
   
   // Check useContract hook
-  const useContractPath = path.join(__dirname, '../frontend/src/hooks/useContract.js');
+  const useContractPath = path.join(__dirname, '../../app/src/hooks/useContract.js');
   if (fs.existsSync(useContractPath)) {
     console.log("📁 Found useContract.js - may need manual review");
   }
   
   // Check if we have a wallet connection component
-  const walletPath = path.join(__dirname, '../frontend/src/hooks/useWallet.js');
+  const walletPath = path.join(__dirname, '../../app/src/hooks/useWallet.js');
   if (fs.existsSync(walletPath)) {
     console.log("📁 Found useWallet.js - may need Polygon network support");
   }

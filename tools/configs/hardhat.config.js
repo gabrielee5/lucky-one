@@ -11,6 +11,12 @@ const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY || "YOUR-API-KEY";
 
 module.exports = {
   defaultNetwork: "hardhat",
+  paths: {
+    sources: "./packages/contracts/contracts",
+    tests: "./packages/contracts/test",
+    cache: "./packages/contracts/cache",
+    artifacts: "./packages/contracts/artifacts"
+  },
   networks: {
     hardhat: {
       chainId: 31337,

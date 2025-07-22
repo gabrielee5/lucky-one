@@ -1,0 +1,15 @@
+{
+  "name": "@lottery-v1/contracts",
+  "version": "1.0.0",
+  "description": "Smart contracts for Decentralized Lottery",
+  "main": "artifacts/contracts/DecentralizedLottery.sol/DecentralizedLottery.json",
+  "scripts": {
+    "compile": "cd ../.. && npx hardhat compile",
+    "test": "cd ../.. && npx hardhat test",
+    "deploy:amoy": "cd ../.. && npm run deploy:amoy",
+    "deploy:local": "cd ../.. && npm run deploy:local"
+  },
+  "keywords": ["solidity", "smart-contracts", "lottery", "vrf", "blockchain"],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,21 @@
+{
+  "name": "@lottery-v1/cli",
+  "version": "1.0.0",
+  "description": "CLI tools for managing Decentralized Lottery",
+  "main": "scripts/deploy.js",
+  "scripts": {
+    "deploy:amoy": "cd ../.. && npm run deploy:amoy",
+    "status:amoy": "cd ../.. && npm run status:amoy",
+    "test:amoy": "cd ../.. && npm run test:amoy",
+    "setup-vrf:amoy": "cd ../.. && npm run setup-vrf:amoy",
+    "verify:amoy": "cd ../.. && npm run verify:amoy",
+    "update-frontend": "cd ../.. && npm run update-frontend"
+  },
+  "keywords": ["cli", "lottery", "blockchain", "management", "deployment"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "hardhat": "^2.25.0",
+    "@chainlink/contracts": "^1.4.0"
+  }
+}
