@@ -137,8 +137,8 @@ const TicketPurchase = () => {
         </div>
         
         {/* Quick Select */}
-        <div className="flex gap-2 mt-3">
-          {[1, 5, 10, 25, 50, 100].map((count) => (
+        <div className="flex gap-2 mt-3 justify-center">
+          {[1, 5, 10, 25, 50, 75, 100].map((count) => (
             <motion.button
               key={count}
               onClick={() => handleTicketCountChange(count)}
