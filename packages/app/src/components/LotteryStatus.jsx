@@ -60,18 +60,9 @@ const LotteryStatus = () => {
       <div className="glass-card p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl font-bold">Round <span className="font-barcode text-3xl">#{round.id}</span></h2>
-          <div className="flex items-center gap-4">
             <div className={`flex items-center gap-2 ${getStatusColor()}`}>
               {getStatusIcon()}
               <span className="font-semibold">{LOTTERY_STATE_LABELS[round.state]}</span>
-            </div>
-            <button
-              onClick={refresh}
-              className="p-2 text-gray-400 hover:text-white hover:bg-purple-600/20 rounded-lg transition-colors group"
-              title="Refresh lottery data"
-            >
-              <RefreshCw className="w-4 h-4 group-hover:animate-spin" />
-            </button>
           </div>
         </div>
 
