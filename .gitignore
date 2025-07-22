@@ -30,7 +30,11 @@ yarn-error.log*
 
 # Deployment
 deployments/
+packages/cli/deployments/
 !deployments/.gitkeep
+# But track production/mainnet deployments
+!packages/cli/deployments/polygon.json
+!packages/cli/deployments/mainnet.json
 
 # Test coverage
 coverage/

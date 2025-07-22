@@ -48,7 +48,8 @@
     "player-info:local": "npx hardhat run packages/cli/scripts/player-info.js --network localhost",
     "player-info:amoy": "npx hardhat run packages/cli/scripts/player-info.js --network polygonAmoy",
     "player-info:mumbai": "npx hardhat run packages/cli/scripts/player-info.js --network polygonMumbai",
-    "player-info:polygon": "npx hardhat run packages/cli/scripts/player-info.js --network polygon"
+    "player-info:polygon": "npx hardhat run packages/cli/scripts/player-info.js --network polygon",
+    "setup-existing-contract": "node packages/cli/scripts/setup-existing-contract.js"
   },
   "keywords": [],
   "author": "",

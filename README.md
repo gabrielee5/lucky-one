@@ -56,6 +56,9 @@ npm install
 # Install frontend dependencies
 cd packages/app && npm install
 cd ../legacy-ui && npm install
+
+# Setup existing contract (for new users)
+npm run setup-existing-contract -- --network=polygonAmoy
 ```
 
 ### Environment Setup
