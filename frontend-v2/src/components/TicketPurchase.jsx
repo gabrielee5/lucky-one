@@ -107,7 +107,7 @@ const TicketPurchase = () => {
           <motion.button
             onClick={() => handleTicketCountChange(ticketCount - 1)}
             disabled={ticketCount <= 1}
-            className="w-10 h-10 bg-gray-600 hover:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors"
+            className="w-10 h-10 bg-gray-800/50 hover:bg-gray-900/50 disabled:opacity-50 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -121,14 +121,14 @@ const TicketPurchase = () => {
               onChange={(e) => handleTicketCountChange(parseInt(e.target.value) || 1)}
               min="1"
               max={maxAllowedTickets}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-center text-xl font-bold focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full bg-gray-800/50 border border-gray-600 rounded-lg px-4 py-3 text-center text-xl font-bold focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
           
           <motion.button
             onClick={() => handleTicketCountChange(ticketCount + 1)}
             disabled={ticketCount >= maxAllowedTickets}
-            className="w-10 h-10 bg-gray-600 hover:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors"
+            className="w-10 h-10 bg-gray-800/50 hover:bg-gray-900/50 disabled:opacity-50 disabled:cursor-not-allowed rounded-full flex items-center justify-center transition-colors"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -145,7 +145,7 @@ const TicketPurchase = () => {
               className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                 ticketCount === count
                   ? 'bg-primary-600 text-white'
-                  : 'bg-gray-600 hover:bg-gray-500 text-gray-300'
+                  : 'bg-gray-800/50 hover:bg-gray-900/50 text-gray-300'
               }`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
