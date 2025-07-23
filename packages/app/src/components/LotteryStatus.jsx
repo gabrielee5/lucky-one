@@ -12,9 +12,7 @@ const EndLotteryButton = () => {
   const { isConnected } = useWalletStore()
 
   const handleEndLottery = () => {
-    if (window.confirm('Are you sure you want to end the current lottery round? This will trigger the winner selection process.')) {
       endLottery()
-    }
   }
 
   if (!isConnected) return null

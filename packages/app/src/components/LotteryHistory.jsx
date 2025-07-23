@@ -23,9 +23,7 @@ const LotteryHistory = () => {
   }, [historyData])
 
   const handleClaimPrize = (roundId) => {
-    if (window.confirm('Are you sure you want to claim your prize for this round?')) {
       claimPrize(roundId)
-    }
   }
 
   const canClaimPrize = (round) => {
