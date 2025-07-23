@@ -335,6 +335,38 @@ export const useLotteryHistory = (limit = 10) => {
                     console.warn(`Failed to get players for round ${roundId}:`, error)
                   }
 
+                  // Get prize claim transaction hash if prize was claimed
+                  let claimTransactionHash = null
+                  if (prizeClaimed) {
+                    try {
+                      // Try multiple approaches to get the claim transaction
+                      const filter = contract.filters.PrizeClaimed(roundId)
+                      let events = []
+                      
+                      // First try with larger block range
+                      try {
+                        events = await contract.queryFilter(filter, -50000)
+                      } catch (rangeError) {
+                        console.warn(`Large range failed for round ${roundId}, trying smaller range:`, rangeError.message)
+                        // Fallback to smaller range
+                        try {
+                          events = await contract.queryFilter(filter, -10000)
+                        } catch (smallRangeError) {
+                          console.warn(`Small range also failed for round ${roundId}:`, smallRangeError.message)
+                        }
+                      }
+                      
+                      if (events.length > 0) {
+                        claimTransactionHash = events[0].transactionHash
+                        console.log(`Found claim transaction for round ${roundId}: ${claimTransactionHash}`)
+                      } else {
+                        console.warn(`No PrizeClaimed events found for round ${roundId} despite prizeClaimed=true`)
+                      }
+                    } catch (error) {
+                      console.warn(`Failed to get claim transaction for round ${roundId}:`, error)
+                    }
+                  }
+
                   return {
                     id: Number(id),
                     startTime: Number(startTime) * 1000, // Convert to milliseconds
@@ -345,7 +377,8 @@ export const useLotteryHistory = (limit = 10) => {
                     ended: ended,
                     prizeClaimed: prizeClaimed,
                     state: Number(state),
-                    totalPlayers: totalPlayers
+                    totalPlayers: totalPlayers,
+                    claimTransactionHash: claimTransactionHash
                   }
                 }
                 return null

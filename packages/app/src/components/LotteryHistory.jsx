@@ -11,6 +11,17 @@ const LotteryHistory = () => {
   const { address: connectedAddress } = useWalletStore()
   const { mutate: claimPrize, isLoading: isClaimingPrize } = useClaimPrize()
 
+  // Debug log to see what data we're getting
+  React.useEffect(() => {
+    if (historyData && historyData.length > 0) {
+      console.log('Lottery History Data:', historyData.map(round => ({
+        id: round.id,
+        prizeClaimed: round.prizeClaimed,
+        claimTransactionHash: round.claimTransactionHash
+      })))
+    }
+  }, [historyData])
+
   const handleClaimPrize = (roundId) => {
     if (window.confirm('Are you sure you want to claim your prize for this round?')) {
       claimPrize(roundId)
@@ -145,18 +156,33 @@ const LotteryHistory = () => {
                       Claimed
                     </span>
                   )}
-                  <motion.a
-                    href={getExplorerUrl(round.winner)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-primary-400 hover:text-primary-300 text-sm transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    title="View winner address on block explorer"
-                  >
-                    <span>View</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </motion.a>
+                  {round.claimTransactionHash ? (
+                    <motion.a
+                      href={getExplorerUrl(round.claimTransactionHash, 'tx')}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-primary-400 hover:text-primary-300 text-sm transition-colors"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      title="View prize claim transaction on block explorer"
+                    >
+                      <span>View Claim</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </motion.a>
+                  ) : (
+                    <motion.a
+                      href={getExplorerUrl(round.winner, 'address')}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-primary-400 hover:text-primary-300 text-sm transition-colors"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      title="View winner address on block explorer"
+                    >
+                      <span>View Winner</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </motion.a>
+                  )}
                 </div>
               </div>
             </motion.div>

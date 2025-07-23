@@ -24,7 +24,7 @@ contract DailyProgressiveLottery is VRFConsumerBaseV2, ReentrancyGuard {
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
 
-    uint256 private constant TICKET_PRICE = 1 ether; // 1 POL
+    uint256 private constant TICKET_PRICE = 10 ether; // 10 POL
     uint256 private constant LOTTERY_DURATION = 1 days; // 24 hours
     uint256 private constant MAX_TICKETS_PER_PURCHASE = 100;
     
