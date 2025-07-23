@@ -300,3 +300,82 @@ export const useTimeRemaining = (endTime) => {
 
   return data || { total: 0, days: 0, hours: 0, minutes: 0, seconds: 0, isExpired: true }
 }
+
+
+export const useLotteryHistory = (limit = 10) => {
+  const contract = useContractRead()
+
+  return useQuery(
+    ['lotteryHistory', limit],
+    async () => {
+      if (!contract) return []
+
+      try {
+        const currentRoundId = await contract.getCurrentRoundId()
+        const currentRoundNumber = Number(currentRoundId)
+        
+        // Get history of completed rounds (excluding current round)
+        const historyPromises = []
+        const startRound = Math.max(1, currentRoundNumber - limit)
+        
+        for (let roundId = currentRoundNumber - 1; roundId >= startRound; roundId--) {
+          if (roundId > 0) {
+            historyPromises.push(
+              contract.getLotteryRound(roundId).then(async (roundData) => {
+                const [id, startTime, endTime, totalTickets, prizePool, winner, ended, prizeClaimed, state] = roundData
+                
+                // Only include rounds that have ended and have a winner
+                if (ended && winner !== ethers.ZeroAddress) {
+                  // Get players count for this round
+                  let totalPlayers = 0
+                  try {
+                    const players = await contract.getPlayers(roundId)
+                    totalPlayers = players.length
+                  } catch (error) {
+                    console.warn(`Failed to get players for round ${roundId}:`, error)
+                  }
+
+                  return {
+                    id: Number(id),
+                    startTime: Number(startTime) * 1000, // Convert to milliseconds
+                    endTime: Number(endTime) * 1000,
+                    totalTickets: Number(totalTickets),
+                    prizePool: ethers.formatEther(prizePool),
+                    winner: winner,
+                    ended: ended,
+                    prizeClaimed: prizeClaimed,
+                    state: Number(state),
+                    totalPlayers: totalPlayers
+                  }
+                }
+                return null
+              }).catch(error => {
+                console.warn(`Failed to fetch round ${roundId}:`, error)
+                return null
+              })
+            )
+          }
+        }
+
+        const results = await Promise.all(historyPromises)
+        // Filter out null results and sort by round ID descending
+        return results
+          .filter(round => round !== null)
+          .sort((a, b) => b.id - a.id)
+          
+      } catch (error) {
+        console.error('Failed to fetch lottery history:', error)
+        throw error
+      }
+    },
+    {
+      enabled: !!contract,
+      staleTime: 60000, // Cache for 1 minute
+      cacheTime: 300000, // Keep in cache for 5 minutes
+      retry: 2,
+      onError: (error) => {
+        console.error('Lottery history query failed:', error)
+      }
+    }
+  )
+}

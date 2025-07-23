@@ -1,42 +1,29 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { History, Crown, Calendar, Users, Trophy, ExternalLink } from 'lucide-react'
+import { History, Crown, Calendar, Users, Trophy, ExternalLink, AlertCircle, Loader } from 'lucide-react'
 import { formatPrizePool, formatAddress, getRelativeTime, getExplorerUrl } from '../utils/formatters'
+import { useLotteryHistory, useClaimPrize } from '../hooks/useLottery'
+import useWalletStore from '../stores/walletStore'
+import PurpleButton from './PurpleButton'
 
 const LotteryHistory = () => {
-  // Mock data for demonstration - in real app, this would come from a query
-  const mockHistory = [
-    {
-      id: 4,
-      startTime: Date.now() - 14 * 24 * 60 * 60 * 1000,
-      endTime: Date.now() - 7 * 24 * 60 * 60 * 1000,
-      winner: '0x742d35Cc6634C0532925a3b8D0e9A0A6A6d29e3f',
-      prizePool: '2.85',
-      totalTickets: 142,
-      totalPlayers: 28,
-      txHash: '0x123...abc'
-    },
-    {
-      id: 3,
-      startTime: Date.now() - 21 * 24 * 60 * 60 * 1000,
-      endTime: Date.now() - 14 * 24 * 60 * 60 * 1000,
-      winner: '0x8ba1f109551bD432803012645Hac136c22C8e6c1',
-      prizePool: '1.92',
-      totalTickets: 96,
-      totalPlayers: 19,
-      txHash: '0x456...def'
-    },
-    {
-      id: 2,
-      startTime: Date.now() - 28 * 24 * 60 * 60 * 1000,
-      endTime: Date.now() - 21 * 24 * 60 * 60 * 1000,
-      winner: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
-      prizePool: '3.47',
-      totalTickets: 173,
-      totalPlayers: 34,
-      txHash: '0x789...ghi'
+  const { data: historyData, isLoading, error } = useLotteryHistory(5) // Get last 5 completed rounds
+  const { address: connectedAddress } = useWalletStore()
+  const { mutate: claimPrize, isLoading: isClaimingPrize } = useClaimPrize()
+
+  const handleClaimPrize = (roundId) => {
+    if (window.confirm('Are you sure you want to claim your prize for this round?')) {
+      claimPrize(roundId)
     }
-  ]
+  }
+
+  const canClaimPrize = (round) => {
+    return (
+      connectedAddress && 
+      round.winner.toLowerCase() === connectedAddress.toLowerCase() && 
+      !round.prizeClaimed
+    )
+  }
 
   return (
     <div className="glass-card p-6">
@@ -52,88 +39,147 @@ const LotteryHistory = () => {
         </div>
       </div>
 
-      <div className="space-y-4">
-        {mockHistory.map((round, index) => (
-          <motion.div
-            key={round.id}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/50 hover:border-gray-600/50 transition-colors"
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex items-center justify-center py-8">
+          <Loader className="w-6 h-6 animate-spin text-primary-400 mr-2" />
+          <span className="text-gray-400">Loading lottery history...</span>
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <div className="flex items-center justify-center py-8">
+          <AlertCircle className="w-6 h-6 text-red-400 mr-2" />
+          <span className="text-gray-400">Failed to load history</span>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && !error && historyData && historyData.length === 0 && (
+        <div className="text-center py-8">
+          <Crown className="w-12 h-12 mx-auto mb-3 text-gray-500" />
+          <p className="text-gray-400">No completed lottery rounds yet</p>
+          <p className="text-sm text-gray-500 mt-1">
+            History will appear here once rounds are completed
+          </p>
+        </div>
+      )}
+
+      {/* History Data */}
+      {!isLoading && !error && historyData && historyData.length > 0 && (
+        <div className="space-y-4">
+          {historyData.map((round, index) => (
+            <motion.div
+              key={round.id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="bg-gray-800/50 rounded-lg p-4 border border-gray-700/50 hover:border-gray-600/50 transition-colors"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-lottery-gold/20 rounded-full flex items-center justify-center">
+                    <Crown className="w-4 h-4 text-lottery-gold" />
+                  </div>
+                  <div>
+                    <div className="font-semibold">Round #{round.id}</div>
+                    <div className="text-sm text-gray-400">
+                      {getRelativeTime(round.endTime)}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-lottery-gold">
+                    {formatPrizePool(round.prizePool)}
+                  </div>
+                  <div className="text-sm text-gray-400">Prize Pool</div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-3">
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm">
+                    {round.totalPlayers} players
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Trophy className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm">
+                    {round.totalTickets} tickets
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                    <Crown className="w-3 h-3 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-400">Winner</div>
+                    <div className="font-mono text-sm">
+                      {formatAddress(round.winner)}
+                      {canClaimPrize(round) && (
+                        <span className="ml-2 text-xs bg-yellow-600/20 text-yellow-400 px-2 py-1 rounded">
+                          You Won!
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  {canClaimPrize(round) && (
+                    <PurpleButton
+                      onClick={() => handleClaimPrize(round.id)}
+                      disabled={isClaimingPrize}
+                      className="bg-lottery-gold hover:bg-lottery-gold/80 border-lottery-gold text-black text-xs px-3 py-1"
+                    >
+                      {isClaimingPrize ? 'Claiming...' : 'Claim Prize'}
+                    </PurpleButton>
+                  )}
+                  {round.prizeClaimed && (
+                    <span className="text-xs bg-green-600/20 text-green-400 px-2 py-1 rounded">
+                      Claimed
+                    </span>
+                  )}
+                  <motion.a
+                    href={getExplorerUrl(round.winner)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-primary-400 hover:text-primary-300 text-sm transition-colors"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    title="View winner address on block explorer"
+                  >
+                    <span>View</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </motion.a>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {/* View All History Button */}
+      {!isLoading && !error && historyData && historyData.length > 0 && (
+        <div className="mt-6 text-center">
+          <motion.button
+            className="text-primary-400 hover:text-primary-300 text-sm font-medium transition-colors"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              // This could open a modal or navigate to a dedicated history page
+              console.log('View all history clicked - could implement pagination or modal')
+            }}
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-lottery-gold/20 rounded-full flex items-center justify-center">
-                  <Crown className="w-4 h-4 text-lottery-gold" />
-                </div>
-                <div>
-                  <div className="font-semibold">Round #{round.id}</div>
-                  <div className="text-sm text-gray-400">
-                    {getRelativeTime(round.endTime)}
-                  </div>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="font-bold text-lottery-gold">
-                  {formatPrizePool(round.prizePool)}
-                </div>
-                <div className="text-sm text-gray-400">Prize Pool</div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 mb-3">
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-gray-400" />
-                <span className="text-sm">
-                  {round.totalPlayers} players
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-gray-400" />
-                <span className="text-sm">
-                  {round.totalTickets} tickets
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
-                  <Crown className="w-3 h-3 text-white" />
-                </div>
-                <div>
-                  <div className="text-sm text-gray-400">Winner</div>
-                  <div className="font-mono text-sm">
-                    {formatAddress(round.winner)}
-                  </div>
-                </div>
-              </div>
-              
-              <motion.a
-                href={getExplorerUrl(round.txHash)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-primary-400 hover:text-primary-300 text-sm transition-colors"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span>View TX</span>
-                <ExternalLink className="w-3 h-3" />
-              </motion.a>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      <div className="mt-6 text-center">
-        <motion.button
-          className="text-primary-400 hover:text-primary-300 text-sm font-medium transition-colors"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          View All History
-        </motion.button>
-      </div>
+            View All History ({historyData.length} shown)
+          </motion.button>
+        </div>
+      )}
     </div>
   )
 }
