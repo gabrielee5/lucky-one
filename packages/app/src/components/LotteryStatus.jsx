@@ -70,7 +70,7 @@ const LotteryStatus = () => {
 
   if (!lotteryData) return null
 
-  const { round, playerTickets, totalPlayers, ticketPrice } = lotteryData
+  const { round, playerTickets, totalPlayers, ticketPrice, lotteryDuration } = lotteryData
   const isOpen = round.state === LOTTERY_STATES.OPEN
   const isCalculating = round.state === LOTTERY_STATES.CALCULATING
   const isClosed = round.state === LOTTERY_STATES.CLOSED
@@ -144,7 +144,7 @@ const LotteryStatus = () => {
                   <div 
                     className="progress-fill"
                     style={{ 
-                      width: `${Math.max(0, Math.min(100, 100 - (timeRemaining.total / (7 * 24 * 60 * 60 * 1000)) * 100))}%` 
+                      width: `${Math.max(0, Math.min(100, 100 - (timeRemaining.total / (parseInt(lotteryDuration) * 1000)) * 100))}%` 
                     }}
                   />
                 </div>
