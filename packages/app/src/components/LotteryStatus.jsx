@@ -1,9 +1,44 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Clock, Trophy, Users, Ticket, AlertCircle, Crown, RefreshCw } from 'lucide-react'
-import { useLotteryData, useTimeRemaining } from '../hooks/useLottery'
+import { useLotteryData, useTimeRemaining, useIsOwner, useEndLottery } from '../hooks/useLottery'
 import { LOTTERY_STATES, LOTTERY_STATE_LABELS } from '../constants'
 import { formatTimeRemaining, formatPrizePool, formatNumber, calculateWinChance } from '../utils/formatters'
+import PurpleButton from './PurpleButton'
+import useWalletStore from '../stores/walletStore'
+
+const EndLotteryButton = () => {
+  const { mutate: endLottery, isLoading: isEndingLottery } = useEndLottery()
+  const { isConnected } = useWalletStore()
+
+  const handleEndLottery = () => {
+    if (window.confirm('Are you sure you want to end the current lottery round? This will trigger the winner selection process.')) {
+      endLottery()
+    }
+  }
+
+  if (!isConnected) return null
+
+  return (
+    <PurpleButton
+      onClick={handleEndLottery}
+      disabled={isEndingLottery}
+      className="bg-red-600 hover:bg-red-700 border-red-500"
+    >
+      {isEndingLottery ? (
+        <>
+          <RefreshCw className="w-4 h-4 animate-spin" />
+          Ending Lottery...
+        </>
+      ) : (
+        <>
+          <AlertCircle className="w-4 h-4" />
+          End Lottery
+        </>
+      )}
+    </PurpleButton>
+  )
+}
 
 const LotteryStatus = () => {
   const { data: lotteryData, isLoading, error, refresh } = useLotteryData()
@@ -79,23 +114,42 @@ const LotteryStatus = () => {
           </motion.div>
         </div>
 
-        {/* Time Remaining */}
+        {/* Time Remaining or Expired Status */}
         {isOpen && (
           <div className="text-center mb-6">
-            <div className="text-sm text-gray-400 mb-2">Time Remaining</div>
-            <div className="text-2xl font-bold text-primary-400">
-              {formatTimeRemaining(timeRemaining)}
-            </div>
-            
-            {/* Progress Bar */}
-            <div className="progress-bar mt-3">
-              <div 
-                className="progress-fill"
-                style={{ 
-                  width: `${Math.max(0, Math.min(100, 100 - (timeRemaining.total / (7 * 24 * 60 * 60 * 1000)) * 100))}%` 
-                }}
-              />
-            </div>
+            {timeRemaining.isExpired ? (
+              <>
+                <div className="text-sm text-gray-400 mb-2">Status</div>
+                <div className="text-2xl font-bold text-red-400">
+                  EXPIRED
+                </div>
+                {round.totalTickets > 0 && (
+                  <div className="space-y-2">
+                    <div className="text-sm text-yellow-400">
+                      Ready to end • Can be ended by anyone
+                    </div>
+                    <EndLotteryButton />
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <div className="text-sm text-gray-400 mb-2">Time Remaining</div>
+                <div className="text-2xl font-bold text-primary-400">
+                  {formatTimeRemaining(timeRemaining)}
+                </div>
+                
+                {/* Progress Bar */}
+                <div className="progress-bar mt-3">
+                  <div 
+                    className="progress-fill"
+                    style={{ 
+                      width: `${Math.max(0, Math.min(100, 100 - (timeRemaining.total / (7 * 24 * 60 * 60 * 1000)) * 100))}%` 
+                    }}
+                  />
+                </div>
+              </>
+            )}
           </div>
         )}
 
