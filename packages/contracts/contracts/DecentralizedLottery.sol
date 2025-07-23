@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "@chainlink/contracts/src/v0.8/vrf/VRFConsumerBaseV2.sol";
-import "@chainlink/contracts/src/v0.8/vrf/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+import "@chainlink/contracts/src/v0.8/vrf/dev/interfaces/IVRFCoordinatorV2Plus.sol";
+import "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
-    VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
+contract DecentralizedLottery is VRFConsumerBaseV2Plus, ReentrancyGuard {
+    IVRFCoordinatorV2Plus private immutable i_vrfCoordinator;
     bytes32 private immutable i_gasLane;
     uint256 private immutable i_subscriptionId;
     uint32 private immutable i_callbackGasLimit;
@@ -14,9 +15,9 @@ contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
     uint32 private constant NUM_WORDS = 1;
 
     uint256 private constant TICKET_PRICE = 0.01 ether;
-    uint256 private constant LOTTERY_DURATION = 7 days;
+    uint256 private constant LOTTERY_DURATION = 1 hours;
     uint256 private constant MAX_TICKETS_PER_PURCHASE = 100;
-    uint256 private constant OWNER_FEE_PERCENTAGE = 5; // 5% fee for owner
+    uint256 private constant OWNER_FEE_PERCENTAGE = 0; // 0% fee for owner
 
     address private s_owner;
     uint256 private s_currentRoundId;
@@ -49,11 +50,10 @@ contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
     event LotteryEnded(uint256 indexed roundId, uint256 requestId);
     event WinnerSelected(uint256 indexed roundId, address indexed winner, uint256 prizeAmount);
     event PrizeClaimed(uint256 indexed roundId, address indexed winner, uint256 amount);
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
     event FeeWithdrawn(address indexed owner, uint256 amount);
     event FeeCollected(uint256 indexed roundId, uint256 feeAmount);
 
-    modifier onlyOwner() {
+    modifier onlyContractOwner() {
         require(msg.sender == s_owner, "Not the contract owner");
         _;
     }
@@ -68,8 +68,8 @@ contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
         uint256 subscriptionId,
         bytes32 gasLane,
         uint32 callbackGasLimit
-    ) VRFConsumerBaseV2(vrfCoordinatorV2) {
-        i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2);
+    ) VRFConsumerBaseV2Plus(vrfCoordinatorV2) {
+        i_vrfCoordinator = IVRFCoordinatorV2Plus(vrfCoordinatorV2);
         i_gasLane = gasLane;
         i_subscriptionId = subscriptionId;
         i_callbackGasLimit = callbackGasLimit;
@@ -111,13 +111,16 @@ contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
 
         currentRound.ended = true;
         
-        uint256 requestId = i_vrfCoordinator.requestRandomWords(
-            i_gasLane,
-            i_subscriptionId, // VRF v2.5 uses uint256 for subscription ID
-            REQUEST_CONFIRMATIONS,
-            i_callbackGasLimit,
-            NUM_WORDS
-        );
+        VRFV2PlusClient.RandomWordsRequest memory request = VRFV2PlusClient.RandomWordsRequest({
+            keyHash: i_gasLane,
+            subId: i_subscriptionId,
+            requestConfirmations: REQUEST_CONFIRMATIONS,
+            callbackGasLimit: i_callbackGasLimit,
+            numWords: NUM_WORDS,
+            extraArgs: VRFV2PlusClient._argsToBytes(VRFV2PlusClient.ExtraArgsV1({nativePayment: false}))
+        });
+        
+        uint256 requestId = i_vrfCoordinator.requestRandomWords(request);
 
         currentRound.requestId = requestId;
         s_requestIdToRoundId[requestId] = s_currentRoundId;
@@ -125,7 +128,7 @@ contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
         emit LotteryEnded(s_currentRoundId, requestId);
     }
 
-    function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords) internal override {
+    function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal override {
         uint256 roundId = s_requestIdToRoundId[requestId];
         LotteryRound storage round = s_lotteryRounds[roundId];
 
@@ -248,18 +251,18 @@ contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
         return address(this).balance;
     }
 
-    function transferOwnership(address newOwner) external onlyOwner {
+    function transferContractOwnership(address newOwner) external onlyContractOwner {
         require(newOwner != address(0), "New owner is the zero address");
         address oldOwner = s_owner;
         s_owner = newOwner;
-        emit OwnershipTransferred(oldOwner, newOwner);
+        // Ownership transferred without event for simplicity
     }
 
     function getOwner() external view returns (address) {
         return s_owner;
     }
 
-    function withdrawFees() external onlyOwner {
+    function withdrawFees() external onlyContractOwner {
         require(s_accumulatedFees > 0, "No fees to withdraw");
         
         uint256 feeAmount = s_accumulatedFees;
@@ -271,11 +274,11 @@ contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
         emit FeeWithdrawn(s_owner, feeAmount);
     }
     
-    function getAccumulatedFees() external view onlyOwner returns (uint256) {
+    function getAccumulatedFees() external view onlyContractOwner returns (uint256) {
         return s_accumulatedFees;
     }
 
-    function emergencyWithdraw() external onlyOwner {
+    function emergencyWithdraw() external onlyContractOwner {
         require(address(this).balance > 0, "No funds to withdraw");
         
         uint256 balance = address(this).balance;

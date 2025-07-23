@@ -58,7 +58,7 @@ A modern, responsive frontend for the decentralized lottery application built wi
 
 The application is configured to work with:
 - **Network**: Polygon Amoy Testnet
-- **Contract Address**: `0xaE3214F7b7ba132FEE0227F0a6828018Db8d83E9`
+- **Contract Address**: `0x3a9518aD2774b3a7138EcC2a3a622Dc41d0367EA`
 - **Chain ID**: 80002
 
 To update the configuration, modify the values in `src/constants/index.js`.
