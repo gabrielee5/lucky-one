@@ -1,7 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Clock, Trophy, Users, Ticket, AlertCircle, Crown, RefreshCw } from 'lucide-react'
-import { useLotteryData, useTimeRemaining, useIsOwner, useEndLottery } from '../hooks/useLottery'
+import { useLotteryData, useTimeRemaining, useEndLottery } from '../hooks/useLottery'
 import { LOTTERY_STATES, LOTTERY_STATE_LABELS } from '../constants'
 import { formatTimeRemaining, formatPrizePool, formatNumber, calculateWinChance } from '../utils/formatters'
 import PurpleButton from './PurpleButton'
