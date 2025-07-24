@@ -64,7 +64,7 @@ const TicketPurchase = () => {
     if (!isConnected) return 'Connect wallet to purchase tickets'
     // if (isCalculating) return 'Lottery is calculating winner...'
     if (isClosed) return 'Lottery is closed'
-    if (!isOpen) return `Lottery state: ${round.state} (not open)`
+    // if (!isOpen) return `Lottery state: ${round.state} (not open)`
     // if (hasInsufficientBalance) return 'Insufficient POL balance'
     if (ticketCount <= 0) return 'Select at least 1 ticket'
     return null
