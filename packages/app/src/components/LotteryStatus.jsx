@@ -29,10 +29,7 @@ const EndLotteryButton = () => {
           Ending Lottery...
         </>
       ) : (
-        <>
-          <AlertCircle className="w-4 h-4" />
-          End Lottery
-        </>
+        'End Lottery'
       )}
     </PurpleButton>
   )
@@ -118,15 +115,15 @@ const LotteryStatus = () => {
             {timeRemaining.isExpired ? (
               <>
                 <div className="text-sm text-gray-400 mb-2">Status</div>
-                <div className="text-2xl font-bold text-red-400">
-                  EXPIRED
+                <div className="flex items-center justify-center gap-4 mb-2">
+                  <div className="text-2xl font-bold text-red-400">
+                    EXPIRED
+                  </div>
+                  {round.totalTickets > 0 && <EndLotteryButton />}
                 </div>
                 {round.totalTickets > 0 && (
-                  <div className="space-y-2">
-                    <div className="text-sm text-yellow-400">
-                      Ready to end • Can be ended by anyone
-                    </div>
-                    <EndLotteryButton />
+                  <div className="text-xs text-gray-500">
+                    Ready to end • Can be ended by anyone
                   </div>
                 )}
               </>
