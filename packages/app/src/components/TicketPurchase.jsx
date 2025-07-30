@@ -277,12 +277,12 @@ const TicketPurchase = () => {
                   <p className="text-xs text-yellow-300/80 mt-1">97.5% of payment goes to prize pool</p>
                 </div>
                 
-                <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                <div className="p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg">
                   <div className="flex justify-between items-center">
-                    <span className="text-red-400 font-medium">Tickets 1001+</span>
-                    <span className="text-red-400 font-bold">5% fee</span>
+                    <span className="text-orange-400 font-medium">Tickets 1001+</span>
+                    <span className="text-orange-400 font-bold">5% fee</span>
                   </div>
-                  <p className="text-xs text-red-300/80 mt-1">95% of payment goes to prize pool</p>
+                  <p className="text-xs text-orange-300/80 mt-1">95% of payment goes to prize pool</p>
                 </div>
               </div>
               
