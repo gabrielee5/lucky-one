@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { ShoppingCart, Plus, Minus, AlertCircle, Clock, Loader2, Wallet } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ShoppingCart, Plus, Minus, AlertCircle, Clock, Loader2, Wallet, Info, X } from 'lucide-react'
 import { useLotteryData, useBuyTickets, useFeeCalculation } from '../hooks/useLottery'
 import { LOTTERY_STATES } from '../constants'
 import { formatEther, formatNumber } from '../utils/formatters'
@@ -8,9 +8,11 @@ import useWalletStore from '../stores/walletStore'
 
 const TicketPurchase = () => {
   const [ticketCount, setTicketCount] = useState(1)
+  const [showFeePopup, setShowFeePopup] = useState(false)
   const { data: lotteryData, isLoading } = useLotteryData()
   const { mutate: buyTickets, isLoading: isPurchasing } = useBuyTickets()
-  const { data: feeData } = useFeeCalculation(ticketCount)
+  // const { data: feeData } = useFeeCalculation(ticketCount)
+  const feeData = null // Temporarily disable fee calculation
   const { balance, isConnected } = useWalletStore()
 
   if (isLoading || !lotteryData) {
@@ -30,8 +32,8 @@ const TicketPurchase = () => {
   const isClosed = round.state === LOTTERY_STATES.CLOSED
   
   const baseCost = parseFloat(ticketPrice) * ticketCount
-  const feeAmount = feeData ? parseFloat(feeData.totalFee) : 0
-  const totalCost = (baseCost + feeAmount).toFixed(4)
+  const feeAmount = 0 // Temporarily set fee to 0
+  const totalCost = baseCost.toFixed(4)
   const hasInsufficientBalance = !balance || parseFloat(balance) < parseFloat(totalCost)
   const maxAllowedTickets = parseInt(maxTickets)
   
@@ -171,39 +173,31 @@ const TicketPurchase = () => {
         </div>
         {feeData && feeAmount > 0 && (
           <div className="flex justify-between items-center mb-2">
-            <span className="text-gray-400">Fee</span>
+            <div className="flex items-center gap-2">
+              <span className="text-gray-400">Fee</span>
+              <button
+                onClick={() => setShowFeePopup(true)}
+                className="text-blue-400 hover:text-blue-300 transition-colors"
+              >
+                <Info className="w-3 h-3" />
+              </button>
+            </div>
             <span className="text-yellow-400">{feeAmount.toFixed(4)} POL</span>
           </div>
         )}
         <div className="h-px bg-gray-600 my-3"></div>
         <div className="flex justify-between items-center text-lg font-bold">
-          <span>Total Cost</span>
+          <div className="flex items-center gap-2">
+            <span>Total Cost</span>
+            <button
+              onClick={() => setShowFeePopup(true)}
+              className="text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              <Info className="w-4 h-4" />
+            </button>
+          </div>
           <span className="text-primary-400">{totalCost} POL</span>
         </div>
-        
-        {/* Fee Structure Info */}
-        {feeData && (
-          <div className="mt-4 p-3 bg-gray-900/50 rounded-lg">
-            <div className="text-xs text-gray-400 mb-2">Fee Structure:</div>
-            <div className="text-xs space-y-1">
-              <div className="flex justify-between">
-                <span className="text-green-400">First 100 tickets:</span>
-                <span className="text-green-400">Free</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-yellow-400">Tickets 101-1000:</span>
-                <span className="text-yellow-400">2.5%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-red-400">Tickets 1001+:</span>
-                <span className="text-red-400">5%</span>
-              </div>
-            </div>
-            <div className="text-xs text-gray-500 mt-2">
-              Current round: {feeData.currentTotalTickets} tickets sold
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Purchase Button */}
@@ -245,6 +239,85 @@ const TicketPurchase = () => {
           </span>
         </div>
       )}
+
+      {/* Fee Structure Popup */}
+      <AnimatePresence>
+        {showFeePopup && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-gray-800 rounded-lg p-6 max-w-md w-full border border-gray-600"
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-bold text-white">Fee Structure</h3>
+                <button
+                  onClick={() => setShowFeePopup(false)}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <Info className="w-4 h-4 text-blue-400" />
+                  <span className="text-blue-400 font-medium">How Fees Work</span>
+                </div>
+                <p className="text-xs text-blue-300/80">
+                  Fees are deducted from your ticket payment, not added on top. 
+                  The remaining amount goes to the prize pool.
+                </p>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <span className="text-green-400 font-medium">First 100 tickets</span>
+                    <span className="text-green-400 font-bold">0% fee</span>
+                  </div>
+                  <p className="text-xs text-green-300/80 mt-1">Full payment goes to prize pool</p>
+                </div>
+                
+                <div className="p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <span className="text-yellow-400 font-medium">Tickets 101-1000</span>
+                    <span className="text-yellow-400 font-bold">2.5% fee</span>
+                  </div>
+                  <p className="text-xs text-yellow-300/80 mt-1">97.5% of payment goes to prize pool</p>
+                </div>
+                
+                <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <span className="text-red-400 font-medium">Tickets 1001+</span>
+                    <span className="text-red-400 font-bold">5% fee</span>
+                  </div>
+                  <p className="text-xs text-red-300/80 mt-1">95% of payment goes to prize pool</p>
+                </div>
+              </div>
+              
+              <div className="mt-4 p-3 bg-gray-700/50 rounded-lg">
+                <div className="text-sm text-gray-300">
+                  <strong>Example:</strong> If you buy ticket #150 for 0.01 POL
+                </div>
+                <div className="text-xs text-gray-400 mt-1 space-y-1">
+                  <div>• Fee deducted: 0.00025 POL (2.5%)</div>
+                  <div>• Added to prize pool: 0.00975 POL</div>
+                  <div>• Your total payment: 0.01 POL</div>
+                </div>
+              </div>
+              
+              <button
+                onClick={() => setShowFeePopup(false)}
+                className="w-full mt-4 bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+              >
+                Got it
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
