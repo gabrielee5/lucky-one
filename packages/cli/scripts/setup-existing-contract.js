@@ -152,7 +152,7 @@ if (process.argv.includes('--help') || process.argv.includes('-h')) {
   console.log("  --help, -h      Show this help message");
   console.log();
   console.log("What it does:");
-  console.log("  1. Creates packages/cli/deployments/NETWORK.json with contract info");
+  console.log("  1. Creates deployments/NETWORK.json with contract info");
   console.log("  2. Tests connection to the contract");
   console.log("  3. Provides usage instructions");
   console.log();

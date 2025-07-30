@@ -26,7 +26,7 @@ async function main() {
   }
 
   // Load deployment info
-  const deploymentFile = `packages/cli/deployments/${networkName}.json`;
+  const deploymentFile = `deployments/${networkName}.json`;
   if (!fs.existsSync(deploymentFile)) {
     console.error(`❌ No deployment found for ${networkName}. Please deploy first.`);
     return;

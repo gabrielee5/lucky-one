@@ -36,12 +36,12 @@ npm run setup-existing-contract
 ### Option 2: Manual setup
 1. Create the deployments directory:
 ```bash
-mkdir -p packages/cli/deployments
+mkdir -p deployments
 ```
 
 2. Create the Amoy deployment file:
 ```bash
-cat > packages/cli/deployments/polygonAmoy.json << 'EOF'
+cat > deployments/polygonAmoy.json << 'EOF'
 {
   "network": "polygonAmoy",
   "lotteryAddress": "0xaE3214F7b7ba132FEE0227F0a6828018Db8d83E9",
