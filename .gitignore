@@ -29,7 +29,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # Deployment
-deployments/
 packages/cli/deployments/
 !deployments/.gitkeep
 # But track production/mainnet deployments
