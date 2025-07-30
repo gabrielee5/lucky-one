@@ -191,7 +191,7 @@ const TicketPurchase = () => {
             <span>Total Cost</span>
             <button
               onClick={() => setShowFeePopup(true)}
-              className="text-blue-400 hover:text-blue-300 transition-colors"
+              className="text-gray-400 hover:text-gray-300 transition-colors"
             >
               <Info className="w-4 h-4" />
             </button>
@@ -260,17 +260,6 @@ const TicketPurchase = () => {
                 </button>
               </div>
               
-              <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <Info className="w-4 h-4 text-blue-400" />
-                  <span className="text-blue-400 font-medium">How Fees Work</span>
-                </div>
-                <p className="text-xs text-blue-300/80">
-                  Fees are deducted from your ticket payment, not added on top. 
-                  The remaining amount goes to the prize pool.
-                </p>
-              </div>
-              
               <div className="space-y-3">
                 <div className="p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
                   <div className="flex justify-between items-center">
@@ -294,17 +283,6 @@ const TicketPurchase = () => {
                     <span className="text-red-400 font-bold">5% fee</span>
                   </div>
                   <p className="text-xs text-red-300/80 mt-1">95% of payment goes to prize pool</p>
-                </div>
-              </div>
-              
-              <div className="mt-4 p-3 bg-gray-700/50 rounded-lg">
-                <div className="text-sm text-gray-300">
-                  <strong>Example:</strong> If you buy ticket #150 for 0.01 POL
-                </div>
-                <div className="text-xs text-gray-400 mt-1 space-y-1">
-                  <div>• Fee deducted: 0.00025 POL (2.5%)</div>
-                  <div>• Added to prize pool: 0.00975 POL</div>
-                  <div>• Your total payment: 0.01 POL</div>
                 </div>
               </div>
               
