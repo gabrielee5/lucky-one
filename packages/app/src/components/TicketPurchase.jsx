@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ShoppingCart, Plus, Minus, AlertCircle, Clock, Loader2, Wallet } from 'lucide-react'
-import { useLotteryData, useBuyTickets } from '../hooks/useLottery'
+import { useLotteryData, useBuyTickets, useFeeCalculation } from '../hooks/useLottery'
 import { LOTTERY_STATES } from '../constants'
 import { formatEther, formatNumber } from '../utils/formatters'
 import useWalletStore from '../stores/walletStore'
@@ -10,6 +10,7 @@ const TicketPurchase = () => {
   const [ticketCount, setTicketCount] = useState(1)
   const { data: lotteryData, isLoading } = useLotteryData()
   const { mutate: buyTickets, isLoading: isPurchasing } = useBuyTickets()
+  const { data: feeData } = useFeeCalculation(ticketCount)
   const { balance, isConnected } = useWalletStore()
 
   if (isLoading || !lotteryData) {
@@ -28,7 +29,9 @@ const TicketPurchase = () => {
   const isCalculating = round.state === LOTTERY_STATES.CALCULATING
   const isClosed = round.state === LOTTERY_STATES.CLOSED
   
-  const totalCost = (parseFloat(ticketPrice) * ticketCount).toFixed(4)
+  const baseCost = parseFloat(ticketPrice) * ticketCount
+  const feeAmount = feeData ? parseFloat(feeData.totalFee) : 0
+  const totalCost = (baseCost + feeAmount).toFixed(4)
   const hasInsufficientBalance = !balance || parseFloat(balance) < parseFloat(totalCost)
   const maxAllowedTickets = parseInt(maxTickets)
   
@@ -163,14 +166,44 @@ const TicketPurchase = () => {
           <span>{formatNumber(ticketCount)}</span>
         </div>
         <div className="flex justify-between items-center mb-2">
-          <span className="text-gray-400">Price per ticket</span>
-          <span>{ticketPrice} POL</span>
+          <span className="text-gray-400">Base cost</span>
+          <span>{baseCost.toFixed(4)} POL</span>
         </div>
+        {feeData && feeAmount > 0 && (
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-gray-400">Fee</span>
+            <span className="text-yellow-400">{feeAmount.toFixed(4)} POL</span>
+          </div>
+        )}
         <div className="h-px bg-gray-600 my-3"></div>
         <div className="flex justify-between items-center text-lg font-bold">
           <span>Total Cost</span>
           <span className="text-primary-400">{totalCost} POL</span>
         </div>
+        
+        {/* Fee Structure Info */}
+        {feeData && (
+          <div className="mt-4 p-3 bg-gray-900/50 rounded-lg">
+            <div className="text-xs text-gray-400 mb-2">Fee Structure:</div>
+            <div className="text-xs space-y-1">
+              <div className="flex justify-between">
+                <span className="text-green-400">First 100 tickets:</span>
+                <span className="text-green-400">Free</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-yellow-400">Tickets 101-1000:</span>
+                <span className="text-yellow-400">2.5%</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-red-400">Tickets 1001+:</span>
+                <span className="text-red-400">5%</span>
+              </div>
+            </div>
+            <div className="text-xs text-gray-500 mt-2">
+              Current round: {feeData.currentTotalTickets} tickets sold
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Purchase Button */}

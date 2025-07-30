@@ -17,7 +17,13 @@ contract DecentralizedLottery is VRFConsumerBaseV2Plus, ReentrancyGuard {
     uint256 private constant TICKET_PRICE = 0.01 ether;
     uint256 private constant LOTTERY_DURATION = 1 hours;
     uint256 private constant MAX_TICKETS_PER_PURCHASE = 100;
-    uint256 private constant OWNER_FEE_PERCENTAGE = 0; // 0% fee for owner
+    
+    // Tiered fee structure
+    uint256 private constant FREE_TIER_LIMIT = 100;
+    uint256 private constant MID_TIER_LIMIT = 1000;
+    uint256 private constant MID_TIER_FEE_PERCENTAGE = 250; // 2.5% (250 basis points)
+    uint256 private constant HIGH_TIER_FEE_PERCENTAGE = 500; // 5% (500 basis points)
+    uint256 private constant BASIS_POINTS = 10000; // For percentage calculations
 
     address private s_owner;
     uint256 private s_currentRoundId;
@@ -48,6 +54,7 @@ contract DecentralizedLottery is VRFConsumerBaseV2Plus, ReentrancyGuard {
     event LotteryStarted(uint256 indexed roundId, uint256 startTime, uint256 endTime);
     event TicketsPurchased(address indexed player, uint256 indexed roundId, uint256 ticketCount, uint256 totalCost);
     event LotteryEnded(uint256 indexed roundId, uint256 requestId);
+    event LotteryRestarted(uint256 indexed oldRoundId, uint256 indexed newRoundId);
     event WinnerSelected(uint256 indexed roundId, address indexed winner, uint256 prizeAmount);
     event PrizeClaimed(uint256 indexed roundId, address indexed winner, uint256 amount);
     event FeeWithdrawn(address indexed owner, uint256 amount);
@@ -90,8 +97,8 @@ contract DecentralizedLottery is VRFConsumerBaseV2Plus, ReentrancyGuard {
             currentRound.players.push(msg.sender);
         }
 
-        // Calculate owner fee (5% of ticket purchase)
-        uint256 ownerFee = (msg.value * OWNER_FEE_PERCENTAGE) / 100;
+        // Calculate tiered owner fee
+        uint256 ownerFee = _calculateTieredFee(currentRound.totalTickets, ticketCount);
         uint256 prizeAmount = msg.value - ownerFee;
         
         s_playerTickets[s_currentRoundId][msg.sender] += ticketCount;
@@ -128,6 +135,23 @@ contract DecentralizedLottery is VRFConsumerBaseV2Plus, ReentrancyGuard {
         emit LotteryEnded(s_currentRoundId, requestId);
     }
 
+    function restartLottery() external {
+        LotteryRound storage currentRound = s_lotteryRounds[s_currentRoundId];
+        require(block.timestamp >= currentRound.endTime, "Lottery period not over");
+        require(!currentRound.ended, "Lottery already ended");
+        require(currentRound.totalTickets == 0, "Cannot restart lottery with participants");
+
+        // Mark current round as ended without selecting a winner
+        currentRound.ended = true;
+        
+        uint256 oldRoundId = s_currentRoundId;
+        
+        // Start a new lottery round
+        _startNewLottery();
+        
+        emit LotteryRestarted(oldRoundId, s_currentRoundId);
+    }
+
     function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal override {
         uint256 roundId = s_requestIdToRoundId[requestId];
         LotteryRound storage round = s_lotteryRounds[roundId];
@@ -155,6 +179,36 @@ contract DecentralizedLottery is VRFConsumerBaseV2Plus, ReentrancyGuard {
         }
         
         revert("Winner calculation failed");
+    }
+
+    function _calculateTieredFee(uint256 currentTotalTickets, uint256 newTicketCount) private pure returns (uint256) {
+        uint256 totalFee = 0;
+        uint256 processedTickets = 0;
+        uint256 remainingTickets = newTicketCount;
+        
+        // Process tickets in tiers based on current total
+        for (uint256 i = 0; i < newTicketCount && remainingTickets > 0; i++) {
+            uint256 ticketPosition = currentTotalTickets + i + 1;
+            uint256 ticketCost = TICKET_PRICE;
+            uint256 feeForThisTicket = 0;
+            
+            if (ticketPosition <= FREE_TIER_LIMIT) {
+                // First 100 tickets: 0% fee
+                feeForThisTicket = 0;
+            } else if (ticketPosition <= MID_TIER_LIMIT) {
+                // Tickets 101-1000: 2.5% fee
+                feeForThisTicket = (ticketCost * MID_TIER_FEE_PERCENTAGE) / BASIS_POINTS;
+            } else {
+                // Tickets 1001+: 5% fee
+                feeForThisTicket = (ticketCost * HIGH_TIER_FEE_PERCENTAGE) / BASIS_POINTS;
+            }
+            
+            totalFee += feeForThisTicket;
+            processedTickets++;
+            remainingTickets--;
+        }
+        
+        return totalFee;
     }
 
     function _startNewLottery() private {
@@ -245,6 +299,14 @@ contract DecentralizedLottery is VRFConsumerBaseV2Plus, ReentrancyGuard {
 
     function getMaxTicketsPerPurchase() external pure returns (uint256) {
         return MAX_TICKETS_PER_PURCHASE;
+    }
+
+    function getFeeStructure() external pure returns (uint256, uint256, uint256, uint256) {
+        return (FREE_TIER_LIMIT, MID_TIER_LIMIT, MID_TIER_FEE_PERCENTAGE, HIGH_TIER_FEE_PERCENTAGE);
+    }
+
+    function calculateFeeForTickets(uint256 currentTotalTickets, uint256 ticketCount) external pure returns (uint256) {
+        return _calculateTieredFee(currentTotalTickets, ticketCount);
     }
 
     function getContractBalance() external view returns (uint256) {

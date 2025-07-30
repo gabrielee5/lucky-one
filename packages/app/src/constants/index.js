@@ -181,6 +181,25 @@ export const CONTRACT_ABI = [
       {
         "indexed": true,
         "internalType": "uint256",
+        "name": "oldRoundId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256", 
+        "name": "newRoundId",
+        "type": "uint256"
+      }
+    ],
+    "name": "LotteryRestarted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
         "name": "roundId",
         "type": "uint256"
       },
@@ -372,6 +391,13 @@ export const CONTRACT_ABI = [
   },
   {
     "inputs": [],
+    "name": "restartLottery", 
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getAccumulatedFees",
     "outputs": [
       {
@@ -381,6 +407,58 @@ export const CONTRACT_ABI = [
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getFeeStructure",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "currentTotalTickets",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "ticketCount",
+        "type": "uint256"
+      }
+    ],
+    "name": "calculateFeeForTickets",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
     "type": "function"
   },
   {

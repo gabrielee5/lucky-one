@@ -1,7 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Clock, Trophy, Users, Ticket, AlertCircle, Crown, RefreshCw } from 'lucide-react'
-import { useLotteryData, useTimeRemaining, useEndLottery } from '../hooks/useLottery'
+import { useLotteryData, useTimeRemaining, useEndLottery, useRestartLottery } from '../hooks/useLottery'
 import { LOTTERY_STATES, LOTTERY_STATE_LABELS } from '../constants'
 import { formatTimeRemaining, formatPrizePool, formatNumber, calculateWinChance } from '../utils/formatters'
 import PurpleButton from './PurpleButton'
@@ -30,6 +30,37 @@ const EndLotteryButton = () => {
         </>
       ) : (
         'End Lottery'
+      )}
+    </PurpleButton>
+  )
+}
+
+const RestartLotteryButton = () => {
+  const { mutate: restartLottery, isLoading: isRestartingLottery } = useRestartLottery()
+  const { isConnected } = useWalletStore()
+
+  const handleRestartLottery = () => {
+    restartLottery()
+  }
+
+  if (!isConnected) return null
+
+  return (
+    <PurpleButton
+      onClick={handleRestartLottery}
+      disabled={isRestartingLottery}
+      className="bg-blue-600 hover:bg-blue-700 border-blue-500"
+    >
+      {isRestartingLottery ? (
+        <>
+          <RefreshCw className="w-4 h-4 animate-spin" />
+          Restarting Lottery...
+        </>
+      ) : (
+        <>
+          <RefreshCw className="w-4 h-4" />
+          Restart Lottery
+        </>
       )}
     </PurpleButton>
   )
@@ -119,11 +150,15 @@ const LotteryStatus = () => {
                   <div className="text-2xl font-bold text-red-400">
                     EXPIRED
                   </div>
-                  {round.totalTickets > 0 && <EndLotteryButton />}
+                  {round.totalTickets > 0 ? <EndLotteryButton /> : <RestartLotteryButton />}
                 </div>
-                {round.totalTickets > 0 && (
+                {round.totalTickets > 0 ? (
                   <div className="text-xs text-gray-500">
                     Ready to end • Can be ended by anyone
+                  </div>
+                ) : (
+                  <div className="text-xs text-gray-500">
+                    No participants • Ready to restart
                   </div>
                 )}
               </>

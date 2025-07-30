@@ -260,6 +260,38 @@ export const useEndLottery = () => {
   )
 }
 
+export const useRestartLottery = () => {
+  const contract = useContract()
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async () => {
+      if (!contract) throw new Error('Contract not available')
+
+      const tx = await contract.restartLottery()
+      const loadingToast = toast.loading('Restarting lottery...')
+      
+      try {
+        await tx.wait()
+        toast.dismiss(loadingToast)
+        toast.success('Lottery restarted! New round has begun.')
+        
+        queryClient.invalidateQueries(['lotteryData'])
+        
+        return tx
+      } catch (error) {
+        toast.dismiss(loadingToast)
+        throw error
+      }
+    },
+    {
+      onError: (error) => {
+        toast.error(error.message || 'Failed to restart lottery')
+      }
+    }
+  )
+}
+
 export const useTimeRemaining = (endTime) => {
   const { data } = useQuery(
     ['timeRemaining', endTime],
@@ -409,6 +441,47 @@ export const useLotteryHistory = (limit = 10) => {
       onError: (error) => {
         console.error('Lottery history query failed:', error)
       }
+    }
+  )
+}
+
+export const useFeeCalculation = (ticketCount) => {
+  const contract = useContractRead()
+  const { data: lotteryData } = useLotteryData()
+
+  return useQuery(
+    ['feeCalculation', ticketCount, lotteryData?.round?.totalTickets],
+    async () => {
+      if (!contract || !lotteryData || ticketCount <= 0) return null
+
+      try {
+        const currentTotalTickets = parseInt(lotteryData.round.totalTickets) || 0
+        const [feeStructure, calculatedFee] = await Promise.all([
+          contract.getFeeStructure(),
+          contract.calculateFeeForTickets(currentTotalTickets, ticketCount)
+        ])
+
+        const [freeTierLimit, midTierLimit, midTierFeePercentage, highTierFeePercentage] = feeStructure
+        
+        return {
+          totalFee: ethers.formatEther(calculatedFee),
+          feeStructure: {
+            freeTierLimit: freeTierLimit.toString(),
+            midTierLimit: midTierLimit.toString(),
+            midTierFeePercentage: (parseInt(midTierFeePercentage) / 100).toString(), // Convert basis points to percentage
+            highTierFeePercentage: (parseInt(highTierFeePercentage) / 100).toString()
+          },
+          currentTotalTickets: currentTotalTickets
+        }
+      } catch (error) {
+        console.error('Failed to calculate fee:', error)
+        return null
+      }
+    },
+    {
+      enabled: !!contract && !!lotteryData && ticketCount > 0,
+      staleTime: 10000,
+      cacheTime: 30000
     }
   )
 }
