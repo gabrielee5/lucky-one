@@ -130,6 +130,10 @@ const Footer = ({ onNavigateToInfo }) => {
             <div className="text-sm text-gray-400">
               © 2025 Lucky One. All rights reserved.
             </div>
+            <div className="text-sm text-gray-400">
+              Yeah well, everything is high risk if you are a pussy.
+            </div>
+            {/*
             <motion.div 
               className="flex items-center gap-1 text-sm text-gray-400 mt-4 md:mt-0"
               whileHover={{ scale: 1.05 }}
@@ -138,6 +142,7 @@ const Footer = ({ onNavigateToInfo }) => {
               <Heart className="w-4 h-4 text-red-400" />
               <span>for all my fellow degens.</span>
             </motion.div>
+            */}
           </div>
         </div>
       </div>

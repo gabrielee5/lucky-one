@@ -10,7 +10,7 @@ const Header = () => {
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
             <div className="text-sm text-gray-500">
-              Polygon Amoy Testnet
+              Polygon Mainnet
             </div>
           </div>
           <WalletConnectDiscrete />
