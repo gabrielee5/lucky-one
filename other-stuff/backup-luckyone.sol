@@ -1,3 +1,14 @@
+/*
+░██                       ░██                                                      
+░██                       ░██                                                      
+░██ ░██    ░██  ░███████  ░██    ░██░██    ░██     ░███████  ░████████   ░███████  
+░██ ░██    ░██ ░██    ░██ ░██   ░██ ░██    ░██    ░██    ░██ ░██    ░██ ░██    ░██ 
+░██ ░██    ░██ ░██        ░███████  ░██    ░██    ░██    ░██ ░██    ░██ ░█████████ 
+░██ ░██   ░███ ░██    ░██ ░██   ░██ ░██   ░███    ░██    ░██ ░██    ░██ ░██        
+░██  ░█████░██  ░███████  ░██    ░██ ░█████░██     ░███████  ░██    ░██  ░███████  
+                                           ░██                                     
+                                     ░███████                                                                                                          
+*/
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
@@ -313,13 +324,6 @@ contract DecentralizedLottery is VRFConsumerBaseV2Plus, ReentrancyGuard {
         return address(this).balance;
     }
 
-    function transferContractOwnership(address newOwner) external onlyContractOwner {
-        require(newOwner != address(0), "New owner is the zero address");
-        address oldOwner = s_owner;
-        s_owner = newOwner;
-        // Ownership transferred without event for simplicity
-    }
-
     function getOwner() external view returns (address) {
         return s_owner;
     }
@@ -336,18 +340,10 @@ contract DecentralizedLottery is VRFConsumerBaseV2Plus, ReentrancyGuard {
         emit FeeWithdrawn(s_owner, feeAmount);
     }
     
-    function getAccumulatedFees() external view onlyContractOwner returns (uint256) {
+    function getAccumulatedFees() external view returns (uint256) {
         return s_accumulatedFees;
     }
 
-    function emergencyWithdraw() external onlyContractOwner {
-        require(address(this).balance > 0, "No funds to withdraw");
-        
-        uint256 balance = address(this).balance;
-        s_accumulatedFees = 0; // Reset fees in emergency
-        (bool success, ) = payable(s_owner).call{value: balance}("");
-        require(success, "Emergency withdrawal failed");
-    }
 
     receive() external payable {
         revert("Direct payments not allowed");
