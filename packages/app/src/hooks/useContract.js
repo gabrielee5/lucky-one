@@ -12,7 +12,7 @@ export const useContract = () => {
     try {
       const contractProvider = signer || provider
       const contract = new ethers.Contract(
-        LOTTERY_CONFIG.POLYGON_AMOY.lotteryAddress,
+        LOTTERY_CONFIG.POLYGON.lotteryAddress,
         CONTRACT_ABI,
         contractProvider
       )
@@ -31,10 +31,10 @@ export const useContractRead = () => {
   return useMemo(() => {
     try {
       // Use wallet provider if available, otherwise use default provider
-      const contractProvider = provider || new ethers.JsonRpcProvider(LOTTERY_CONFIG.POLYGON_AMOY.rpcUrl)
+      const contractProvider = provider || new ethers.JsonRpcProvider(LOTTERY_CONFIG.POLYGON.rpcUrl)
       
       const contract = new ethers.Contract(
-        LOTTERY_CONFIG.POLYGON_AMOY.lotteryAddress,
+        LOTTERY_CONFIG.POLYGON.lotteryAddress,
         CONTRACT_ABI,
         contractProvider
       )

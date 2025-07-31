@@ -20,7 +20,7 @@ const WalletConnect = () => {
     setupEventListeners
   } = useWalletStore()
 
-  const targetChainId = LOTTERY_CONFIG.POLYGON_AMOY.chainId
+  const targetChainId = LOTTERY_CONFIG.POLYGON.chainId
   const isWrongNetwork = isConnected && chainId !== targetChainId
 
   useEffect(() => {
@@ -98,7 +98,7 @@ const WalletConnect = () => {
           <AlertCircle className="w-16 h-16 mx-auto mb-4 text-yellow-500" />
           <h2 className="text-2xl font-bold mb-2">Wrong Network</h2>
           <p className="text-gray-400 mb-6">
-            Please switch to {LOTTERY_CONFIG.POLYGON_AMOY.name} to continue
+            Please switch to {LOTTERY_CONFIG.POLYGON.name} to continue
           </p>
           
           <motion.button

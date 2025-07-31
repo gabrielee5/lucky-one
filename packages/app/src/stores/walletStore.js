@@ -55,7 +55,7 @@ const useWalletStore = create((set, get) => ({
       })
 
       // Switch to correct network if needed
-      const targetChainId = LOTTERY_CONFIG.POLYGON_AMOY.chainId
+      const targetChainId = LOTTERY_CONFIG.POLYGON.chainId
       if (Number(network.chainId) !== targetChainId) {
         await get().switchNetwork(targetChainId)
       }
@@ -93,7 +93,7 @@ const useWalletStore = create((set, get) => ({
       } catch (switchError) {
         // Network doesn't exist, add it
         if (switchError.code === 4902) {
-          const config = LOTTERY_CONFIG.POLYGON_AMOY
+          const config = LOTTERY_CONFIG.POLYGON
           await window.ethereum.request({
             method: 'wallet_addEthereumChain',
             params: [{
@@ -139,7 +139,7 @@ const useWalletStore = create((set, get) => ({
   },
 
   reconnectWithFallback: async () => {
-    const rpcUrls = LOTTERY_CONFIG.POLYGON_AMOY.rpcUrls
+    const rpcUrls = LOTTERY_CONFIG.POLYGON.rpcUrls
     
     for (const rpcUrl of rpcUrls) {
       try {

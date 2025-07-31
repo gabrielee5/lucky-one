@@ -6,7 +6,7 @@ import useWalletStore from '../stores/walletStore'
 
 const NetworkStatus = () => {
   const { isConnected, chainId } = useWalletStore()
-  const targetChainId = LOTTERY_CONFIG.POLYGON_AMOY.chainId
+  const targetChainId = LOTTERY_CONFIG.POLYGON.chainId
   const isCorrectNetwork = chainId === targetChainId
 
   if (!isConnected) {
@@ -35,7 +35,7 @@ const NetworkStatus = () => {
           <div>
             <div className="font-medium text-yellow-500">Wrong Network</div>
             <div className="text-sm text-yellow-400">
-              Switch to {LOTTERY_CONFIG.POLYGON_AMOY.name}
+              Switch to {LOTTERY_CONFIG.POLYGON.name}
             </div>
           </div>
         </div>
@@ -54,7 +54,7 @@ const NetworkStatus = () => {
         <div>
           <div className="font-medium text-green-500">Connected</div>
           <div className="text-sm text-green-400">
-            {LOTTERY_CONFIG.POLYGON_AMOY.name}
+            {LOTTERY_CONFIG.POLYGON.name}
           </div>
         </div>
       </div>

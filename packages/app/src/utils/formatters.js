@@ -63,6 +63,6 @@ export const getRelativeTime = (timestamp) => {
 }
 
 export const getExplorerUrl = (hash, type = 'tx') => {
-  const baseUrl = 'https://amoy.polygonscan.com'
+  const baseUrl = 'https://polygonscan.com'
   return `${baseUrl}/${type}/${hash}`
 }

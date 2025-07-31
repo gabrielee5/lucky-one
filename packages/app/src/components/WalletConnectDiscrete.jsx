@@ -23,7 +23,7 @@ const WalletConnectDiscrete = () => {
     setupEventListeners
   } = useWalletStore()
 
-  const targetChainId = LOTTERY_CONFIG.POLYGON_AMOY.chainId
+  const targetChainId = LOTTERY_CONFIG.POLYGON.chainId
   const isWrongNetwork = isConnected && chainId !== targetChainId
 
   useEffect(() => {
@@ -167,7 +167,7 @@ const WalletConnectDiscrete = () => {
                 <div>
                   <div className="text-sm font-medium text-gray-300">Network</div>
                   <div className={`text-sm ${isWrongNetwork ? 'text-yellow-400' : 'text-green-400'}`}>
-                    {isWrongNetwork ? 'Wrong Network' : LOTTERY_CONFIG.POLYGON_AMOY.name}
+                    {isWrongNetwork ? 'Wrong Network' : LOTTERY_CONFIG.POLYGON.name}
                   </div>
                 </div>
                 {isWrongNetwork && (

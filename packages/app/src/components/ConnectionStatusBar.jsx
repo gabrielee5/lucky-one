@@ -6,7 +6,7 @@ import { LOTTERY_CONFIG } from '../constants'
 
 const ConnectionStatusBar = () => {
   const { isConnected, chainId, switchNetwork } = useWalletStore()
-  const targetChainId = LOTTERY_CONFIG.POLYGON_AMOY.chainId
+  const targetChainId = LOTTERY_CONFIG.POLYGON.chainId
   const isWrongNetwork = isConnected && chainId !== targetChainId
 
   const handleSwitchNetwork = async () => {
@@ -36,7 +36,7 @@ const ConnectionStatusBar = () => {
                     Wrong Network Detected
                   </div>
                   <div className="text-xs text-yellow-300">
-                    Switch to {LOTTERY_CONFIG.POLYGON_AMOY.name} to continue
+                    Switch to {LOTTERY_CONFIG.POLYGON.name} to continue
                   </div>
                 </div>
               </div>

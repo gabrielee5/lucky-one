@@ -64,7 +64,7 @@ const Footer = ({ onNavigateToInfo }) => {
             <ul className="space-y-2 text-sm">
               <li>
                 <a 
-                  href={`${LOTTERY_CONFIG.POLYGON_AMOY.blockExplorer}/address/${LOTTERY_CONFIG.POLYGON_AMOY.lotteryAddress}`}
+                  href={`${LOTTERY_CONFIG.POLYGON.blockExplorer}/address/${LOTTERY_CONFIG.POLYGON.lotteryAddress}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-1"
