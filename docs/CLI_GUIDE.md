@@ -1,6 +1,6 @@
-# Lottery CLI Commands Guide
+# LuckyOne CLI Commands Guide
 
-A comprehensive guide to all available CLI commands for interacting with the Decentralized Lottery smart contract.
+A comprehensive guide to all available CLI commands for interacting with the LuckyOne lottery smart contract.
 
 ## 📋 Table of Contents
 
@@ -18,28 +18,28 @@ A comprehensive guide to all available CLI commands for interacting with the Dec
 ### Essential Commands
 ```bash
 # Check lottery status
-npm run status:amoy
+npm run status
 
 # Buy lottery tickets
-TICKETS=5 npm run buy-tickets:amoy
+TICKETS=5 npm run buy-tickets
 
 # Check your player info
-npm run player-info:amoy
+npm run player-info
 
 # End lottery (when time expires)
-npm run end-lottery:amoy
+npm run end-lottery
 
 # Claim prize (if you won)
-ROUND=1 npm run claim-prize:amoy
+ROUND=1 npm run claim-prize
 ```
 
 ### Owner Commands
 ```bash
 # Withdraw accumulated fees (owner only)
-npm run withdraw-fees:amoy
+npm run withdraw-fees
 
 # Deploy new contract
-npm run deploy:amoy
+npm run deploy
 ```
 
 ## 🎟️ Player Commands
@@ -49,7 +49,7 @@ npm run deploy:amoy
 Purchase lottery tickets for the current or specific round.
 
 ```bash
-TICKETS=N [ROUND=R] npm run buy-tickets:amoy
+TICKETS=N [ROUND=R] npm run buy-tickets
 ```
 
 **Environment Variables:**
@@ -59,17 +59,17 @@ TICKETS=N [ROUND=R] npm run buy-tickets:amoy
 **Examples:**
 ```bash
 # Buy 1 ticket for current round (default)
-npm run buy-tickets:amoy
+npm run buy-tickets
 
 # Buy 25 tickets for current round
-TICKETS=25 npm run buy-tickets:amoy
+TICKETS=25 npm run buy-tickets
 
 # Buy 5 tickets for specific round
-TICKETS=5 ROUND=2 npm run buy-tickets:amoy
+TICKETS=5 ROUND=2 npm run buy-tickets
 ```
 
 **Requirements:**
-- Sufficient MATIC balance (0.01 MATIC per ticket)
+- Sufficient POL balance (0.01 POL per ticket)
 - Lottery round must be OPEN
 - Maximum 100 tickets per transaction
 - Round must not have ended
@@ -85,7 +85,7 @@ TICKETS=5 ROUND=2 npm run buy-tickets:amoy
 Claim your winning prize from a completed lottery round.
 
 ```bash
-ROUND=N npm run claim-prize:amoy
+ROUND=N npm run claim-prize
 ```
 
 **Environment Variables:**
@@ -94,10 +94,10 @@ ROUND=N npm run claim-prize:amoy
 **Examples:**
 ```bash
 # Claim prize from round 1
-ROUND=1 npm run claim-prize:amoy
+ROUND=1 npm run claim-prize
 
 # Claim prize from round 5
-ROUND=5 npm run claim-prize:amoy
+ROUND=5 npm run claim-prize
 ```
 
 **Requirements:**
@@ -116,7 +116,7 @@ ROUND=5 npm run claim-prize:amoy
 End the current lottery round when the time period expires.
 
 ```bash
-npm run end-lottery:amoy [--round=N] [--force]
+npm run end-lottery [--round=N] [--force]
 ```
 
 **Parameters:**
@@ -126,16 +126,16 @@ npm run end-lottery:amoy [--round=N] [--force]
 **Examples:**
 ```bash
 # End current lottery round
-npm run end-lottery:amoy
+npm run end-lottery
 
 # End specific round
-npm run end-lottery:amoy -- --round=2
+npm run end-lottery -- --round=2
 
 # Force end (testing only)
-npm run end-lottery:amoy -- --force
+npm run end-lottery -- --force
 
 # See help
-npm run end-lottery:amoy -- --help
+npm run end-lottery -- --help
 ```
 
 **Requirements:**
@@ -154,7 +154,7 @@ npm run end-lottery:amoy -- --help
 View detailed information about your or another player's participation.
 
 ```bash
-npm run player-info:amoy [--address=ADDR] [--rounds=N]
+npm run player-info [--address=ADDR] [--rounds=N]
 ```
 
 **Parameters:**
@@ -164,19 +164,19 @@ npm run player-info:amoy [--address=ADDR] [--rounds=N]
 **Examples:**
 ```bash
 # Check your own info
-npm run player-info:amoy
+npm run player-info
 
 # Check last 10 rounds
-npm run player-info:amoy -- --rounds=10
+npm run player-info -- --rounds=10
 
 # Check another player
-npm run player-info:amoy -- --address=0x1234...
+npm run player-info -- --address=0x1234...
 
 # Detailed check of another player
-npm run player-info:amoy -- --address=0x1234... --rounds=20
+npm run player-info -- --address=0x1234... --rounds=20
 
 # See help
-npm run player-info:amoy -- --help
+npm run player-info -- --help
 ```
 
 **Output:**
@@ -190,22 +190,19 @@ npm run player-info:amoy -- --help
 
 ### 1. Withdraw Fees
 
-Withdraw accumulated owner fees (5% of all ticket sales).
+Withdraw accumulated owner fees from ticket sales.
 
 ```bash
-npm run withdraw-fees:amoy
+npm run withdraw-fees
 ```
 
 **Examples:**
 ```bash
-# Withdraw fees on Amoy testnet
-npm run withdraw-fees:amoy
-
 # Withdraw fees on Polygon mainnet
-npm run withdraw-fees:polygon
+npm run withdraw-fees
 
 # See help
-npm run withdraw-fees:amoy -- --help
+npm run withdraw-fees -- --help
 ```
 
 **Requirements:**
@@ -225,19 +222,17 @@ npm run withdraw-fees:amoy -- --help
 View comprehensive lottery status and information.
 
 ```bash
-npm run status:amoy
+npm run status
 ```
 
 **Examples:**
 ```bash
-# Check Amoy testnet status
-npm run status:amoy
-
 # Check Polygon mainnet status
-npm run status:polygon
+npm run status
 
-# Check Mumbai testnet status (deprecated)
-npm run status:mumbai
+# Setup existing contract for different networks
+npm run setup-existing-contract -- --network=polygon
+npm run setup-existing-contract -- --network=polygonAmoy
 ```
 
 **Output:**
@@ -253,16 +248,16 @@ npm run status:mumbai
 Test contract functionality with sample transactions.
 
 ```bash
-npm run test-contract:amoy
+npm run test
 ```
 
 **Examples:**
 ```bash
-# Test on Amoy testnet
-npm run test:amoy
-
 # Test on Polygon mainnet
-npm run test:polygon
+npm run test
+
+# Test with Hardhat (local development)
+npm run test-hardhat
 ```
 
 **Output:**
@@ -275,27 +270,25 @@ npm run test:polygon
 
 ### 1. Deploy Contract
 
-Deploy the lottery contract to a network.
+Deploy the lottery contract to Polygon mainnet.
 
 ```bash
-npm run deploy:NETWORK
+npm run deploy
 ```
 
 **Examples:**
 ```bash
-# Deploy to local hardhat network
-npm run deploy:local
-
-# Deploy to Polygon Amoy testnet
-npm run deploy:amoy
-
 # Deploy to Polygon mainnet
-npm run deploy:polygon
+npm run deploy
+
+# Setup existing contract (for different networks)
+npm run setup-existing-contract -- --network=polygon
+npm run setup-existing-contract -- --network=polygonAmoy
 ```
 
 **Requirements:**
-- Valid VRF subscription (for testnets/mainnet)
-- Sufficient MATIC for deployment
+- Valid VRF subscription with LINK funding
+- Sufficient POL for deployment
 - Proper environment variables set
 
 ### 2. Verify Contract
@@ -303,16 +296,16 @@ npm run deploy:polygon
 Verify deployed contract on block explorer.
 
 ```bash
-npm run verify:amoy
+npm run verify-contract
 ```
 
 **Examples:**
 ```bash
-# Verify on Amoy testnet
-npm run verify:amoy
-
 # Verify on Polygon mainnet
-npm run verify:polygon
+npm run verify-contract
+
+# Generate flattened source for manual verification
+npm run flatten
 ```
 
 ### 3. Setup VRF
@@ -320,16 +313,16 @@ npm run verify:polygon
 Guide for setting up Chainlink VRF subscription.
 
 ```bash
-npm run setup-vrf:amoy
+npm run setup-vrf
 ```
 
 **Examples:**
 ```bash
-# VRF setup guide for Amoy
-npm run setup-vrf:amoy
+# VRF setup guide for Polygon mainnet
+npm run setup-vrf
 
-# VRF setup guide for Polygon
-npm run setup-vrf:polygon
+# Setup existing contract with known VRF config
+npm run setup-existing-contract -- --network=polygon
 ```
 
 ### 4. Update Frontend
@@ -342,27 +335,25 @@ npm run update-frontend
 
 ## 🌐 Network Support
 
-### Polygon Amoy Testnet (Recommended)
+### Polygon Mainnet (Default)
+- **Chain ID:** 137
+- **Currency:** POL
+- **Explorer:** https://polygonscan.com/
+- **VRF UI:** https://vrf.chain.link/polygon
+- **Contract:** 0x2619E65227958F01eaF02637EaF693B97d90879C
+
+### Polygon Amoy Testnet (Testing)
 - **Chain ID:** 80002
-- **Currency:** MATIC
+- **Currency:** POL
 - **Faucet:** https://faucet.polygon.technology/
 - **Explorer:** https://amoy.polygonscan.com/
 - **VRF UI:** https://vrf.chain.link/polygon-amoy
-
-### Polygon Mainnet
-- **Chain ID:** 137
-- **Currency:** MATIC
-- **Explorer:** https://polygonscan.com/
-- **VRF UI:** https://vrf.chain.link/polygon
+- **Usage:** Use `setup-existing-contract -- --network=polygonAmoy`
 
 ### Local Development
 - **Chain ID:** 31337
 - **Network:** localhost
 - **Usage:** Testing and development
-
-### Mumbai (Deprecated)
-- **Chain ID:** 80001
-- **Status:** ⚠️ Deprecated, use Amoy instead
 
 ## 📚 Common Examples
 
@@ -370,48 +361,48 @@ npm run update-frontend
 
 ```bash
 # 1. Check current lottery status
-npm run status:amoy
+npm run status
 
 # 2. Buy some tickets
-npm run buy-tickets:amoy -- --tickets=10
+TICKETS=10 npm run buy-tickets
 
 # 3. Check your participation
-npm run player-info:amoy
+npm run player-info
 
 # 4. Wait for lottery to end, then end it
-npm run end-lottery:amoy
+npm run end-lottery
 
 # 5. Check if you won
-npm run status:amoy
+npm run status
 
 # 6. Claim prize if you won
-npm run claim-prize:amoy -- --round=1
+ROUND=1 npm run claim-prize
 ```
 
 ### Owner Management Workflow
 
 ```bash
 # 1. Check accumulated fees
-npm run status:amoy
+npm run status
 
 # 2. Withdraw fees when accumulated
-npm run withdraw-fees:amoy
+npm run withdraw-fees
 
 # 3. Monitor contract status
-npm run status:amoy
+npm run status
 ```
 
 ### Development Workflow
 
 ```bash
-# 1. Deploy contract
-npm run deploy:amoy
+# 1. Deploy contract (if needed)
+npm run deploy
 
 # 2. Test functionality
-npm run test:amoy
+npm run test
 
 # 3. Verify contract
-npm run verify:amoy
+npm run verify-contract
 
 # 4. Update frontend
 npm run update-frontend
@@ -426,29 +417,32 @@ npm run app
 
 #### "No deployment found"
 ```bash
-Error: No deployment found for polygonAmoy. Please deploy first.
+Error: No deployment found for polygon. Please deploy first.
 ```
-**Solution:** Deploy the contract first:
+**Solution:** Use setup-existing-contract or deploy:
 ```bash
-npm run deploy:amoy
+npm run setup-existing-contract -- --network=polygon
+# OR deploy new contract
+npm run deploy
 ```
 
 #### "Insufficient balance"
 ```bash
-Error: Insufficient balance. Need: 0.05 MATIC
+Error: Insufficient balance. Need: 0.05 POL
 ```
-**Solution:** Get MATIC from faucet:
-- Polygon Amoy: https://faucet.polygon.technology/
+**Solution:** Get POL tokens:
+- Polygon Mainnet: Purchase POL on exchanges
+- Polygon Amoy (testnet): https://faucet.polygon.technology/
 - Check balance: Look at command output
 
 #### "Incorrect payment amount"
 ```bash
 Error: Incorrect payment amount
 ```
-**Solution:** Ensure exact payment (ticketCount × 0.01 MATIC):
+**Solution:** Ensure exact payment (ticketCount × 0.01 POL):
 ```bash
-# For 5 tickets: exactly 0.05 MATIC required
-npm run buy-tickets:amoy -- --tickets=5
+# For 5 tickets: exactly 0.05 POL required
+TICKETS=5 npm run buy-tickets
 ```
 
 #### "Lottery has ended"
@@ -457,8 +451,8 @@ Error: Lottery has ended
 ```
 **Solution:** Check current round and buy for active round:
 ```bash
-npm run status:amoy  # Check current round
-npm run buy-tickets:amoy -- --tickets=5  # Buy for current round
+npm run status  # Check current round
+TICKETS=5 npm run buy-tickets  # Buy for current round
 ```
 
 #### "Not the winner"
@@ -467,25 +461,25 @@ Error: Not the winner
 ```
 **Solution:** Only winners can claim prizes:
 ```bash
-npm run player-info:amoy  # Check your winning rounds
-npm run claim-prize:amoy -- --round=N  # Claim from winning round
+npm run player-info  # Check your winning rounds
+ROUND=N npm run claim-prize  # Claim from winning round
 ```
 
 #### "VRF subscription issues"
 **Solution:** Ensure VRF subscription has LINK:
 ```bash
-npm run setup-vrf:amoy  # Follow VRF setup guide
+npm run setup-vrf  # Follow VRF setup guide
 ```
 
 ### Gas Issues
 
 #### High gas prices
-- Use Polygon (lower fees than Ethereum)
-- Wait for lower network congestion
-- Polygon typically has stable, low fees
+- Polygon mainnet has very low fees compared to Ethereum
+- Wait for lower network congestion if needed
+- POL transactions are typically under $0.01
 
 #### Transaction failures
-- Ensure sufficient MATIC for gas
+- Ensure sufficient POL for gas
 - Check network congestion
 - Retry with higher gas limit if needed
 
@@ -493,36 +487,41 @@ npm run setup-vrf:amoy  # Follow VRF setup guide
 
 #### Wrong network
 **Solution:** Ensure MetaMask is connected to correct network:
-- Polygon Amoy: Chain ID 80002
-- Polygon: Chain ID 137
+- Polygon Mainnet: Chain ID 137 (default)
+- Polygon Amoy: Chain ID 80002 (for testing)
 
 #### RPC issues
 **Solution:** Check `.env` file for correct RPC URLs:
 ```env
+POLYGON_RPC_URL=https://polygon-rpc.com/
 POLYGON_AMOY_RPC_URL=https://rpc-amoy.polygon.technology/
 ```
 
 ## 🔗 Helpful Links
 
-- **Polygon Faucet:** https://faucet.polygon.technology/
-- **Amoy Explorer:** https://amoy.polygonscan.com/
-- **Chainlink VRF:** https://vrf.chain.link/polygon-amoy
+- **Polygon Explorer:** https://polygonscan.com/
+- **Chainlink VRF:** https://vrf.chain.link/polygon
+- **Polygon Faucet (Testnet):** https://faucet.polygon.technology/
+- **Amoy Explorer (Testnet):** https://amoy.polygonscan.com/
 - **Polygon Documentation:** https://docs.polygon.technology/
 
 ## 💡 Tips
 
-1. **Always check status first:** `npm run status:amoy`
+1. **Always check status first:** `npm run status`
 2. **Test with small amounts:** Start with 1-2 tickets
 3. **Monitor gas costs:** Commands show estimated gas usage
 4. **Keep VRF funded:** Ensure LINK balance for winner selection
 5. **Claim prizes promptly:** No expiration, but good practice
-6. **Use testnet first:** Test on Amoy before mainnet
+6. **Use testnet for testing:** `npm run setup-existing-contract -- --network=polygonAmoy`
 
 ---
 
 **Need Help?** Use the `--help` flag with any command to see detailed usage information:
 ```bash
-npm run buy-tickets:amoy -- --help
-npm run claim-prize:amoy -- --help
-npm run status:amoy -- --help
+npm run buy-tickets -- --help
+npm run claim-prize -- --help
+npm run status -- --help
+
+# For network setup
+npm run setup-existing-contract -- --help
 ```
