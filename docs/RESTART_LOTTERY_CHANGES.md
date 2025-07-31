@@ -1,11 +1,11 @@
 # Restart Lottery Feature Implementation
 
 ## Overview
-Modified the DecentralizedLottery.sol contract and frontend to add a restart functionality when a lottery round ends without any participants.
+Modified the LuckyOne.sol contract and frontend to add a restart functionality when a lottery round ends without any participants.
 
 ## Smart Contract Changes
 
-### File: `packages/contracts/contracts/DecentralizedLottery.sol`
+### File: `packages/contracts/contracts/LuckyOne.sol`
 
 #### New Event Added:
 ```solidity

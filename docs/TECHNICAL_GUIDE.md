@@ -86,7 +86,7 @@ The Decentralized Lottery DApp is a blockchain-based lottery system that ensures
 ### Contract Structure
 
 ```solidity
-contract DecentralizedLottery is VRFConsumerBaseV2, ReentrancyGuard {
+contract LuckyOne is VRFConsumerBaseV2, ReentrancyGuard {
     // VRF Configuration
     VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
     bytes32 private immutable i_gasLane;
@@ -762,7 +762,7 @@ enum LotteryState {
 
 ```
 test/
-├── DecentralizedLottery.test.js     # Main contract tests
+├── LuckyOne.test.js     # Main contract tests
 ├── fixtures/                       # Test fixtures
 └── utils/                          # Test utilities
 ```
@@ -835,7 +835,7 @@ describe("Gas Optimization", function () {
 npx hardhat test
 
 # Run specific test file
-npx hardhat test test/DecentralizedLottery.test.js
+npx hardhat test test/LuckyOne.test.js
 
 # Run tests with gas reporting
 REPORT_GAS=true npx hardhat test
@@ -1080,7 +1080,7 @@ function calculateTicketPrice(uint256 totalTickets) public pure returns (uint256
 #### 1. Layer 2 Integration
 ```solidity
 // Polygon/Arbitrum deployment
-contract L2DecentralizedLottery {
+contract L2LuckyOne {
     // Lower gas costs
     // Faster transactions
     // Same security guarantees

@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const { time } = require("@nomicfoundation/hardhat-network-helpers");
 
-describe("DecentralizedLottery", function () {
+describe("LuckyOne", function () {
   let lottery, vrfCoordinator, owner, player1, player2, player3;
   let subscriptionId = 1;
   let gasLane = "0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c";
@@ -25,8 +25,8 @@ describe("DecentralizedLottery", function () {
     await vrfCoordinator.fundSubscription(subscriptionId, ethers.parseEther("1"));
 
     // Deploy lottery contract
-    const DecentralizedLottery = await ethers.getContractFactory("DecentralizedLottery");
-    lottery = await DecentralizedLottery.deploy(
+    const LuckyOne = await ethers.getContractFactory("LuckyOne");
+    lottery = await LuckyOne.deploy(
       await vrfCoordinator.getAddress(),
       subscriptionId,
       gasLane,
@@ -123,7 +123,7 @@ describe("DecentralizedLottery", function () {
     });
 
     it("Should not allow ending lottery with no tickets", async function () {
-      const DecentralizedLottery = await ethers.getContractFactory("DecentralizedLottery");
+      const LuckyOne = await ethers.getContractFactory("LuckyOne");
       const emptyLottery = await DecentralizedLottery.deploy(
         await vrfCoordinator.getAddress(),
         subscriptionId,

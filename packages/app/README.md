@@ -125,7 +125,7 @@ The application provides real-time updates on:
 
 ## Smart Contract Integration
 
-The frontend interacts with the DecentralizedLottery smart contract deployed on Polygon Amoy testnet:
+The frontend interacts with the LuckyOne smart contract deployed on Polygon Amoy testnet:
 
 - **Lottery Duration**: 7 days per round
 - **Ticket Price**: 0.01 MATIC

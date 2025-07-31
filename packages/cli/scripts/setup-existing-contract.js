@@ -96,7 +96,7 @@ async function main() {
       console.log(`📡 Connecting to ${targetNetwork}...`);
     }
     
-    const lottery = await ethers.getContractAt("DecentralizedLottery", contractInfo.lotteryAddress);
+    const lottery = await ethers.getContractAt("LuckyOne", contractInfo.lotteryAddress);
     
     // Test basic contract calls
     const owner = await lottery.getOwner();

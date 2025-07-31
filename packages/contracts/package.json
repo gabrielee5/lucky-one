@@ -1,8 +1,8 @@
 {
   "name": "@lottery-v1/contracts",
   "version": "1.0.0",
-  "description": "Smart contracts for Decentralized Lottery",
-  "main": "artifacts/contracts/DecentralizedLottery.sol/DecentralizedLottery.json",
+  "description": "Smart contracts for LuckyOne Lottery",
+  "main": "artifacts/contracts/LuckyOne.sol/LuckyOne.json",
   "scripts": {
     "compile": "cd ../.. && npx hardhat compile",
     "test": "cd ../.. && npx hardhat test",

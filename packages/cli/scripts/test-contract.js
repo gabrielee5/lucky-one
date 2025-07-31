@@ -21,7 +21,7 @@ async function main() {
   console.log("Contract address:", deploymentInfo.lotteryAddress);
   
   // Connect to deployed contract
-  const lottery = await ethers.getContractAt("DecentralizedLottery", deploymentInfo.lotteryAddress);
+  const lottery = await ethers.getContractAt("LuckyOne", deploymentInfo.lotteryAddress);
   
   // Test 1: Check basic contract info
   console.log("\n=== Test 1: Basic Contract Info ===");

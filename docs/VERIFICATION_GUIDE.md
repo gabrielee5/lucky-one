@@ -1,6 +1,6 @@
 # Smart Contract Verification Guide
 
-This guide helps third parties verify and audit the DecentralizedLottery smart contract.
+This guide helps third parties verify and audit the LuckyOne smart contract.
 
 ## 🔍 Quick Verification Methods
 
@@ -21,9 +21,9 @@ This guide helps third parties verify and audit the DecentralizedLottery smart c
 ### **2. Source Code Verification**
 
 **Repository**: https://github.com/your-username/lottery-v1
-- **Contract**: `contracts/DecentralizedLottery.sol`
+- **Contract**: `contracts/LuckyOne.sol`
 - **Deployment Script**: `scripts/deploy.js`
-- **Tests**: `test/DecentralizedLottery.test.js`
+- **Tests**: `test/LuckyOne.test.js`
 
 ## 🛠️ Technical Verification Steps
 
@@ -37,7 +37,7 @@ npm install
 ### **Step 2: Verify Contract Source**
 ```bash
 # View the contract source code
-cat contracts/DecentralizedLottery.sol
+cat contracts/LuckyOne.sol
 
 # Check dependencies
 ls node_modules/@chainlink/contracts/src/v0.8/vrf/
@@ -50,7 +50,7 @@ ls node_modules/@openzeppelin/contracts/utils/
 npm run compile
 
 # Generate flattened source for verification
-npx hardhat flatten contracts/DecentralizedLottery.sol > flattened.sol
+npx hardhat flatten contracts/LuckyOne.sol > flattened.sol
 ```
 
 ### **Step 4: Verify Deployment**
@@ -91,7 +91,7 @@ npm run test -- --coverage
 ```bash
 # Check for common vulnerabilities
 npm install -g slither-analyzer  # Optional: static analysis
-slither contracts/DecentralizedLottery.sol
+slither contracts/LuckyOne.sol
 ```
 
 ### **Manual Code Review Points**
@@ -173,7 +173,7 @@ npm run status:amoy
 node -e "
 const { ethers } = require('ethers');
 const provider = new ethers.JsonRpcProvider('https://rpc-amoy.polygon.technology/');
-const abi = require('./artifacts/contracts/DecentralizedLottery.sol/DecentralizedLottery.json').abi;
+const abi = require('./artifacts/contracts/LuckyOne.sol/LuckyOne.json').abi;
 const contract = new ethers.Contract('0xaE3214F7b7ba132FEE0227F0a6828018Db8d83E9', abi, provider);
 
 // Listen for TicketsPurchased events
@@ -236,14 +236,14 @@ cat hardhat.config.js | grep -A 10 "polygonAmoy"
 ```bash
 # Install and run Slither
 pip install slither-analyzer
-slither contracts/DecentralizedLottery.sol
+slither contracts/LuckyOne.sol
 ```
 
 ### **Formal Verification**
 ```bash
 # Install and run Mythril
 pip install mythril
-myth analyze contracts/DecentralizedLottery.sol
+myth analyze contracts/LuckyOne.sol
 ```
 
 ### **Gas Analysis**
@@ -255,7 +255,7 @@ npm run test -- --gas-reporter
 ## 📞 Support & Questions
 
 If you need help verifying the contract:
-1. Review the test suite: `test/DecentralizedLottery.test.js`
+1. Review the test suite: `test/LuckyOne.test.js`
 2. Check the deployment guide: `TESTNET_DEPLOYMENT_GUIDE.md`
 3. Use the status tool: `npm run status:amoy`
 4. Open an issue on GitHub

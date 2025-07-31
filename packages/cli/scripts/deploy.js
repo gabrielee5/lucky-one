@@ -86,10 +86,10 @@ async function main() {
     throw new Error(`Unsupported network: ${networkName}`);
   }
 
-  // Deploy DecentralizedLottery
-  console.log("Deploying DecentralizedLottery...");
-  const DecentralizedLottery = await ethers.getContractFactory("DecentralizedLottery");
-  const lottery = await DecentralizedLottery.deploy(
+  // Deploy LuckyOne
+  console.log("Deploying LuckyOne...");
+  const LuckyOne = await ethers.getContractFactory("LuckyOne");
+  const lottery = await LuckyOne.deploy(
     vrfCoordinator,
     subscriptionId,
     gasLane,
@@ -98,7 +98,7 @@ async function main() {
 
   await lottery.waitForDeployment();
   const lotteryAddress = await lottery.getAddress();
-  console.log("DecentralizedLottery deployed to:", lotteryAddress);
+  console.log("LuckyOne deployed to:", lotteryAddress);
 
   // Add consumer to VRF subscription for local networks
   if (networkName === "hardhat" || networkName === "localhost") {
@@ -126,7 +126,7 @@ async function main() {
   console.log("\n=== Deployment Summary ===");
   console.log("Network:", networkName);
   console.log("Deployer:", deployer.address);
-  console.log("DecentralizedLottery:", lotteryAddress);
+  console.log("LuckyOne:", lotteryAddress);
   console.log("VRF Coordinator:", vrfCoordinator);
   console.log("Subscription ID:", subscriptionId);
   console.log("Gas Lane:", gasLane);

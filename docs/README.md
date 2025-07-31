@@ -43,7 +43,7 @@ A complete decentralized lottery application built with Solidity, React, and Cha
 
 ## Architecture
 
-### Smart Contract (`DecentralizedLottery.sol`)
+### Smart Contract (`LuckyOne.sol`)
 - **Ticket Sales**: Users can purchase 1-100 tickets per transaction at 0.01 MATIC each
 - **Time-based Rounds**: Each lottery runs for 7 days
 - **Winner Selection**: Chainlink VRF ensures fair and random winner selection

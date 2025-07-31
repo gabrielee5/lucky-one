@@ -17,7 +17,7 @@ import "@chainlink/contracts/src/v0.8/vrf/dev/interfaces/IVRFCoordinatorV2Plus.s
 import "@chainlink/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract DecentralizedLottery is VRFConsumerBaseV2Plus, ReentrancyGuard {
+contract LuckyOne is VRFConsumerBaseV2Plus, ReentrancyGuard {
     IVRFCoordinatorV2Plus private immutable i_vrfCoordinator;
     bytes32 private immutable i_gasLane;
     uint256 private immutable i_subscriptionId;

@@ -20,7 +20,7 @@ async function main() {
   }
   
   const deploymentInfo = JSON.parse(fs.readFileSync(deploymentFile, 'utf8'));
-  const lottery = await ethers.getContractAt("DecentralizedLottery", deploymentInfo.lotteryAddress);
+  const lottery = await ethers.getContractAt("LuckyOne", deploymentInfo.lotteryAddress);
   
   console.log("📋 CONTRACT INFORMATION");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");

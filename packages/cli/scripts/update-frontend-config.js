@@ -5,7 +5,7 @@ async function main() {
   console.log("🔧 Updating frontend configuration...");
   
   // Read the compiled contract ABI
-  const artifactPath = path.join(__dirname, '../../contracts/artifacts/contracts/DecentralizedLottery.sol/DecentralizedLottery.json');
+  const artifactPath = path.join(__dirname, '../../contracts/artifacts/contracts/LuckyOne.sol/LuckyOne.json');
   const contractArtifact = JSON.parse(fs.readFileSync(artifactPath, 'utf8'));
   
   // Load deployment info for Amoy

@@ -48,7 +48,7 @@ async function main() {
       console.log("4. Select optimization: Yes (1000 runs)");
       console.log("5. Paste the flattened contract code");
       console.log("\nTo get flattened code, run:");
-      console.log("npx hardhat flatten contracts/DecentralizedLottery.sol");
+      console.log("npx hardhat flatten contracts/LuckyOne.sol");
     }
   }
 }

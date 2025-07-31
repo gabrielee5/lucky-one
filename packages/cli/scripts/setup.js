@@ -2,7 +2,7 @@ const { ethers } = require("hardhat");
 const fs = require('fs');
 
 async function main() {
-  console.log("🎰 Setting up Decentralized Lottery DApp...\n");
+  console.log("🎰 Setting up LuckyOne Lottery DApp...\n");
 
   // Check if we're on hardhat network
   const network = hre.network.name;
@@ -16,7 +16,7 @@ async function main() {
   }
 
   // Deploy contract
-  console.log("📦 Deploying DecentralizedLottery contract...");
+  console.log("📦 Deploying LuckyOne contract...");
   const deployScript = require('./deploy.js');
   
   // Wait for deployment to complete

@@ -27,7 +27,7 @@ git clone <repository-url>
 cd lottery-v1
 
 # View contract source
-cat contracts/DecentralizedLottery.sol
+cat contracts/LuckyOne.sol
 
 # Generate flattened source
 npm run flatten
@@ -85,7 +85,7 @@ npm run status:amoy
 ## ⚡ Quick Verification Steps
 
 1. **Check the live contract**: Visit block explorer link above
-2. **Review the source**: Clone repo and check `contracts/DecentralizedLottery.sol`
+2. **Review the source**: Clone repo and check `contracts/LuckyOne.sol`
 3. **Run tests**: `npm test` to verify all functionality
 4. **Check status**: `npm run status:amoy` for current state
 5. **Verify transactions**: All operations are transparent on-chain

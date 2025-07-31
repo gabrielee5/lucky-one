@@ -551,7 +551,7 @@ export const CONTRACT_ABI = [
         "type": "bool"
       },
       {
-        "internalType": "enum DecentralizedLottery.LotteryState",
+        "internalType": "enum LuckyOne.LotteryState",
         "name": "",
         "type": "uint8"
       }

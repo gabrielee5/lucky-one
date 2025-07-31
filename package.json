@@ -22,7 +22,7 @@
     "update-frontend": "node packages/cli/scripts/update-frontend-config.js",
     "verify:amoy": "npx hardhat run packages/cli/scripts/verify-contract.js --network polygonAmoy",
     "verify:polygon": "npx hardhat run packages/cli/scripts/verify-contract.js --network polygon",
-    "flatten": "npx hardhat flatten packages/contracts/contracts/DecentralizedLottery.sol",
+    "flatten": "npx hardhat flatten packages/contracts/contracts/LuckyOne.sol",
     "node": "npx hardhat node",
     "console": "npx hardhat console",
     "app": "cd packages/app && npm run dev",
