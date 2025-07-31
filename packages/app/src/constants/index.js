@@ -10,7 +10,7 @@ export const LOTTERY_CONFIG = {
     ],
     rpcUrl: 'https://polygon-rpc.com', // Keep for backward compatibility
     blockExplorer: 'https://polygonscan.com',
-    lotteryAddress: '0x2619E65227958F01eaF02637EaF693B97d90879C',
+    lotteryAddress: '0x8d634F54373aC8aAf2dfEc5AA68e76e4Ff6d80a2',
     nativeCurrency: {
       name: 'POL',
       symbol: 'POL',
