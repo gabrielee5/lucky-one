@@ -1,199 +1,169 @@
-# Decentralized Lottery - Monorepo
+# LuckyOne - Decentralized Lottery
 
-A provably fair decentralized lottery system built with Solidity, Hardhat, and Chainlink VRF v2.
+A provably fair decentralized lottery system built with Solidity, React, and Chainlink VRF v2.
 
-## 📁 Project Structure
+## 🎯 Current Status
 
-```
-lottery-v1/
-├── packages/
-│   ├── contracts/          # Smart contracts and tests
-│   │   ├── contracts/      # Solidity source files
-│   │   ├── test/          # Contract tests
-│   │   ├── artifacts/     # Compiled artifacts (generated)
-│   │   └── cache/         # Hardhat cache (generated)
-│   │
-│   ├── cli/               # Management and deployment tools
-│   │   ├── scripts/       # Deployment, testing, and utility scripts
-│   │   ├── utils/         # Shared utilities
-│   │   └── deployments/   # Network deployment info (generated)
-│   │
-│   ├── app/               # Primary frontend (React + Vite)
-│   │   ├── src/           # React application source
-│   │   └── package.json   # App dependencies
-│   │
-│   └── legacy-ui/         # Original frontend version
-│       ├── src/           # Legacy React app
-│       └── package.json   # Legacy dependencies
-│
-├── tools/
-│   ├── configs/           # Shared configuration files
-│   │   └── hardhat.config.js  # Hardhat configuration
-│   └── utils/             # Shared utilities (empty)
-│
-├── docs/                  # Project documentation
-│   ├── README.md          # Original project README
-│   ├── TECHNICAL_GUIDE.md # Technical implementation guide
-│   └── *.md               # Other documentation files
-│
-├── package.json           # Root package with workspace scripts
-└── hardhat.config.js      # Root hardhat config (references tools/configs/)
-```
+**✅ LIVE ON POLYGON MAINNET**
+- **Contract**: `0x8d634F54373aC8aAf2dfEc5AA68e76e4Ff6d80a2`
+- **Network**: Polygon Mainnet (Chain ID: 137)
+- **Ticket Price**: 10 POL per ticket
+- **Lottery Duration**: 24 hours per round
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Node.js 16+
-- npm or yarn
-- MetaMask or compatible Web3 wallet
-- MATIC tokens for testnet deployment
+- MetaMask wallet
+- POL tokens for ticket purchases
 
 ### Installation
 ```bash
-# Install root dependencies
+# Clone and install
+git clone <repository-url>
+cd lottery
 npm install
 
 # Install frontend dependencies
 cd packages/app && npm install
-cd ../legacy-ui && npm install
-
-# Setup existing contract (for new users)
-npm run setup-existing-contract -- --network=polygonAmoy
 ```
 
-### Environment Setup
+### Usage
+
+#### Web Application
 ```bash
-# Copy and fill environment variables
-cp .env.example .env
-```
-
-Required environment variables:
-```env
-PRIVATE_KEY=your_wallet_private_key
-POLYGON_AMOY_RPC_URL=https://rpc-amoy.polygon.technology/
-AMOY_VRF_SUBSCRIPTION_ID=your_chainlink_vrf_subscription_id
-POLYGONSCAN_API_KEY=your_polygonscan_api_key
-```
-
-## 📦 Package Scripts
-
-### Smart Contracts
-```bash
-# Compile contracts
-npm run compile
-
-# Run tests
-npm run test
-
-# Deploy to Polygon Amoy testnet
-npm run deploy:amoy
-
-# Check contract status
-npm run status:amoy
-```
-
-### Frontend Applications
-```bash
-# Run primary frontend (packages/app)
 npm run app
-
-# Run legacy frontend (packages/legacy-ui)  
-npm run legacy-ui
-
-# Build production versions
-npm run app:build
-npm run legacy-ui:build
 ```
+Then visit http://localhost:5173 and connect your MetaMask wallet.
 
-### Player Commands
+#### CLI Commands
 ```bash
-# Buy lottery tickets (1-100 tickets)
-TICKETS=5 npm run buy-tickets:amoy
+# Check lottery status
+npm run status
 
-# Check your player info and history
-npm run player-info:amoy
+# Buy tickets (example: 5 tickets)
+TICKETS=5 npm run buy-tickets
 
-# End lottery when time expires
-npm run end-lottery:amoy
+# Claim prize (if you won round 1)
+ROUND=1 npm run claim-prize
 
-# Claim prize if you won
-ROUND=1 npm run claim-prize:amoy
+# Check your participation
+npm run player-info
 ```
 
-### Owner Commands
+## 🎰 How It Works
+
+### Lottery Mechanics
+- **Ticket Sales**: Purchase 1-100 tickets per transaction
+- **Fair Selection**: Chainlink VRF ensures provably random winner selection
+- **Auto Rounds**: New rounds start automatically after each draw
+- **Prize Pool**: Winner receives the accumulated ticket sales (minus fees)
+
+### Progressive Fee Structure
+- **First 100 tickets**: 0% fee
+- **Tickets 101-1000**: 2.5% fee
+- **Tickets 1001+**: 5% fee
+
+Fees are deducted when prizes are claimed, keeping the system transparent.
+
+## 📱 Features
+
+### Web Application
+- Real-time lottery status and countdown
+- Wallet integration with network switching
+- Ticket purchasing with fee calculation
+- Prize claiming for winners
+- Complete lottery history
+- Mobile-responsive design
+
+### CLI Tools
+- Status checking with dynamic fee display
+- Ticket purchasing with confirmation prompts
+- Prize claiming functionality
+- Lottery history viewing
+- Player statistics
+
+## 🏗️ Project Structure
+
+```
+lottery/
+├── packages/
+│   ├── app/           # React frontend
+│   └── cli/           # Command-line tools
+├── docs/              # Documentation
+├── hardhat.config.js  # Blockchain configuration
+└── package.json       # Main scripts
+```
+
+### Available Scripts
 ```bash
-# Withdraw accumulated fees (owner only)
-npm run withdraw-fees:amoy
+# Frontend
+npm run app              # Start web application
+npm run app:build        # Build for production
 
-# Check contract status and fees
-npm run status:amoy
+# Lottery Interaction
+npm run status           # Check lottery status
+npm run buy-tickets      # Buy lottery tickets
+npm run claim-prize      # Claim winnings
+npm run player-info      # Check your stats
+npm run end-lottery      # End current round (when expired)
+
+# Owner Functions
+npm run withdraw-fees    # Withdraw accumulated fees (owner only)
+
+# Development
+npm run compile          # Compile smart contracts
+npm run test             # Run test suite
+npm run deploy           # Deploy to Polygon mainnet
 ```
 
-### Utility & Development Tools
-```bash
-# Test contract interaction
-npm run test:amoy
+## 🔒 Security Features
 
-# Setup VRF subscription guide
-npm run setup-vrf:amoy
+- **ReentrancyGuard**: Prevents reentrancy attacks
+- **Access Controls**: Owner-only functions for emergencies
+- **Input Validation**: Comprehensive parameter checking
+- **Chainlink VRF**: Tamper-proof randomness generation
+- **Transparent Fees**: All fee calculations are public
 
-# Update frontend configuration
-npm run update-frontend
+## 🌐 Network Details
 
-# Verify contract on block explorer
-npm run verify:amoy
-```
-
-## 🎰 Contract Features
-
-- **Fixed ticket price**: 0.01 MATIC per ticket
-- **7-day lottery rounds**: Automatic round management  
-- **5% owner fee**: Sustainable revenue model
-- **Chainlink VRF v2**: Provably fair randomness
-- **Security features**: ReentrancyGuard, proper access controls
-
-## 🌐 Supported Networks
-
-- **Polygon Amoy** (recommended testnet): Chain ID 80002
-- **Polygon Mumbai** (deprecated): Chain ID 80001  
-- **Polygon Mainnet**: Chain ID 137
-- **Local development**: Chain ID 31337
-
-## 📊 Gas Optimization
-
-The contracts are optimized for gas efficiency:
-- Solidity 0.8.20 with IR-based compilation
-- 1000 optimizer runs
-- Average gas costs:
-  - Buy tickets: ~138,555 gas
-  - End lottery: ~130,129 gas  
-  - Claim prize: ~45,159 gas
+- **Blockchain**: Polygon Mainnet
+- **Contract Address**: `0x8d634F54373aC8aAf2dfEc5AA68e76e4Ff6d80a2`
+- **Block Explorer**: [View on PolygonScan](https://polygonscan.com/address/0x8d634F54373aC8aAf2dfEc5AA68e76e4Ff6d80a2)
+- **Chainlink VRF**: [Subscription Management](https://vrf.chain.link/polygon)
 
 ## 📚 Documentation
 
-- **[CLI Commands Guide](docs/CLI_GUIDE.md)** - Complete guide to all CLI commands
-- [Technical Guide](docs/TECHNICAL_GUIDE.md) - Smart contract implementation details
-- [Deployment Guide](docs/TESTNET_DEPLOYMENT_GUIDE.md) - How to deploy to networks
-- [Contract Verification](docs/VERIFICATION_GUIDE.md) - Verify contracts on explorers
+- **[CLI Guide](docs/CLI_GUIDE.md)**: Complete guide to all CLI commands
+- **[Technical Guide](docs/TECHNICAL_GUIDE.md)**: Smart contract implementation details
 
-## 🔗 Key Links
+## 🛠️ Development
 
-- [Polygon Amoy Explorer](https://amoy.polygonscan.com/)
-- [Chainlink VRF](https://vrf.chain.link/polygon-amoy)
-- [Polygon Faucet](https://faucet.polygon.technology/)
+### Environment Setup
+```bash
+# Copy environment template
+cp .env.example .env
 
-## 🛡️ Security
+# Required variables:
+PRIVATE_KEY=your_wallet_private_key
+POLYGON_RPC_URL=https://polygon-rpc.com
+POLYGONSCAN_API_KEY=your_polygonscan_api_key
+```
 
-- Comprehensive test suite (29 tests)
-- ReentrancyGuard protection
-- Owner-only functions for fee management
-- Emergency withdrawal functionality
-- Input validation and bounds checking
+### Testing
+```bash
+npm run test-hardhat     # Run local tests
+npm run test             # Test deployed contract
+```
 
 ## 📄 License
 
-MIT License - see individual package.json files for details.
+MIT License - see LICENSE file for details.
+
+## ⚠️ Disclaimer
+
+This is a decentralized application. Users interact directly with smart contracts at their own risk. Always verify contract addresses and understand the risks of blockchain interactions.
 
 ---
 
-**⚠️ Testnet Usage**: This project is configured for Polygon Amoy testnet by default. Always test thoroughly before mainnet deployment.
+**🎲 Ready to play?** Visit the web app or use CLI commands to participate in the lottery!

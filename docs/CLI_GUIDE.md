@@ -69,7 +69,7 @@ TICKETS=5 ROUND=2 npm run buy-tickets
 ```
 
 **Requirements:**
-- Sufficient POL balance (0.01 POL per ticket)
+- Sufficient POL balance (10 POL per ticket)
 - Lottery round must be OPEN
 - Maximum 100 tickets per transaction
 - Round must not have ended
@@ -139,7 +139,7 @@ npm run end-lottery -- --help
 ```
 
 **Requirements:**
-- Lottery period must be over (7 days from start)
+- Lottery period must be over (24 hours from start)
 - At least one ticket must be sold
 - Round must not already be ended
 - Valid VRF subscription with LINK balance
@@ -340,20 +340,20 @@ npm run update-frontend
 - **Currency:** POL
 - **Explorer:** https://polygonscan.com/
 - **VRF UI:** https://vrf.chain.link/polygon
-- **Contract:** 0x2619E65227958F01eaF02637EaF693B97d90879C
+- **Contract:** 0x8d634F54373aC8aAf2dfEc5AA68e76e4Ff6d80a2
 
-### Polygon Amoy Testnet (Testing)
+### Development & Testing
+For development and testing, you can deploy to testnets like Polygon Amoy:
 - **Chain ID:** 80002
-- **Currency:** POL
+- **Currency:** POL (testnet)
 - **Faucet:** https://faucet.polygon.technology/
 - **Explorer:** https://amoy.polygonscan.com/
 - **VRF UI:** https://vrf.chain.link/polygon-amoy
-- **Usage:** Use `setup-existing-contract -- --network=polygonAmoy`
 
 ### Local Development
 - **Chain ID:** 31337
 - **Network:** localhost
-- **Usage:** Testing and development
+- **Usage:** Use hardhat local network for testing
 
 ## 📚 Common Examples
 
@@ -439,9 +439,9 @@ Error: Insufficient balance. Need: 0.05 POL
 ```bash
 Error: Incorrect payment amount
 ```
-**Solution:** Ensure exact payment (ticketCount × 0.01 POL):
+**Solution:** Ensure exact payment (ticketCount × 10 POL):
 ```bash
-# For 5 tickets: exactly 0.05 POL required
+# For 5 tickets: exactly 50 POL required
 TICKETS=5 npm run buy-tickets
 ```
 

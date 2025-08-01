@@ -28,8 +28,8 @@ The Decentralized Lottery DApp is a blockchain-based lottery system that ensures
 
 ### Key Features
 
-1. **7-day lottery rounds** with automatic rollover
-2. **0.01 ETH ticket price** (configurable)
+1. **24-hour lottery rounds** with automatic rollover
+2. **10 POL ticket price** (configurable)
 3. **Up to 100 tickets per purchase** limit
 4. **Proportional winning chances** based on ticket ownership
 5. **Manual prize claiming** by winners
