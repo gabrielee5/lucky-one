@@ -1,33 +1,58 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Crown, Gift, CheckCircle, Loader2 } from 'lucide-react'
-import { useLotteryData, useClaimPrize } from '../hooks/useLottery'
+import { useLotteryData, useClaimPrize, useLotteryHistory } from '../hooks/useLottery'
 import { LOTTERY_STATES } from '../constants'
 import { formatPrizePool } from '../utils/formatters'
 import useWalletStore from '../stores/walletStore'
 
 const PrizeClaim = () => {
   const { data: lotteryData, isLoading } = useLotteryData()
+  const { data: historyData, isLoading: isHistoryLoading } = useLotteryHistory(50)
   const { mutate: claimPrize, isLoading: isClaiming } = useClaimPrize()
   const { address, isConnected } = useWalletStore()
 
-  if (isLoading || !lotteryData) {
+  if (isLoading || isHistoryLoading || !lotteryData || !address) {
     return null
   }
 
+  // Check current round first
   const { round } = lotteryData
-  const hasWinner = round.winner !== '0x0000000000000000000000000000000000000000'
-  const isWinner = hasWinner && address && round.winner.toLowerCase() === address.toLowerCase()
-  const isClosed = round.state === LOTTERY_STATES.CLOSED
-  const canClaim = isWinner && isClosed && !round.prizeClaimed
+  const currentHasWinner = round.winner !== '0x0000000000000000000000000000000000000000'
+  const currentIsWinner = currentHasWinner && round.winner.toLowerCase() === address.toLowerCase()
+  const currentIsClosed = round.state === LOTTERY_STATES.CLOSED
+  const currentCanClaim = currentIsWinner && currentIsClosed && !round.prizeClaimed
 
-  if (!hasWinner || !isWinner) {
+  // Check all past rounds for unclaimed prizes
+  const unclaimedPrizes = (historyData || []).filter(pastRound => 
+    pastRound.winner.toLowerCase() === address.toLowerCase() && 
+    !pastRound.prizeClaimed
+  )
+
+  // Find the round to display (current round if winner, otherwise first unclaimed from history)
+  let displayRound = null
+  let canClaim = false
+
+  if (currentIsWinner) {
+    displayRound = round
+    canClaim = currentCanClaim
+  } else if (unclaimedPrizes.length > 0) {
+    // Show the most recent unclaimed prize
+    const oldestUnclaimed = unclaimedPrizes[0]
+    displayRound = {
+      ...oldestUnclaimed,
+      state: LOTTERY_STATES.CLOSED // Past rounds are always closed
+    }
+    canClaim = true
+  }
+
+  if (!displayRound) {
     return null
   }
 
   const handleClaimPrize = () => {
     if (canClaim) {
-      claimPrize(round.id)
+      claimPrize(displayRound.id)
     }
   }
 
@@ -47,21 +72,21 @@ const PrizeClaim = () => {
         </motion.div>
         
         <h2 className="text-2xl font-bold text-lottery-gold mb-2">
-          🎉 Congratulations! 🎉
+          Congratulations!
         </h2>
         
         <p className="text-gray-300 mb-4">
-          You won the lottery! Your prize is ready to be claimed.
+          You won round #{displayRound.id}! Your prize is ready to be claimed.
         </p>
         
         <div className="mb-6">
           <div className="text-sm text-gray-400 mb-2">Your Prize</div>
           <div className="text-3xl font-bold text-lottery-gold">
-            {formatPrizePool(round.prizePool)}
+            {formatPrizePool(displayRound.prizePool)}
           </div>
         </div>
 
-        {round.prizeClaimed ? (
+        {displayRound.prizeClaimed ? (
           <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
             <div className="flex items-center justify-center gap-2 text-green-400">
               <CheckCircle className="w-6 h-6" />
