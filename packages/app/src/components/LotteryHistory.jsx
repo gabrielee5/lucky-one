@@ -3,13 +3,15 @@ import { motion } from 'framer-motion'
 import { History, Crown, Calendar, Users, Trophy, ExternalLink, AlertCircle, Loader } from 'lucide-react'
 import { formatPrizePool, formatAddress, getRelativeTime, getExplorerUrl } from '../utils/formatters'
 import { useLotteryHistory, useClaimPrize } from '../hooks/useLottery'
+import { useQueryClient } from 'react-query'
 import useWalletStore from '../stores/walletStore'
 import PurpleButton from './PurpleButton'
 
 const LotteryHistory = () => {
-  const { data: historyData, isLoading, error } = useLotteryHistory(5) // Get last 5 completed rounds
+  const { data: historyData, isLoading, error, refetch } = useLotteryHistory(5) // Get last 5 completed rounds
   const { address: connectedAddress } = useWalletStore()
   const { mutate: claimPrize, isLoading: isClaimingPrize } = useClaimPrize()
+  const queryClient = useQueryClient()
 
   // Debug log to see what data we're getting
   React.useEffect(() => {
@@ -34,18 +36,32 @@ const LotteryHistory = () => {
     )
   }
 
+  const handleRefresh = () => {
+    queryClient.invalidateQueries(['lotteryHistory'])
+    refetch()
+  }
+
   return (
     <div className="glass-card p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
-          <History className="w-5 h-5 text-white" />
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
+            <History className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold">Lottery History</h3>
+            <p className="text-sm text-gray-400">
+              Previous rounds and winners
+            </p>
+          </div>
         </div>
-        <div>
-          <h3 className="text-xl font-bold">Lottery History</h3>
-          <p className="text-sm text-gray-400">
-            Previous rounds and winners
-          </p>
-        </div>
+        <button
+          onClick={handleRefresh}
+          className="px-3 py-1 text-xs bg-gray-700 hover:bg-gray-600 rounded-md text-gray-300 transition-colors"
+          disabled={isLoading}
+        >
+          {isLoading ? 'Loading...' : 'Refresh'}
+        </button>
       </div>
 
       {/* Loading State */}

@@ -6,6 +6,45 @@ import useWalletStore from '../stores/walletStore'
 import toast from 'react-hot-toast'
 import { useEffect } from 'react'
 
+// Helper function to get claim transaction hash with chunked querying
+const getClaimTransactionHash = async (contract, roundId) => {
+  const filter = contract.filters.PrizeClaimed(roundId)
+  const provider = contract.provider
+  
+  try {
+    // Get current block number
+    const currentBlock = await provider.getBlockNumber()
+    
+    // Define block ranges to search (chunked approach)
+    const chunkSize = 5000 // Smaller chunks for better reliability
+    const maxBlocksToSearch = 50000 // Total range to search
+    const startBlock = Math.max(0, currentBlock - maxBlocksToSearch)
+    
+    // Search in chunks from most recent to oldest
+    for (let fromBlock = currentBlock; fromBlock > startBlock; fromBlock -= chunkSize) {
+      const toBlock = fromBlock
+      const fromBlockActual = Math.max(startBlock, fromBlock - chunkSize + 1)
+      
+      try {
+        const events = await contract.queryFilter(filter, fromBlockActual, toBlock)
+        if (events.length > 0) {
+          console.log(`Found claim transaction for round ${roundId}: ${events[0].transactionHash}`)
+          return events[0].transactionHash
+        }
+      } catch (chunkError) {
+        console.warn(`Chunk query failed for blocks ${fromBlockActual}-${toBlock}:`, chunkError.message)
+        continue // Try next chunk
+      }
+    }
+    
+    console.warn(`No PrizeClaimed events found for round ${roundId} despite prizeClaimed=true`)
+    return null
+  } catch (error) {
+    console.error(`Failed to get claim transaction for round ${roundId}:`, error)
+    return null
+  }
+}
+
 export const useLotteryData = () => {
   const contract = useContractRead()
   const { address } = useWalletStore()
@@ -78,12 +117,12 @@ export const useLotteryData = () => {
     },
     {
       enabled: !!contract,
-      refetchInterval: 3000, // Refresh every 3 seconds for more responsive updates
+      refetchInterval: 5000, // Reduced from 3s to 5s to decrease API calls
       refetchOnWindowFocus: true,
       refetchOnMount: true,
       refetchOnReconnect: true,
-      staleTime: 1000, // Consider data stale after 1 second
-      cacheTime: 30000, // Keep in cache for 30 seconds (reduced from default 5 minutes)
+      staleTime: 10000, // Increased from 1s to 10s to reduce cache thrashing
+      cacheTime: 60000, // Increased to 1 minute for better performance
       retry: 3,
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
       onError: (error) => {
@@ -95,6 +134,7 @@ export const useLotteryData = () => {
   // Add manual refresh function
   const refresh = () => {
     queryClient.invalidateQueries(['lotteryData'])
+    queryClient.invalidateQueries(['lotteryHistory'])
   }
 
   // Listen for contract events to auto-refresh data
@@ -178,6 +218,7 @@ export const useBuyTickets = () => {
         // Update balance and refetch lottery data
         await updateBalance()
         queryClient.invalidateQueries(['lotteryData'])
+        queryClient.invalidateQueries(['lotteryHistory'])
         
         return tx
       } catch (error) {
@@ -213,6 +254,7 @@ export const useClaimPrize = () => {
         // Update balance and refetch lottery data
         await updateBalance()
         queryClient.invalidateQueries(['lotteryData'])
+        queryClient.invalidateQueries(['lotteryHistory'])
         
         return tx
       } catch (error) {
@@ -245,6 +287,7 @@ export const useEndLottery = () => {
         toast.success('Lottery ended! Winner will be selected soon.')
         
         queryClient.invalidateQueries(['lotteryData'])
+        queryClient.invalidateQueries(['lotteryHistory'])
         
         return tx
       } catch (error) {
@@ -277,6 +320,7 @@ export const useRestartLottery = () => {
         toast.success('Lottery restarted! New round has begun.')
         
         queryClient.invalidateQueries(['lotteryData'])
+        queryClient.invalidateQueries(['lotteryHistory'])
         
         return tx
       } catch (error) {
@@ -371,29 +415,7 @@ export const useLotteryHistory = (limit = 10) => {
                   let claimTransactionHash = null
                   if (prizeClaimed) {
                     try {
-                      // Try multiple approaches to get the claim transaction
-                      const filter = contract.filters.PrizeClaimed(roundId)
-                      let events = []
-                      
-                      // First try with larger block range
-                      try {
-                        events = await contract.queryFilter(filter, -50000)
-                      } catch (rangeError) {
-                        console.warn(`Large range failed for round ${roundId}, trying smaller range:`, rangeError.message)
-                        // Fallback to smaller range
-                        try {
-                          events = await contract.queryFilter(filter, -10000)
-                        } catch (smallRangeError) {
-                          console.warn(`Small range also failed for round ${roundId}:`, smallRangeError.message)
-                        }
-                      }
-                      
-                      if (events.length > 0) {
-                        claimTransactionHash = events[0].transactionHash
-                        console.log(`Found claim transaction for round ${roundId}: ${claimTransactionHash}`)
-                      } else {
-                        console.warn(`No PrizeClaimed events found for round ${roundId} despite prizeClaimed=true`)
-                      }
+                      claimTransactionHash = await getClaimTransactionHash(contract, roundId)
                     } catch (error) {
                       console.warn(`Failed to get claim transaction for round ${roundId}:`, error)
                     }
@@ -435,9 +457,11 @@ export const useLotteryHistory = (limit = 10) => {
     },
     {
       enabled: !!contract,
-      staleTime: 60000, // Cache for 1 minute
+      staleTime: 10000, // Cache for 10 seconds (reduced from 60s)
       cacheTime: 300000, // Keep in cache for 5 minutes
       retry: 2,
+      refetchOnWindowFocus: true, // Refetch when window gains focus
+      refetchOnReconnect: true, // Refetch when network reconnects
       onError: (error) => {
         console.error('Lottery history query failed:', error)
       }
