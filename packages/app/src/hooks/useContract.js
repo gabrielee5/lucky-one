@@ -4,9 +4,11 @@ import { CONTRACT_ABI, LOTTERY_CONFIG } from '../constants'
 import useWalletStore from '../stores/walletStore'
 
 export const useContract = () => {
-  const { signer, provider } = useWalletStore()
+  const { signer, provider, isConnecting } = useWalletStore()
 
   return useMemo(() => {
+    // Wait for wallet initialization to complete before creating contract
+    if (isConnecting) return null
     if (!signer && !provider) return null
 
     try {
@@ -22,16 +24,19 @@ export const useContract = () => {
       console.error('Failed to create contract instance:', error)
       return null
     }
-  }, [signer, provider])
+  }, [signer, provider, isConnecting])
 }
 
 export const useContractRead = () => {
-  const { provider } = useWalletStore()
+  const { provider, isConnecting } = useWalletStore()
 
   return useMemo(() => {
     try {
-      // Use wallet provider if available, otherwise use default provider
-      const contractProvider = provider || new ethers.JsonRpcProvider(LOTTERY_CONFIG.POLYGON.rpcUrl)
+      // Use wallet provider if available and not connecting, otherwise use default provider
+      const useDefaultProvider = !provider || isConnecting
+      const contractProvider = useDefaultProvider ? 
+        new ethers.JsonRpcProvider(LOTTERY_CONFIG.POLYGON.rpcUrl) : 
+        provider
       
       const contract = new ethers.Contract(
         LOTTERY_CONFIG.POLYGON.lotteryAddress,
@@ -44,5 +49,5 @@ export const useContractRead = () => {
       console.error('Failed to create contract instance:', error)
       return null
     }
-  }, [provider])
+  }, [provider, isConnecting])
 }

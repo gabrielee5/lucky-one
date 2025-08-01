@@ -8,8 +8,8 @@ import { Toaster } from 'react-hot-toast'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      cacheTime: 10 * 60 * 1000, // 10 minutes
+      staleTime: 30 * 1000, // 30 seconds - more reasonable for dynamic data
+      cacheTime: 5 * 60 * 1000, // 5 minutes
       refetchOnWindowFocus: false,
       retry: 3,
     },
