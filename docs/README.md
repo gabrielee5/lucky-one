@@ -22,7 +22,7 @@ Technical implementation details:
 ## Quick Links
 
 - **Main README**: [../README.md](../README.md) - Project overview and quick start
-- **Live Contract**: [0x8d634F54373aC8aAf2dfEc5AA68e76e4Ff6d80a2](https://polygonscan.com/address/0x8d634F54373aC8aAf2dfEc5AA68e76e4Ff6d80a2)
+- **Live Contract**: [0x65C7F3cB0F1DA3d7566e28d49F995c30d5F75ec0](https://polygonscan.com/address/0x65C7F3cB0F1DA3d7566e28d49F995c30d5F75ec0)
 - **Block Explorer**: [PolygonScan](https://polygonscan.com/)
 - **VRF Management**: [Chainlink VRF](https://vrf.chain.link/polygon)
 

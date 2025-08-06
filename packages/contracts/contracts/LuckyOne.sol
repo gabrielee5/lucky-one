@@ -25,8 +25,8 @@ contract LuckyOne is VRFConsumerBaseV2Plus, ReentrancyGuard {
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
 
-    uint256 private constant TICKET_PRICE = 0.01 ether;
-    uint256 private constant LOTTERY_DURATION = 1 hours;
+    uint256 private constant TICKET_PRICE = 10 ether;
+    uint256 private constant LOTTERY_DURATION = 24 hours;
     uint256 private constant MAX_TICKETS_PER_PURCHASE = 100;
     
     // Tiered fee structure

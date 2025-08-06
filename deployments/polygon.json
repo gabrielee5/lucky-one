@@ -1,10 +1,10 @@
 {
   "network": "polygon",
-  "lotteryAddress": "0x8d634F54373aC8aAf2dfEc5AA68e76e4Ff6d80a2",
+  "lotteryAddress": "0x65C7F3cB0F1DA3d7566e28d49F995c30d5F75ec0",
   "vrfCoordinator": "0xec0Ed46f36576541C75739E915ADbCb3DE24bD77",
   "subscriptionId": "32656897740179949429777170792740528103673297430821130280940612776308300330303",
   "gasLane": "0x192234a5cda4cc07c0b66dfbcfbb785341cc790edc50032e842667dbb506cada",
   "callbackGasLimit": "500000",
-  "deployedAt": "2025-07-31T16:29:23.631Z",
+  "deployedAt": "2025-08-06T14:55:17.207Z",
   "deployer": "0xaAb927Bbaf53bA701d8108893D35B6d49F5E94b9"
 }

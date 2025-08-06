@@ -5,7 +5,7 @@ A provably fair decentralized lottery system built with Solidity, React, and Cha
 ## 🎯 Current Status
 
 **✅ LIVE ON POLYGON MAINNET**
-- **Contract**: `0x8d634F54373aC8aAf2dfEc5AA68e76e4Ff6d80a2`
+- **Contract**: `0x65C7F3cB0F1DA3d7566e28d49F995c30d5F75ec0`
 - **Network**: Polygon Mainnet (Chain ID: 137)
 - **Ticket Price**: 10 POL per ticket
 - **Lottery Duration**: 24 hours per round
@@ -128,8 +128,8 @@ npm run deploy           # Deploy to Polygon mainnet
 ## 🌐 Network Details
 
 - **Blockchain**: Polygon Mainnet
-- **Contract Address**: `0x8d634F54373aC8aAf2dfEc5AA68e76e4Ff6d80a2`
-- **Block Explorer**: [View on PolygonScan](https://polygonscan.com/address/0x8d634F54373aC8aAf2dfEc5AA68e76e4Ff6d80a2)
+- **Contract Address**: `0x65C7F3cB0F1DA3d7566e28d49F995c30d5F75ec0`
+- **Block Explorer**: [View on PolygonScan](https://polygonscan.com/address/0x65C7F3cB0F1DA3d7566e28d49F995c30d5F75ec0)
 - **Chainlink VRF**: [Subscription Management](https://vrf.chain.link/polygon)
 
 ## 📚 Documentation

@@ -340,7 +340,7 @@ npm run update-frontend
 - **Currency:** POL
 - **Explorer:** https://polygonscan.com/
 - **VRF UI:** https://vrf.chain.link/polygon
-- **Contract:** 0x8d634F54373aC8aAf2dfEc5AA68e76e4Ff6d80a2
+- **Contract:** 0x65C7F3cB0F1DA3d7566e28d49F995c30d5F75ec0
 
 ### Development & Testing
 For development and testing, you can deploy to testnets like Polygon Amoy:
