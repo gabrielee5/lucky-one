@@ -45,22 +45,47 @@ async function main() {
   
   // Current lottery round info
   const currentRoundId = await lottery.getCurrentRoundId();
-  const [roundId, startTime, endTime, totalTickets, prizePool, winner, ended, prizeClaimed, state] = 
-    await lottery.getLotteryRound(currentRoundId);
+  console.log(`🔍 Debug: Current Round ID from contract: ${currentRoundId.toString()}`);
+  
+  let roundInfo;
+  try {
+    roundInfo = await lottery.getLotteryRound(currentRoundId);
+  } catch (error) {
+    console.error(`❌ Error fetching round ${currentRoundId.toString()}: ${error.message}`);
+    
+    // Try with previous round ID if current round fails
+    if (currentRoundId > 1n) {
+      console.log(`🔄 Trying previous round: ${(currentRoundId - 1n).toString()}`);
+      try {
+        roundInfo = await lottery.getLotteryRound(currentRoundId - 1n);
+        console.log(`✅ Using round ${(currentRoundId - 1n).toString()} data`);
+      } catch (prevError) {
+        console.error(`❌ Previous round also failed: ${prevError.message}`);
+        return;
+      }
+    } else {
+      return;
+    }
+  }
+  
+  const [roundId, startTime, endTime, totalTickets, prizePool, winner, ended, prizeClaimed, state] = roundInfo;
   
   console.log("🎯 CURRENT LOTTERY ROUND");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   console.log(`🔢 Round ID: ${roundId.toString()}`);
   
-  const now = Math.floor(Date.now() / 1000);
+  // Use blockchain time for accuracy
+  const currentBlock = await deployer.provider.getBlock('latest');
+  const blockTimestamp = currentBlock.timestamp;
   const startTimeNum = Number(startTime);
   const endTimeNum = Number(endTime);
   
   console.log(`🚀 Started: ${new Date(startTimeNum * 1000).toLocaleString()}`);
   console.log(`⏰ Ends: ${new Date(endTimeNum * 1000).toLocaleString()}`);
+  console.log(`🔗 Blockchain Time: ${new Date(blockTimestamp * 1000).toLocaleString()}`);
   
-  // Calculate time remaining
-  const timeRemaining = endTimeNum - now;
+  // Calculate time remaining using blockchain time
+  const timeRemaining = endTimeNum - blockTimestamp;
   if (timeRemaining > 0) {
     const days = Math.floor(timeRemaining / (24 * 60 * 60));
     const hours = Math.floor((timeRemaining % (24 * 60 * 60)) / (60 * 60));
@@ -73,9 +98,36 @@ async function main() {
   console.log(`🎟️  Total Tickets Sold: ${totalTickets.toString()}`);
   console.log(`💰 Prize Pool: ${ethers.formatEther(prizePool)} POL`);
   
-  // Lottery state
-  const stateNames = ["🟢 OPEN", "🟡 CALCULATING", "🔴 CLOSED"];
-  console.log(`📊 Status: ${stateNames[Number(state)]}`);
+  // Determine accurate lottery state
+  let actualState;
+  let stateDescription;
+  
+  if (ended && winner !== ethers.ZeroAddress) {
+    actualState = "🔴 CLOSED";
+    stateDescription = "Round completed - winner selected";
+  } else if (ended && winner === ethers.ZeroAddress) {
+    actualState = "🟡 CALCULATING";
+    stateDescription = "Waiting for VRF to select winner";
+  } else if (timeRemaining <= 0 && totalTickets > 0n) {
+    actualState = "⏰ READY TO END";
+    stateDescription = "Time expired - can be ended";
+  } else if (timeRemaining <= 0 && totalTickets === 0n) {
+    actualState = "🔄 READY TO RESTART";
+    stateDescription = "Time expired with no tickets - can restart";
+  } else if (timeRemaining > 0) {
+    actualState = "🟢 OPEN";
+    stateDescription = "Active - accepting ticket purchases";
+  } else {
+    actualState = "❓ UNKNOWN";
+    stateDescription = "Unexpected state";
+  }
+  
+  console.log(`📊 Status: ${actualState}`);
+  console.log(`📝 Description: ${stateDescription}`);
+  
+  // Show contract state for reference
+  const contractStateNames = ["OPEN", "CALCULATING", "CLOSED"];
+  console.log(`⚙️  Contract State: ${contractStateNames[Number(state)]}`);
   
   if (winner !== ethers.ZeroAddress) {
     console.log(`🏆 Winner: ${winner}`);
@@ -94,17 +146,26 @@ async function main() {
   // Your participation
   console.log("👤 YOUR PARTICIPATION");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  const yourTickets = await lottery.getPlayerTickets(deployer.address, currentRoundId);
-  console.log(`🎟️  Your Tickets: ${yourTickets.toString()}`);
   
-  if (yourTickets > 0) {
-    const yourInvestment = yourTickets * await lottery.getTicketPrice();
-    console.log(`💸 Your Investment: ${ethers.formatEther(yourInvestment)} POL`);
+  try {
+    const yourTickets = await lottery.getPlayerTickets(deployer.address, roundId);
+    console.log(`🎟️  Your Tickets: ${yourTickets.toString()}`);
     
-    if (totalTickets > 0) {
-      const winChance = (Number(yourTickets) / Number(totalTickets)) * 100;
-      console.log(`🎯 Win Chance: ${winChance.toFixed(2)}%`);
+    if (yourTickets > 0) {
+      const yourInvestment = yourTickets * await lottery.getTicketPrice();
+      console.log(`💸 Your Investment: ${ethers.formatEther(yourInvestment)} POL`);
+      
+      if (totalTickets > 0) {
+        const winChance = (Number(yourTickets) / Number(totalTickets)) * 100;
+        console.log(`🎯 Win Chance: ${winChance.toFixed(2)}%`);
+      }
     }
+  } catch (error) {
+    console.log("⚠️  Could not fetch your ticket information");
+    console.log(`   Error: ${error.message}`);
+    console.log(`   Round ID used: ${roundId.toString()}`);
+    console.log(`   Current Round ID: ${currentRoundId.toString()}`);
+    console.log("   This might indicate a contract state issue");
   }
   
   console.log();
@@ -131,25 +192,52 @@ async function main() {
   
   console.log();
   
-  // Action suggestions
+  // Action suggestions based on actual state
   console.log("💡 AVAILABLE ACTIONS");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   
-  if (state === 0n) { // OPEN
-    console.log("🛒 Buy tickets: npm run test");
+  if (actualState.includes("OPEN")) {
+    console.log("🛒 Buy tickets: npm run buy-tickets");
     console.log("🎟️  Max tickets per purchase: 100");
+    
+    // Show fee structure
+    const feeStructure = await lottery.getFeeStructure();
+    const [freeTier, midTier, midFeePercent, highFeePercent] = feeStructure;
+    console.log(`💰 Fee Structure: First ${freeTier} tickets (0%), Next ${midTier - freeTier} tickets (${midFeePercent/100}%), Remaining (${highFeePercent/100}%)`);
   }
   
-  if (timeRemaining <= 0 && !ended && totalTickets > 0) {
-    console.log("🎲 End lottery: Call endLottery() function");
+  if (actualState.includes("READY TO END")) {
+    console.log("🎲 End lottery: npm run end-lottery");
+    console.log("⏰ This lottery can now be ended to select a winner");
   }
   
-  if (isOwner && await lottery.getAccumulatedFees() > 0) {
-    console.log("💰 Withdraw fees: Call withdrawFees() function");
+  if (actualState.includes("READY TO RESTART")) {
+    console.log("🔄 Restart lottery: npm run restart-lottery");
+    console.log("⚠️  No tickets sold - lottery can be restarted");
   }
   
-  if (winner === deployer.address && !prizeClaimed) {
-    console.log("🎁 Claim prize: Call claimPrize() function");
+  if (actualState.includes("CALCULATING")) {
+    console.log("⏳ Wait for VRF: Winner selection in progress");
+    console.log("🔗 Monitor VRF: https://vrf.chain.link/polygon");
+  }
+  
+  if (winner.toLowerCase() === deployer.address.toLowerCase() && !prizeClaimed) {
+    console.log("🎁 Claim your prize: npm run claim-prize");
+    console.log(`💰 Prize amount: ${ethers.formatEther(prizePool)} POL`);
+  }
+  
+  // Check for any claimable prizes from past rounds
+  console.log("🔍 Check for unclaimed prizes: npm run claim-prize");
+  
+  if (isOwner) {
+    try {
+      const accumulatedFees = await lottery.getAccumulatedFees();
+      if (accumulatedFees > 0n) {
+        console.log(`💰 Withdraw fees: ${ethers.formatEther(accumulatedFees)} POL available`);
+      }
+    } catch (error) {
+      // Ignore if we can't fetch fees
+    }
   }
   
   console.log();
