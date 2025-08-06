@@ -3,23 +3,11 @@ const { verify } = require("../utils/verify");
 
 // Network-specific VRF configurations
 const NETWORK_CONFIGS = {
-  sepolia: {
-    vrfCoordinator: process.env.SEPOLIA_VRF_COORDINATOR_V2,
-    gasLane: process.env.SEPOLIA_VRF_GAS_LANE,
-    subscriptionId: process.env.SEPOLIA_VRF_SUBSCRIPTION_ID,
-    callbackGasLimit: process.env.SEPOLIA_VRF_CALLBACK_GAS_LIMIT || 500000
-  },
   polygonAmoy: {
     vrfCoordinator: process.env.AMOY_VRF_COORDINATOR_V2,
     gasLane: process.env.AMOY_VRF_GAS_LANE,
     subscriptionId: process.env.AMOY_VRF_SUBSCRIPTION_ID,
     callbackGasLimit: process.env.AMOY_VRF_CALLBACK_GAS_LIMIT || 500000
-  },
-  polygonMumbai: {
-    vrfCoordinator: process.env.MUMBAI_VRF_COORDINATOR_V2,
-    gasLane: process.env.MUMBAI_VRF_GAS_LANE,
-    subscriptionId: process.env.MUMBAI_VRF_SUBSCRIPTION_ID,
-    callbackGasLimit: process.env.MUMBAI_VRF_CALLBACK_GAS_LIMIT || 500000
   },
   polygon: {
     vrfCoordinator: process.env.POLYGON_VRF_COORDINATOR_V2,
