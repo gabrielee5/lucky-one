@@ -1,26 +1,51 @@
 node_modules
-.env
+*.lock
+venv/
+
+# Environment files - SECURITY CRITICAL
+*.env*
+!.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Blockchain secrets - SECURITY CRITICAL
+*.key
+*.pem
+accounts.txt
+mnemonic.txt
+private_keys/
+
+# Build outputs
 coverage
 coverage.json
 typechain
 typechain-types
-venv/
+packages/app/dist/
+packages/app/build/
+frontend/dist
+frontend/build
 
 # Hardhat files
 cache
 artifacts
 
-# Frontend build
-frontend/dist
-frontend/build
+# Testing
+coverage/
+.nyc_output/
+lcov.info
 
 # IDE
 .vscode
 .idea
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
+*~
 
 # Logs
 *.log
@@ -28,21 +53,17 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Deployment
+# Package managers
+yarn.lock
+pnpm-lock.yaml
+
+# Deployment - Consider if production contract addresses should be public
 packages/cli/deployments/
 !deployments/.gitkeep
-# But track production/mainnet deployments
-!packages/cli/deployments/polygon.json
-!packages/cli/deployments/mainnet.json
-
-# Test coverage
-coverage/
-lcov.info
 
 # Temporary files
 *.tmp
 *.temp
 
-# test files
-ascii-logo.txt
-other-stuff
+# Development secrets
+hardhat.config.local.js

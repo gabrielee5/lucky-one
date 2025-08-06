@@ -45,10 +45,10 @@ npm run status
 TICKETS=5 npm run buy-tickets
 
 # Claim prize (if you won round 1)
-ROUND=1 npm run claim-prize
+npm run claim-prize
 
 # Check your participation
-npm run player-info
+ADDRESS=0xfadoe34j3rh... npm run player-info
 ```
 
 ## 🎰 How It Works
@@ -56,7 +56,7 @@ npm run player-info
 ### Lottery Mechanics
 - **Ticket Sales**: Purchase 1-100 tickets per transaction
 - **Fair Selection**: Chainlink VRF ensures provably random winner selection
-- **Auto Rounds**: New rounds start automatically after each draw
+- **Auto Rounds**: Everyone can end the round and the next one start automatically
 - **Prize Pool**: Winner receives the accumulated ticket sales (minus fees)
 
 ### Progressive Fee Structure
@@ -147,13 +147,7 @@ cp .env.example .env
 # Required variables:
 PRIVATE_KEY=your_wallet_private_key
 POLYGON_RPC_URL=https://polygon-rpc.com
-POLYGONSCAN_API_KEY=your_polygonscan_api_key
-```
-
-### Testing
-```bash
-npm run test-hardhat     # Run local tests
-npm run test             # Test deployed contract
+ETHERSCAN_API_KEY=your_etherscan_api_key
 ```
 
 ## 📄 License
