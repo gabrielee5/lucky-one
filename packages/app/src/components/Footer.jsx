@@ -15,7 +15,7 @@ const Footer = ({ onNavigateToInfo }) => {
               Fair, transparent, and secure lottery powered by blockchain technology.
             </p>
             <p className="text-sm text-gray-400">
-              Gamble responsibly. This is a testnet application.
+              Gamble responsibly. This is real money.
             </p>
           </div>
 
@@ -131,7 +131,7 @@ const Footer = ({ onNavigateToInfo }) => {
               © 2025 Lucky One. All rights reserved.
             </div>
             <div className="text-sm text-gray-400">
-              Yeah well, everything is high risk if you are a pussy.
+              Yeah well, everything's high risk if you're a pussy.
             </div>
             {/*
             <motion.div 

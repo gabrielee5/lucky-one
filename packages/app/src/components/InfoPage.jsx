@@ -56,28 +56,34 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
 
             <div class="space-y-6">
               <div class="bg-gray-800/30 p-4 rounded-lg border-l-4 border-primary-500">
-                <h4 class="font-semibold text-primary-400 mb-2">🎫 How to Play</h4>
+                <h4 class="font-semibold text-primary-400 mb-2">How to Play</h4>
                 <p>Each ticket costs a fixed amount of POL tokens. You can buy as many tickets as you want - more tickets = better chances of winning! Every ticket you own gives you an equal shot at the prize.</p>
+                <p>If you want to buy more than 100 tickets you will need to purchase them in more than one transaction.</p>
               </div>
 
               <div class="bg-gray-800/30 p-4 rounded-lg border-l-4 border-green-500">
-                <h4 class="font-semibold text-green-400 mb-2">💰 Prize Pool</h4>
-                <p>The prize pool grows with every ticket sold. All the POL spent on tickets goes into one big pot. When the lottery ends, the entire prize pool goes to one lucky winner - no splitting, no house edge!</p>
-              </div>
-
-              <div class="bg-gray-800/30 p-4 rounded-lg border-l-4 border-blue-500">
-                <h4 class="font-semibold text-blue-400 mb-2">⏰ When Does It End?</h4>
-                <p>Each lottery round runs for a set amount of time (you can see the countdown on the main page). When the timer hits zero, no more tickets can be bought and the winner is automatically selected.</p>
-              </div>
-
-              <div class="bg-gray-800/30 p-4 rounded-lg border-l-4 border-purple-500">
-                <h4 class="font-semibold text-purple-400 mb-2">🏆 How Winners Are Chosen</h4>
-                <p>Think of it like a hat full of numbered tickets. Each ticket you buy gets a unique number. When the lottery ends, a completely random number is generated using Chainlink's secure system - whoever owns the ticket with that number wins everything!</p>
+                <h4 class="font-semibold text-green-400 mb-2">Prize Pool</h4>
+                <p>The prize pool grows with every ticket sold. All the POL spent on tickets goes into one big pot. When the lottery ends, the entire prize pool goes to one lucky winner!</p>
               </div>
 
               <div class="bg-gray-800/30 p-4 rounded-lg border-l-4 border-yellow-500">
-                <h4 class="font-semibold text-yellow-400 mb-2">💸 Getting Your Prize</h4>
-                <p>If you win, the prize is sent directly to your wallet automatically - no claims, no waiting, no paperwork. The smart contract handles everything instantly when the draw happens.</p>
+                <h4 class="font-semibold text-yellow-400 mb-2">Fees</h4>
+                <p>The first 100 ticets have zero fees, the entire amount goes to the prize pool! From the 100th to the 1000th there is a 2,5% fee on the price of the ticket that gets deducted; from the 1001+ ticket the fee is 5%. </p>
+              </div>
+
+              <div class="bg-gray-800/30 p-4 rounded-lg border-l-4 border-blue-500">
+                <h4 class="font-semibold text-blue-400 mb-2">When Does It End?</h4>
+                <p>Each lottery round runs for a set amount of time (you can see the countdown on the main page). When the timer hits zero, no more tickets can be bought and the winner is selected.</p>
+              </div>
+
+              <div class="bg-gray-800/30 p-4 rounded-lg border-l-4 border-purple-500">
+                <h4 class="font-semibold text-purple-400 mb-2">How Winners Are Chosen</h4>
+                <p>Think of it like a hat full of numbered tickets. Each ticket you buy gets a unique number. When the time is up anyone can end the lottery and a completely random number is generated using Chainlink's secure system - whoever owns the ticket with that number wins everything!</p>
+              </div>
+
+              <div class="bg-gray-800/30 p-4 rounded-lg border-l-4 border-yellow-500">
+                <h4 class="font-semibold text-yellow-400 mb-2">Getting Your Prize</h4>
+                <p>If you are the winner you can claim the prize and the money is sent directly to your wallet. The smart contract handles everything so you are the only one that can redeem the prize, even if other rounds have started.</p>
               </div>
             </div>
 
@@ -96,9 +102,9 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
           content: `
             <p>Welcome to our decentralized lottery! Here's how to participate:</p>
             <ol>
-              <li><strong>Connect Your Wallet:</strong> Use MetaMask or another Web3 wallet to connect to the Polygon Amoy testnet.</li>
-              <li><strong>Get Test POL:</strong> Visit the Polygon faucet to get free testnet tokens.</li>
-              <li><strong>Buy Tickets:</strong> Purchase lottery tickets using POL tokens.</li>
+              <li><strong>Connect Your Wallet:</strong> Use MetaMask or another Web3 wallet to connect to the Polygon Mainnet.</li>
+              <li><strong>Get POL:</strong> Buy POL tokens from your favorite dex or cex.</li>
+              <li><strong>Buy Tickets:</strong> Purchase lottery tickets using POL.</li>
               <li><strong>Wait for Draw:</strong> Each lottery round runs for a set duration.</li>
               <li><strong>Check Results:</strong> Winners are selected using Chainlink VRF for guaranteed fairness.</li>
             </ol>
@@ -111,7 +117,7 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
             <ul>
               <li><strong>Immutable Code:</strong> Contract logic cannot be changed</li>
               <li><strong>Public Verification:</strong> All transactions are on-chain</li>
-              <li><strong>Automatic Execution:</strong> No human intervention needed</li>
+              <li><strong>Automatic Execution:</strong> No human can alter the game</li>
               <li><strong>Emergency Safeguards:</strong> Built-in safety mechanisms</li>
             </ul>
           `
@@ -152,7 +158,7 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
             <div class="space-y-4">
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Random Number Generation</h4>
-                <p>The VRF generates a single random number (uint256) with an astronomical range from 0 to 2^256 - 1. That's approximately 115,792,089,237,316,195,423,570,985,008,687,907,853,269,984,665,640,564,039,457,584,007,913,129,639,935 possible values!</p>
+                <p>The VRF generates a single random number (uint256) with an astronomical range from 0 to 2^256 - 1. That's approximately 115,792,089,237,316,195,423,570,985,008,687,907,853,269,984, 665,640,564,039,457,584,007,913,129,639,935 possible values!</p>
               </div>
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Winner Selection Process</h4>
@@ -175,13 +181,13 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
               </div>
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Example Scenario</h4>
-                <p>If Alice bought 3 tickets, Bob bought 2 tickets, and Charlie bought 1 ticket:</p>
+                <p>If Mario bought 3 tickets, Luigi bought 2 tickets, and Tod bought 1 ticket:</p>
                 <ul>
-                  <li>Alice owns tickets 0, 1, 2 (50% chance to win)</li>
-                  <li>Bob owns tickets 3, 4 (33.3% chance to win)</li>
-                  <li>Charlie owns ticket 5 (16.7% chance to win)</li>
+                  <li>Mario owns tickets 0, 1, 2 (50% chance to win)</li>
+                  <li>Luigi owns tickets 3, 4 (33.3% chance to win)</li>
+                  <li>Tod owns ticket 5 (16.7% chance to win)</li>
                 </ul>
-                <p>If the winning ticket number is 4, Bob wins! The system automatically finds who owns that ticket.</p>
+                <p>If the winning ticket number is 4, Luigi wins! The system automatically finds who owns that ticket.</p>
               </div>
             </div>
           `
@@ -193,7 +199,6 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
             <ul>
               <li><strong>Reentrancy Protection:</strong> Prevents common attack vectors</li>
               <li><strong>Access Controls:</strong> Limited administrative functions</li>
-              <li><strong>Emergency Pausing:</strong> Can pause in case of issues</li>
               <li><strong>Verified Contract:</strong> Source code is publicly verified on PolygonScan</li>
             </ul>
           `
@@ -209,11 +214,11 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
             <div class="space-y-4">
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: How do I participate?</h4>
-                <p>Connect your wallet, get test POL from the faucet, and buy tickets. It's that simple!</p>
+                <p>Connect your wallet, get POL, and buy tickets. It's that simple!</p>
               </div>
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: When are the draws?</h4>
-                <p>Draws happen automatically when the timer expires. Check the main page for the next draw time.</p>
+                <p>Draws happen back to back when the timer expires. Check the main page to see how much time is left on the current round.</p>
               </div>
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: How are winners selected?</h4>
@@ -221,7 +226,7 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
               </div>
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: Is this real money?</h4>
-                <p>No, this is a testnet demonstration. All tokens are for testing purposes only.</p>
+                <p>Yes, Polygon Mainnet tokens are used in the lottery so this is real money.</p>
               </div>
             </div>
           `
@@ -232,7 +237,7 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
             <div class="space-y-4">
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: What network is this on?</h4>
-                <p>This lottery runs on Polygon Amoy testnet. Make sure your wallet is connected to the right network.</p>
+                <p>This lottery runs on Polygon Mainnet. Make sure your wallet is connected to the right network.</p>
               </div>
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: Can I view the smart contract?</h4>
@@ -243,8 +248,8 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
                 <p>Yes, the entire project is open source and available for review and contribution.</p>
               </div>
               <div>
-                <h4 class="font-semibold text-primary-400 mb-2">Q: How do I get test POL?</h4>
-                <p>Visit the official Polygon faucet at faucet.polygon.technology to get free testnet tokens.</p>
+                <h4 class="font-semibold text-primary-400 mb-2">Q: How do I get POL?</h4>
+                <p>Buy it on your favourite Exchange and send it to you Metamask or swap it on the DEX you prefer.</p>
               </div>
             </div>
           `
@@ -255,7 +260,8 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
             <div class="space-y-4">
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: My wallet won't connect</h4>
-                <p>Make sure you're on the Polygon Amoy testnet and have a compatible wallet like MetaMask.</p>
+                <p>Make sure you're on the Polygon Mainnet and have a compatible wallet like MetaMask.</p>
+                <p>If that doesn't work, reload the app and try again.</p>
               </div>
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: Transaction failed</h4>
@@ -267,7 +273,7 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
               </div>
               <div>
                 <h4 class="font-semibold text-primary-400 mb-2">Q: When will I receive my prize?</h4>
-                <p>Prizes are automatically distributed when you win. Check your wallet for incoming transactions.</p>
+                <p>After the lottery round has ended you can claim the prize if you are the winner. Then the money will be sent to your wallet directly.</p>
               </div>
             </div>
           `
@@ -283,16 +289,16 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
             <p>Need assistance? Here are the best ways to get help:</p>
             <ul>
               <li><strong>Documentation:</strong> Check our comprehensive guides and tutorials</li>
-              <li><strong>Community:</strong> Join our community discussions for peer support</li>
+              <li><strong>Community:</strong> Join our community discussions for peer support (not yet available)</li>
               <li><strong>GitHub Issues:</strong> Report bugs or request features</li>
-              <li><strong>Direct Contact:</strong> Reach out through our official channels</li>
             </ul>
           `
         },
+        {/* Community Resources 
         {
           title: 'Community Resources',
           content: `
-            <p>Connect with other users and get community support:</p>
+            <p>Connect with other users and get community support: </p>
             <ul>
               <li><strong>Discord Server:</strong> Real-time chat and support</li>
               <li><strong>Telegram Group:</strong> Community discussions and announcements</li>
@@ -301,6 +307,7 @@ const InfoPage = ({ initialSection = 'how-it-works', onBackToHome }) => {
             </ul>
           `
         },
+        */},
         {
           title: 'Report Issues',
           content: `
