@@ -5,10 +5,18 @@ async function main() {
   const [player] = await ethers.getSigners();
   const networkName = hre.network.name;
   
-  // Get parameters from command line arguments
+  // Get parameters from environment variables or command line arguments
   const args = process.argv.slice(2);
-  const address = args.find(arg => arg.startsWith('--address='))?.split('=')[1] || player.address;
-  const roundsToCheck = parseInt(args.find(arg => arg.startsWith('--rounds='))?.split('=')[1]) || 5;
+  const address = process.env.ADDRESS || 
+                  args.find(arg => arg.startsWith('address='))?.split('=')[1] || 
+                  args[0] || 
+                  player.address;
+  const roundsToCheck = parseInt(
+    process.env.ROUNDS || 
+    args.find(arg => arg.startsWith('rounds='))?.split('=')[1] || 
+    args[1] || 
+    '5'
+  );
   
   console.log("👤 === PLAYER INFORMATION ===");
   console.log(`📍 Network: ${networkName}`);
@@ -179,9 +187,7 @@ async function main() {
     console.log(`💰 Total Unclaimed: ${ethers.formatEther(totalUnclaimed)} MATIC`);
     console.log();
     console.log("💡 To claim prizes:");
-    unclaimedPrizes.forEach(prize => {
-      console.log(`   npm run claim-prize:${networkName} -- --round=${prize.round}`);
-    });
+    console.log("   npm run claim-prize  # Claims all available prizes automatically");
   }
   
   // Current round participation
@@ -217,11 +223,11 @@ async function main() {
   console.log();
   console.log("💡 AVAILABLE ACTIONS");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log(`• Buy tickets: npm run buy-tickets:${networkName} -- --tickets=5`);
-  console.log(`• Check status: npm run status:${networkName}`);
+  console.log("• Buy tickets: TICKETS=5 npm run buy-tickets");
+  console.log("• Check status: npm run status");
   
   if (unclaimedPrizes.length > 0) {
-    console.log(`• Claim prizes: npm run claim-prize:${networkName} -- --round=N`);
+    console.log("• Claim prizes: npm run claim-prize");
   }
 }
 
@@ -234,13 +240,13 @@ if (process.argv.includes('--help') || process.argv.includes('-h')) {
   console.log("  including tickets bought, winnings, losses, and unclaimed prizes.");
   console.log();
   console.log("Usage:");
-  console.log("  npm run player-info:amoy");
-  console.log("  npm run player-info:amoy -- --address=0x123... --rounds=10");
+  console.log("  npm run player-info");
+  console.log("  ADDRESS=0x123... npm run player-info");
+  console.log("  ADDRESS=0x123... ROUNDS=10 npm run player-info");
   console.log();
-  console.log("Options:");
-  console.log("  --address=ADDR Address to check (default: your address)");
-  console.log("  --rounds=N     Number of recent rounds to check (default: 5)");
-  console.log("  --help, -h     Show this help message");
+  console.log("Environment Variables:");
+  console.log("  ADDRESS=ADDR   Address to check (default: your address)");
+  console.log("  ROUNDS=N       Number of recent rounds to check (default: 5)");
   console.log();
   console.log("Information Shown:");
   console.log("  • Wallet balance and current round participation");
@@ -250,10 +256,10 @@ if (process.argv.includes('--help') || process.argv.includes('-h')) {
   console.log("  • Current round participation details");
   console.log();
   console.log("Examples:");
-  console.log("  npm run player-info:amoy                              # Your info");
-  console.log("  npm run player-info:amoy -- --rounds=10              # Check 10 rounds");
-  console.log("  npm run player-info:amoy -- --address=0x123...       # Check other player");
-  console.log("  npm run player-info:amoy -- --address=0x123... --rounds=20  # Detailed check");
+  console.log("  npm run player-info                                   # Your info");
+  console.log("  ROUNDS=10 npm run player-info                        # Check 10 rounds");
+  console.log("  ADDRESS=0x123... npm run player-info                 # Check other player");
+  console.log("  ADDRESS=0x123... ROUNDS=20 npm run player-info       # Detailed check");
   process.exit(0);
 }
 
