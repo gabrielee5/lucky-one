@@ -72,11 +72,66 @@ const LotteryStatus = () => {
 
   if (isLoading) {
     return (
-      <div className="glass-card p-8">
-        <div className="animate-pulse">
-          <div className="h-6 bg-gray-600 rounded mb-4"></div>
-          <div className="h-32 bg-gray-600 rounded mb-4"></div>
-          <div className="h-4 bg-gray-600 rounded"></div>
+      <div className="space-y-6">
+        {/* Header Skeleton */}
+        <div className="glass-card p-6">
+          <div className="animate-pulse">
+            {/* Round number and status */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="h-8 bg-gray-600/50 rounded-lg w-32"></div>
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 bg-gray-600/50 rounded-full"></div>
+                <div className="h-6 bg-gray-600/50 rounded w-20"></div>
+              </div>
+            </div>
+
+            {/* Prize Pool */}
+            <div className="text-center mb-6">
+              <div className="h-4 bg-gray-600/50 rounded w-20 mx-auto mb-2"></div>
+              <div className="h-12 bg-gradient-to-r from-yellow-500/20 to-amber-500/20 rounded-lg w-48 mx-auto"></div>
+            </div>
+
+            {/* Time/Status section */}
+            <div className="text-center mb-6">
+              <div className="h-4 bg-gray-600/50 rounded w-28 mx-auto mb-2"></div>
+              <div className="h-8 bg-gray-600/50 rounded w-40 mx-auto mb-3"></div>
+              <div className="h-2 bg-gray-600/20 rounded-full">
+                <div className="h-2 bg-primary-500/30 rounded-full w-1/3 animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Grid Skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="glass-card p-6">
+              <div className="animate-pulse">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-gray-600/30 rounded-full flex items-center justify-center">
+                    <div className="w-5 h-5 bg-gray-600/50 rounded"></div>
+                  </div>
+                  <div>
+                    <div className="h-4 bg-gray-600/50 rounded w-20 mb-1"></div>
+                    <div className="h-6 bg-gray-600/50 rounded w-16"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Ticket Price Info Skeleton */}
+        <div className="glass-card p-4">
+          <div className="animate-pulse">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 bg-gray-600/50 rounded"></div>
+                <div className="h-4 bg-gray-600/50 rounded w-20"></div>
+              </div>
+              <div className="h-5 bg-gray-600/50 rounded w-16"></div>
+            </div>
+          </div>
         </div>
       </div>
     )

@@ -19,8 +19,73 @@ const TicketPurchase = () => {
     return (
       <div className="glass-card p-6">
         <div className="animate-pulse">
-          <div className="h-6 bg-gray-600 rounded mb-4"></div>
-          <div className="h-32 bg-gray-600 rounded"></div>
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-primary-600/30 rounded-full flex items-center justify-center">
+              <div className="w-5 h-5 bg-gray-600/50 rounded"></div>
+            </div>
+            <div>
+              <div className="h-6 bg-gray-600/50 rounded w-24 mb-1"></div>
+              <div className="h-4 bg-gray-600/50 rounded w-32"></div>
+            </div>
+          </div>
+
+          {/* Status Message Placeholder */}
+          <div className="mb-6 p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-lg">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-gray-600/50 rounded-full"></div>
+              <div className="h-4 bg-gray-600/50 rounded w-40"></div>
+            </div>
+          </div>
+
+          {/* Ticket Counter */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <div className="h-4 bg-gray-600/50 rounded w-28"></div>
+              <div className="h-4 bg-gray-600/50 rounded w-20"></div>
+            </div>
+            
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-10 h-10 bg-gray-600/30 rounded-full"></div>
+              <div className="flex-1 h-12 bg-gray-600/30 rounded-lg"></div>
+              <div className="w-10 h-10 bg-gray-600/30 rounded-full"></div>
+            </div>
+            
+            {/* Quick Select Buttons */}
+            <div className="flex gap-2 justify-center">
+              {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+                <div key={i} className="w-10 h-6 bg-gray-600/30 rounded-full"></div>
+              ))}
+            </div>
+          </div>
+
+          {/* Cost Summary */}
+          <div className="mb-6 p-4 bg-gray-600/10 rounded-lg">
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <div className="h-4 bg-gray-600/50 rounded w-16"></div>
+                <div className="h-4 bg-gray-600/50 rounded w-8"></div>
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="h-4 bg-gray-600/50 rounded w-20"></div>
+                <div className="h-4 bg-gray-600/50 rounded w-20"></div>
+              </div>
+              <div className="h-px bg-gray-600/30 my-3"></div>
+              <div className="flex justify-between items-center">
+                <div className="h-5 bg-gray-600/50 rounded w-24"></div>
+                <div className="h-5 bg-primary-400/30 rounded w-24"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Purchase Button */}
+          <div className="w-full h-12 bg-gray-600/30 rounded-lg mb-4"></div>
+
+          {/* Balance Display */}
+          <div className="flex justify-between items-center">
+            <div className="h-4 bg-gray-600/50 rounded w-20"></div>
+            <div className="h-4 bg-gray-600/50 rounded w-16"></div>
+          </div>
         </div>
       </div>
     )
