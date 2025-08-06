@@ -8,13 +8,12 @@ async function main() {
   // Get parameters from environment variables or command line arguments
   // Hardhat passes extra args after the script name, so we look for them there
   const args = process.argv.slice(2);
-  const ticketCount = process.env.TICKETS || args.find(arg => arg.startsWith('tickets='))?.split('=')[1] || '1';
-  const roundId = process.env.ROUND || args.find(arg => arg.startsWith('round='))?.split('=')[1];
+  const ticketCount = process.env.TICKETS || args.find(arg => arg.startsWith('tickets='))?.split('=')[1] || args[0] || '1';
   
   console.log("🎟️  === BUY LOTTERY TICKETS ===");
   console.log(`📍 Network: ${networkName}`);
   console.log(`👤 Buyer: ${buyer.address}`);
-  console.log(`💰 Balance: ${ethers.formatEther(await buyer.provider.getBalance(buyer.address))} MATIC`);
+  console.log(`💰 Balance: ${ethers.formatEther(await buyer.provider.getBalance(buyer.address))} POL`);
   console.log(`🎫 Tickets to buy: ${ticketCount}`);
   console.log();
 
@@ -35,25 +34,15 @@ async function main() {
   const deploymentInfo = JSON.parse(fs.readFileSync(deploymentFile, 'utf8'));
   const lottery = await ethers.getContractAt("LuckyOne", deploymentInfo.lotteryAddress);
   
-  // Get current lottery info
+  // Get current lottery info - always use current round
   const currentRoundId = await lottery.getCurrentRoundId();
-  const targetRound = roundId ? BigInt(roundId) : currentRoundId;
+  const targetRound = currentRoundId;
   
-  console.log(`🎯 Target Round: ${targetRound.toString()}`);
-  
-  // Check if round exists and is valid
-  if (targetRound > currentRoundId) {
-    console.error(`❌ Round ${targetRound} doesn't exist yet. Current round: ${currentRoundId}`);
-    return;
-  }
+  console.log(`🎯 Current Round: ${targetRound.toString()}`);
   
   // Get round info
   const [, startTime, endTime, totalTickets, prizePool, winner, ended, , state] = 
     await lottery.getLotteryRound(targetRound);
-  
-  if (targetRound < currentRoundId) {
-    console.log(`ℹ️  Note: Buying tickets for past round ${targetRound}`);
-  }
   
   // Check if lottery is open
   if (state !== 0n) {
@@ -77,32 +66,63 @@ async function main() {
     return;
   }
   
-  // Calculate cost
+  // Calculate cost and fees based on tiered structure
   const ticketPrice = await lottery.getTicketPrice();
   const totalCost = ticketPrice * BigInt(tickets);
+  const ownerFee = await lottery.calculateFeeForTickets(totalTickets, tickets);
+  const prizeContribution = totalCost - ownerFee;
   
   console.log("📊 LOTTERY STATUS");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   console.log(`🕒 Ends: ${new Date(Number(endTime) * 1000).toLocaleString()}`);
   console.log(`⏳ Time Remaining: ${Math.floor(timeRemaining / 3600)}h ${Math.floor((timeRemaining % 3600) / 60)}m`);
   console.log(`🎟️  Current Tickets: ${totalTickets.toString()}`);
-  console.log(`💰 Prize Pool: ${ethers.formatEther(prizePool)} MATIC`);
+  console.log(`💰 Prize Pool: ${ethers.formatEther(prizePool)} POL`);
   console.log();
   
   console.log("💸 PURCHASE DETAILS");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log(`🎫 Ticket Price: ${ethers.formatEther(ticketPrice)} MATIC`);
+  console.log(`🎫 Ticket Price: ${ethers.formatEther(ticketPrice)} POL`);
   console.log(`🛒 Buying: ${tickets} tickets`);
-  console.log(`💰 Total Cost: ${ethers.formatEther(totalCost)} MATIC`);
-  console.log(`💰 Prize Contribution (95%): ${ethers.formatEther(totalCost * 95n / 100n)} MATIC`);
-  console.log(`🏛️  Owner Fee (5%): ${ethers.formatEther(totalCost * 5n / 100n)} MATIC`);
+  console.log(`💰 Total Cost: ${ethers.formatEther(totalCost)} POL`);
+  console.log(`💰 Prize Contribution: ${ethers.formatEther(prizeContribution)} POL`);
+  console.log(`🏛️  Owner Fee (Tiered): ${ethers.formatEther(ownerFee)} POL`);
+  
+  // Show fee breakdown based on ticket position
+  const currentTotal = Number(totalTickets);
+  let feeBreakdown = "";
+  if (currentTotal < 100) {
+    const freeTickets = Math.min(tickets, 100 - currentTotal);
+    const midTierTickets = Math.min(Math.max(tickets - freeTickets, 0), Math.min(900, Math.max(0, currentTotal + tickets - 100)));
+    const highTierTickets = Math.max(0, tickets - freeTickets - midTierTickets);
+    
+    if (freeTickets > 0) feeBreakdown += `${freeTickets} tickets @ 0% fee, `;
+    if (midTierTickets > 0) feeBreakdown += `${midTierTickets} tickets @ 2.5% fee, `;
+    if (highTierTickets > 0) feeBreakdown += `${highTierTickets} tickets @ 5% fee, `;
+    
+    if (feeBreakdown) {
+      console.log(`📊 Fee Breakdown: ${feeBreakdown.slice(0, -2)}`);
+    }
+  } else if (currentTotal < 1000) {
+    const midTierTickets = Math.min(tickets, 1000 - currentTotal);
+    const highTierTickets = Math.max(0, tickets - midTierTickets);
+    
+    if (midTierTickets > 0) feeBreakdown += `${midTierTickets} tickets @ 2.5% fee, `;
+    if (highTierTickets > 0) feeBreakdown += `${highTierTickets} tickets @ 5% fee, `;
+    
+    if (feeBreakdown) {
+      console.log(`📊 Fee Breakdown: ${feeBreakdown.slice(0, -2)}`);
+    }
+  } else {
+    console.log(`📊 Fee Breakdown: ${tickets} tickets @ 5% fee`);
+  }
   console.log();
   
   // Check balance
   const balance = await buyer.provider.getBalance(buyer.address);
   if (balance < totalCost) {
-    console.error(`❌ Insufficient balance. Need: ${ethers.formatEther(totalCost)} MATIC`);
-    console.log(`   Your balance: ${ethers.formatEther(balance)} MATIC`);
+    console.error(`❌ Insufficient balance. Need: ${ethers.formatEther(totalCost)} POL`);
+    console.log(`   Your balance: ${ethers.formatEther(balance)} POL`);
     return;
   }
   
@@ -125,7 +145,7 @@ async function main() {
     console.log("✅ PURCHASE SUCCESSFUL!");
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     console.log(`🎫 Tickets Purchased: ${tickets}`);
-    console.log(`💰 Amount Paid: ${ethers.formatEther(totalCost)} MATIC`);
+    console.log(`💰 Amount Paid: ${ethers.formatEther(totalCost)} POL`);
     console.log(`⛽ Gas Used: ${receipt.gasUsed.toString()}`);
     console.log(`🔗 Transaction: ${receipt.hash}`);
     
@@ -138,7 +158,7 @@ async function main() {
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     console.log(`🎟️  Your Total Tickets: ${newTickets.toString()}`);
     console.log(`🎟️  Round Total Tickets: ${updatedLottery[3].toString()}`);
-    console.log(`💰 Updated Prize Pool: ${ethers.formatEther(updatedLottery[4])} MATIC`);
+    console.log(`💰 Updated Prize Pool: ${ethers.formatEther(updatedLottery[4])} POL`);
     
     if (updatedLottery[3] > 0n) {
       const winChance = (Number(newTickets) / Number(updatedLottery[3])) * 100;
@@ -146,7 +166,7 @@ async function main() {
     }
     
     const newBalance = await buyer.provider.getBalance(buyer.address);
-    console.log(`💰 Remaining Balance: ${ethers.formatEther(newBalance)} MATIC`);
+    console.log(`💰 Remaining Balance: ${ethers.formatEther(newBalance)} POL`);
     
   } catch (error) {
     console.error("❌ TRANSACTION FAILED!");
@@ -167,18 +187,21 @@ if (process.argv.includes('--usage') || process.argv.includes('--info')) {
   console.log("🎟️  Buy Lottery Tickets");
   console.log();
   console.log("Usage:");
-  console.log("  TICKETS=5 npm run buy-tickets:amoy");
-  console.log("  TICKETS=10 ROUND=2 npm run buy-tickets:amoy");
+  console.log("  npm run buy-tickets [tickets]");
+  console.log("  TICKETS=5 npm run buy-tickets");
+  console.log();
+  console.log("Parameters:");
+  console.log("  tickets        Number of tickets to buy (1-100, default: 1)");
   console.log();
   console.log("Environment Variables:");
   console.log("  TICKETS=N      Number of tickets to buy (1-100, default: 1)");
-  console.log("  ROUND=N        Specific round ID (default: current round)");
   console.log();
   console.log("Examples:");
-  console.log("  npm run buy-tickets:amoy                   # Buy 1 ticket (default)");
-  console.log("  TICKETS=5 npm run buy-tickets:amoy         # Buy 5 tickets");
-  console.log("  TICKETS=25 npm run buy-tickets:amoy        # Buy 25 tickets");
-  console.log("  TICKETS=5 ROUND=1 npm run buy-tickets:amoy # Buy 5 tickets for round 1");
+  console.log("  npm run buy-tickets                   # Buy 1 ticket (default)");
+  console.log("  TICKETS=5 npm run buy-tickets         # Buy 5 tickets");
+  console.log();
+  console.log("Note: Always buys tickets for the current active round");
+  console.log("Fee Structure: First 100 tickets (0%), Next 900 tickets (2.5%), Remaining tickets (5%)");
   process.exit(0);
 }
 
