@@ -112,18 +112,29 @@ async function main() {
     return;
   }
   
-  console.log("✅ RESTART CONDITIONS MET");
-  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log("This lottery round can be restarted because:");
-  console.log("   ✅ Lottery period has ended");
-  console.log("   ✅ Lottery has not been ended yet");
-  console.log("   ✅ No tickets were sold");
-  console.log();
-  
-  console.log("🔄 RESTARTING LOTTERY...");
-  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  
   try {
+    // Re-check conditions right before transaction to avoid race conditions
+    const [, , reEndTime, reTotalTickets, , , reEnded] = await lottery.getLotteryRound(targetRound);
+    const reCurrentBlock = await signer.provider.getBlock('latest');
+    const reTimeRemaining = Number(reEndTime) - reCurrentBlock.timestamp;
+    
+    if (reTimeRemaining > 0) {
+      console.error("❌ RESTART FAILED: Lottery period is no longer over (timing changed)");
+      return;
+    }
+    
+    if (reEnded) {
+      console.error("❌ RESTART FAILED: Lottery was ended by another transaction");
+      console.log("💡 SOLUTION: Check current status with 'npm run status'");
+      return;
+    }
+    
+    if (reTotalTickets > 0n) {
+      console.error("❌ RESTART FAILED: Tickets were sold by another transaction");
+      console.log("💡 SOLUTION: Use 'npm run end-lottery' instead");
+      return;
+    }
+    
     // Estimate gas for restart
     let gasEstimate;
     try {
@@ -132,6 +143,12 @@ async function main() {
       console.log(`💸 Estimated Cost: ~${ethers.formatEther(gasEstimate * 35000000000n)} POL`);
     } catch (gasError) {
       console.warn(`⚠️  Could not estimate gas: ${gasError.message}`);
+      // If gas estimation fails, the transaction will likely fail too
+      if (gasError.message.includes("Lottery already ended")) {
+        console.error("❌ RESTART FAILED: Lottery was ended between validation and execution");
+        console.log("💡 SOLUTION: Check current status with 'npm run status'");
+        return;
+      }
     }
     
     console.log();

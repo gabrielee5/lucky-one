@@ -212,7 +212,7 @@ async function main() {
   }
   
   if (actualState.includes("READY TO RESTART")) {
-    console.log("🔄 Restart lottery: npm run restart-lottery");
+    console.log("🔄 Restart lottery: npm run restart");
     console.log("⚠️  No tickets sold - lottery can be restarted");
   }
   
