@@ -17,6 +17,7 @@
     "app:build": "cd packages/app && npm run build",
     "buy-tickets": "TICKETS=${TICKETS:-1} npx hardhat run packages/cli/scripts/buy-tickets.js --network polygon",
     "end-lottery": "npx hardhat run packages/cli/scripts/end-lottery.js --network polygon",
+    "restart-lottery": "npx hardhat run packages/cli/scripts/restart-lottery.js --network polygon",
     "claim-prize": "npx hardhat run packages/cli/scripts/claim-prize.js --network polygon",
     "withdraw-fees": "npx hardhat run packages/cli/scripts/withdraw-fees.js --network polygon",
     "player-info": "npx hardhat run packages/cli/scripts/player-info.js --network polygon",
