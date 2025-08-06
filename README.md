@@ -1,6 +1,26 @@
+<div align="center">
+
+```
+░██                       ░██                                                      
+░██                       ░██                                                      
+░██ ░██    ░██  ░███████  ░██    ░██░██    ░██     ░███████  ░████████   ░███████  
+░██ ░██    ░██ ░██    ░██ ░██   ░██ ░██    ░██    ░██    ░██ ░██    ░██ ░██    ░██ 
+░██ ░██    ░██ ░██        ░███████  ░██    ░██    ░██    ░██ ░██    ░██ ░█████████ 
+░██ ░██   ░███ ░██    ░██ ░██   ░██ ░██   ░███    ░██    ░██ ░██    ░██ ░██        
+░██  ░█████░██  ░███████  ░██    ░██ ░█████░██     ░███████  ░██    ░██  ░███████  
+                                          ░██                                     
+                                    ░███████                                      
+```
+
 # LuckyOne - Decentralized Lottery
 
-A provably fair decentralized lottery system built with Solidity, React, and Chainlink VRF v2.
+**A provably fair decentralized lottery system built with Solidity, React, and Chainlink VRF v2.**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Polygon](https://img.shields.io/badge/Polygon-8247E5?style=flat&logo=polygon&logoColor=white)](https://polygon.technology/)
+[![Chainlink](https://img.shields.io/badge/Chainlink-375BD2?style=flat&logo=chainlink&logoColor=white)](https://chain.link/)
+
+</div>
 
 ## 🎯 Current Status
 
@@ -9,6 +29,16 @@ A provably fair decentralized lottery system built with Solidity, React, and Cha
 - **Network**: Polygon Mainnet (Chain ID: 137)
 - **Ticket Price**: 10 POL per ticket
 - **Lottery Duration**: 24 hours per round
+
+## 📸 Screenshots
+
+### Web Application
+<div align="center">
+
+![Main Dashboard](screenshots/app-dashboard-main.png)
+*Main lottery dashboard with real-time status and ticket purchasing*
+
+</div>
 
 ## 🚀 Quick Start
 
