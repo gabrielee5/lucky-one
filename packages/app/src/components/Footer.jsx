@@ -94,7 +94,7 @@ const Footer = ({ onNavigateToInfo }) => {
               </li>
               <li>
                 <a 
-                  href="https://github.com/gabrielee5"
+                  href="https://github.com/gabrielee5/lucky-one.git"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-1"
