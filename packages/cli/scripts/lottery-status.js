@@ -7,7 +7,7 @@ async function main() {
   console.log("🎰 ===== LOTTERY STATUS DASHBOARD =====");
   console.log(`📍 Network: ${networkName}`);
   console.log(`👤 Your Address: ${deployer.address}`);
-  console.log(`💰 Your Balance: ${ethers.formatEther(await deployer.provider.getBalance(deployer.address))} MATIC`);
+  console.log(`💰 Your Balance: ${ethers.formatEther(await deployer.provider.getBalance(deployer.address))} POL`);
   console.log();
 
   // Load deployment info
@@ -26,8 +26,8 @@ async function main() {
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   console.log(`🏠 Contract Address: ${deploymentInfo.lotteryAddress}`);
   console.log(`👑 Owner: ${await lottery.getOwner()}`);
-  console.log(`💎 Contract Balance: ${ethers.formatEther(await lottery.getContractBalance())} MATIC`);
-  console.log(`🎟️  Ticket Price: ${ethers.formatEther(await lottery.getTicketPrice())} MATIC`);
+  console.log(`💎 Contract Balance: ${ethers.formatEther(await lottery.getContractBalance())} POL`);
+  console.log(`🎟️  Ticket Price: ${ethers.formatEther(await lottery.getTicketPrice())} POL`);
   
   // Check if user is owner
   const isOwner = (await lottery.getOwner()).toLowerCase() === deployer.address.toLowerCase();
@@ -35,7 +35,7 @@ async function main() {
     console.log("👑 You are the owner of this lottery!");
     try {
       const accumulatedFees = await lottery.getAccumulatedFees();
-      console.log(`💰 Accumulated Fees: ${ethers.formatEther(accumulatedFees)} MATIC`);
+      console.log(`💰 Accumulated Fees: ${ethers.formatEther(accumulatedFees)} POL`);
     } catch (error) {
       console.log("⚠️  Could not fetch accumulated fees");
     }
@@ -71,7 +71,7 @@ async function main() {
   }
   
   console.log(`🎟️  Total Tickets Sold: ${totalTickets.toString()}`);
-  console.log(`💰 Prize Pool: ${ethers.formatEther(prizePool)} MATIC`);
+  console.log(`💰 Prize Pool: ${ethers.formatEther(prizePool)} POL`);
   
   // Lottery state
   const stateNames = ["🟢 OPEN", "🟡 CALCULATING", "🔴 CLOSED"];
@@ -99,7 +99,7 @@ async function main() {
   
   if (yourTickets > 0) {
     const yourInvestment = yourTickets * await lottery.getTicketPrice();
-    console.log(`💸 Your Investment: ${ethers.formatEther(yourInvestment)} MATIC`);
+    console.log(`💸 Your Investment: ${ethers.formatEther(yourInvestment)} POL`);
     
     if (totalTickets > 0) {
       const winChance = (Number(yourTickets) / Number(totalTickets)) * 100;
@@ -136,7 +136,7 @@ async function main() {
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   
   if (state === 0n) { // OPEN
-    console.log("🛒 Buy tickets: npm run test:amoy");
+    console.log("🛒 Buy tickets: npm run test");
     console.log("🎟️  Max tickets per purchase: 100");
   }
   
@@ -154,12 +154,12 @@ async function main() {
   
   console.log();
   console.log("🔗 Quick Links:");
-  console.log(`   📱 Block Explorer: https://amoy.polygonscan.com/address/${deploymentInfo.lotteryAddress}`);
-  console.log(`   🔗 VRF Subscription: https://vrf.chain.link/polygon-amoy`);
+  console.log(`   📱 Block Explorer: https://polygonscan.com/address/${deploymentInfo.lotteryAddress}`);
+  console.log(`   🔗 VRF Subscription: https://vrf.chain.link/polygon`);
   
   console.log();
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log("🎰 Use 'npm run status:amoy' to check status anytime!");
+  console.log("🎰 Use 'npm run status' to check status anytime!");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 }
 
