@@ -21,18 +21,18 @@ async function main() {
   const deploymentInfo = JSON.parse(fs.readFileSync(deploymentFile, 'utf8'));
   const lottery = await ethers.getContractAt("LuckyOne", deploymentInfo.lotteryAddress);
   
-  // Get current lottery info
+  // Get current lottery info for display only
   const currentRoundId = await lottery.getCurrentRoundId();
   const targetRound = Number(currentRoundId);
   
   console.log(`🎯 Current Round: ${targetRound}`);
   console.log();
   
-  // Get round info
+  // Get round info for display
   const [, startTime, endTime, totalTickets, prizePool, winner, ended, prizeClaimed, state] = 
     await lottery.getLotteryRound(targetRound);
   
-  // Use blockchain time for accuracy
+  // Use blockchain time for display
   const currentBlock = await signer.provider.getBlock('latest');
   const blockTimestamp = currentBlock.timestamp;
   const timeRemaining = Number(endTime) - blockTimestamp;
@@ -57,104 +57,12 @@ async function main() {
   console.log(`📊 Status: ${state === 0n ? '🟢 OPEN' : state === 1n ? '🟡 CALCULATING' : '🔴 CLOSED'}`);
   console.log();
   
-  // Validation checks
-  console.log("🔍 RESTART VALIDATION");
-  console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  
-  let canRestart = true;
-  const issues = [];
-  
-  // Check 1: Time requirement
-  if (timeRemaining > 0) {
-    canRestart = false;
-    issues.push("❌ Lottery period not over yet");
-    console.log(`❌ Time Check: ${Math.ceil(timeRemaining / 60)} minutes remaining`);
-  } else {
-    console.log("✅ Time Check: Lottery period has ended");
-  }
-  
-  // Check 2: Already ended
-  if (ended) {
-    canRestart = false;
-    issues.push("❌ Lottery already ended");
-    console.log("❌ Status Check: Lottery already ended");
-  } else {
-    console.log("✅ Status Check: Lottery not yet ended");
-  }
-  
-  // Check 3: No tickets sold (this is the key requirement for restart)
-  if (totalTickets === 0n) {
-    console.log("✅ Tickets Check: No tickets sold (restart eligible)");
-  } else {
-    canRestart = false;
-    issues.push(`❌ Cannot restart lottery with ${totalTickets.toString()} tickets sold`);
-    console.log(`❌ Tickets Check: ${totalTickets.toString()} tickets sold - use end-lottery instead`);
-  }
-  
+  console.log("🚀 Attempting restart (let contract validate conditions)...");
   console.log();
   
-  if (!canRestart) {
-    console.log("❌ RESTART NOT POSSIBLE");
-    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    console.log("The following issues prevent restarting:");
-    issues.forEach(issue => console.log(`   ${issue}`));
-    console.log();
-    console.log("💡 SUGGESTIONS:");
-    if (timeRemaining > 0) {
-      console.log("   ⏰ Wait for the lottery period to end");
-    }
-    if (totalTickets > 0n) {
-      console.log("   🎲 Use 'npm run end-lottery' instead to select a winner");
-    }
-    if (ended) {
-      console.log("   🔍 Check 'npm run status' for current round information");
-    }
-    return;
-  }
-  
   try {
-    // Re-check conditions right before transaction to avoid race conditions
-    const [, , reEndTime, reTotalTickets, , , reEnded] = await lottery.getLotteryRound(targetRound);
-    const reCurrentBlock = await signer.provider.getBlock('latest');
-    const reTimeRemaining = Number(reEndTime) - reCurrentBlock.timestamp;
-    
-    if (reTimeRemaining > 0) {
-      console.error("❌ RESTART FAILED: Lottery period is no longer over (timing changed)");
-      return;
-    }
-    
-    if (reEnded) {
-      console.error("❌ RESTART FAILED: Lottery was ended by another transaction");
-      console.log("💡 SOLUTION: Check current status with 'npm run status'");
-      return;
-    }
-    
-    if (reTotalTickets > 0n) {
-      console.error("❌ RESTART FAILED: Tickets were sold by another transaction");
-      console.log("💡 SOLUTION: Use 'npm run end-lottery' instead");
-      return;
-    }
-    
-    // Estimate gas for restart
-    let gasEstimate;
-    try {
-      gasEstimate = await lottery.restartLottery.estimateGas();
-      console.log(`⛽ Estimated Gas: ${gasEstimate.toString()}`);
-      console.log(`💸 Estimated Cost: ~${ethers.formatEther(gasEstimate * 35000000000n)} POL`);
-    } catch (gasError) {
-      console.warn(`⚠️  Could not estimate gas: ${gasError.message}`);
-      // If gas estimation fails, the transaction will likely fail too
-      if (gasError.message.includes("Lottery already ended")) {
-        console.error("❌ RESTART FAILED: Lottery was ended between validation and execution");
-        console.log("💡 SOLUTION: Check current status with 'npm run status'");
-        return;
-      }
-    }
-    
-    console.log();
+    // Submit restart transaction directly - let contract handle validation
     console.log("🚀 Submitting restart transaction...");
-    
-    // Submit restart transaction
     const tx = await lottery.restartLottery();
     
     console.log(`📄 Transaction Hash: ${tx.hash}`);
@@ -221,25 +129,26 @@ async function main() {
   } catch (error) {
     console.error("❌ RESTART FAILED");
     console.error(`Error: ${error.message}`);
-    
-    if (error.message.includes("Lottery period not over")) {
-      console.log();
-      console.log("💡 SOLUTION: Wait for the lottery period to end");
-      console.log(`   Time remaining: ${Math.ceil(timeRemaining / 60)} minutes`);
-    } else if (error.message.includes("Lottery already ended")) {
-      console.log();
-      console.log("💡 SOLUTION: Check current status with 'npm run status'");
-    } else if (error.message.includes("Cannot restart lottery with participants")) {
-      console.log();
-      console.log("💡 SOLUTION: Use 'npm run end-lottery' to end lottery with participants");
-    }
-    
     console.log();
-    console.log("🔍 Debug Information:");
-    console.log(`   Current Round: ${targetRound}`);
-    console.log(`   Time Remaining: ${timeRemaining}s`);
-    console.log(`   Total Tickets: ${totalTickets.toString()}`);
-    console.log(`   Already Ended: ${ended}`);
+    
+    // Provide helpful suggestions based on error message
+    if (error.message.includes("Lottery period not over")) {
+      console.log("💡 SOLUTION: Wait for the lottery period to end");
+      if (timeRemaining > 0) {
+        console.log(`   ⏰ Time remaining: ${Math.ceil(timeRemaining / 60)} minutes`);
+      }
+    } else if (error.message.includes("Lottery already ended")) {
+      console.log("💡 SOLUTION: Lottery was already processed");
+      console.log("   🔍 Check 'npm run status' for current round information");
+      console.log("   🎯 Try 'npm run start-lottery' to begin a new round");
+    } else if (error.message.includes("Cannot restart lottery with participants") || error.message.includes("tickets")) {
+      console.log("💡 SOLUTION: Lottery has participants");
+      console.log("   🎲 Use 'npm run end-lottery' to select a winner instead");
+    } else {
+      console.log("💡 SUGGESTIONS:");
+      console.log("   🔍 Check 'npm run status' for current lottery state");
+      console.log("   📖 Run with --help for more information");
+    }
   }
 }
 
