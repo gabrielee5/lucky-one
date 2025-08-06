@@ -31,7 +31,7 @@ async function main() {
   // Find all rounds where user won and hasn't claimed
   const claimableRounds = [];
   
-  for (let roundId = 1n; roundId < currentRoundId; roundId++) {
+  for (let roundId = 1; roundId < Number(currentRoundId); roundId++) {
     try {
       const [, , , , prizePool, winner, ended, prizeClaimed] = await lottery.getLotteryRound(roundId);
       
@@ -78,7 +78,7 @@ async function main() {
   console.log("📋 PRIZE DETAILS");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   for (const round of claimableRounds) {
-    console.log(`🎯 Round ${round.roundId.toString()}: ${ethers.formatEther(round.prizePool)} POL`);
+    console.log(`🎯 Round ${round.roundId}: ${ethers.formatEther(round.prizePool)} POL`);
   }
   console.log();
   
@@ -98,7 +98,7 @@ async function main() {
   let failedClaims = [];
   
   for (const { roundId, prizePool } of roundsToClaim) {
-    console.log(`🎯 Claiming Round ${roundId.toString()} (${ethers.formatEther(prizePool)} POL)...`);
+    console.log(`🎯 Claiming Round ${roundId} (${ethers.formatEther(prizePool)} POL)...`);
     
     try {
       // Get round details for display
@@ -106,7 +106,7 @@ async function main() {
       const playerTickets = await lottery.getPlayerTickets(claimer.address, roundId);
       
       console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-      console.log(`📊 Round ${roundId.toString()} Details:`);
+      console.log(`📊 Round ${roundId} Details:`);
       console.log(`   🚀 Started: ${new Date(Number(startTime) * 1000).toLocaleString()}`);
       console.log(`   ⏰ Ended: ${new Date(Number(endTime) * 1000).toLocaleString()}`);
       console.log(`   🎟️  Your Tickets: ${playerTickets.toString()} / ${totalTickets.toString()}`);
@@ -138,7 +138,7 @@ async function main() {
       
       const receipt = await tx.wait();
       
-      console.log(`   ✅ Successfully claimed Round ${roundId.toString()}!`);
+      console.log(`   ✅ Successfully claimed Round ${roundId}!`);
       console.log(`   💰 Prize: ${ethers.formatEther(prizePool)} POL`);
       console.log(`   ⛽ Gas Used: ${receipt.gasUsed.toString()}`);
       
@@ -150,7 +150,7 @@ async function main() {
       successfulClaims.push({ roundId, prizePool, txHash: receipt.hash });
       
     } catch (error) {
-      console.error(`   ❌ Failed to claim Round ${roundId.toString()}: ${error.message}`);
+      console.error(`   ❌ Failed to claim Round ${roundId}: ${error.message}`);
       failedClaims.push({ roundId, prizePool, error: error.message });
     }
     
@@ -168,7 +168,7 @@ async function main() {
     console.log();
     console.log("📋 Claimed Prizes:");
     for (const claim of successfulClaims) {
-      console.log(`   🎯 Round ${claim.roundId.toString()}: ${ethers.formatEther(claim.prizePool)} POL`);
+      console.log(`   🎯 Round ${claim.roundId}: ${ethers.formatEther(claim.prizePool)} POL`);
     }
   }
   
@@ -176,7 +176,7 @@ async function main() {
     console.log();
     console.log(`❌ Failed Claims: ${failedClaims.length}`);
     for (const fail of failedClaims) {
-      console.log(`   🎯 Round ${fail.roundId.toString()}: ${fail.error}`);
+      console.log(`   🎯 Round ${fail.roundId}: ${fail.error}`);
     }
     console.log();
     console.log("💡 You can run this script again to retry failed claims");
