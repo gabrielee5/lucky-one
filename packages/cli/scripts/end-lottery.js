@@ -5,12 +5,9 @@ async function main() {
   const [signer] = await ethers.getSigners();
   const networkName = hre.network.name;
   
-  // Get parameters from command line arguments
-  const args = process.argv.slice(2);
-  const roundId = args.find(arg => arg.startsWith('--round='))?.split('=')[1];
-  const force = args.includes('--force');
+  // No parameters needed - always ends current round when time is up
   
-  console.log("🎲 === END LOTTERY ROUND ===");
+  console.log("🎲 === END CURRENT LOTTERY ROUND ===");
   console.log(`📍 Network: ${networkName}`);
   console.log(`👤 Caller: ${signer.address}`);
   console.log(`💰 Balance: ${ethers.formatEther(await signer.provider.getBalance(signer.address))} MATIC`);
@@ -26,26 +23,21 @@ async function main() {
   const deploymentInfo = JSON.parse(fs.readFileSync(deploymentFile, 'utf8'));
   const lottery = await ethers.getContractAt("LuckyOne", deploymentInfo.lotteryAddress);
   
-  // Get current lottery info
+  // Get current lottery info - only allow ending current round
   const currentRoundId = await lottery.getCurrentRoundId();
-  const targetRound = roundId ? BigInt(roundId) : currentRoundId;
+  const targetRound = currentRoundId;
   
-  console.log(`🎯 Target Round: ${targetRound.toString()}`);
-  console.log(`🔄 Current Round: ${currentRoundId.toString()}`);
+  console.log(`🎯 Current Round: ${targetRound.toString()}`);
   console.log();
-  
-  // Check if round exists
-  if (targetRound > currentRoundId) {
-    console.error(`❌ Round ${targetRound} doesn't exist yet.`);
-    return;
-  }
   
   // Get round info
   const [, startTime, endTime, totalTickets, prizePool, winner, ended, prizeClaimed, state] = 
     await lottery.getLotteryRound(targetRound);
   
-  const now = Math.floor(Date.now() / 1000);
-  const timeRemaining = Number(endTime) - now;
+  // Use blockchain time for accuracy
+  const currentBlock = await signer.provider.getBlock('latest');
+  const blockTimestamp = currentBlock.timestamp;
+  const timeRemaining = Number(endTime) - blockTimestamp;
   
   console.log("📊 LOTTERY ROUND STATUS");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -65,6 +57,7 @@ async function main() {
   console.log(`💰 Prize Pool: ${ethers.formatEther(prizePool)} MATIC`);
   console.log(`📊 Status: ${state === 0n ? '🟢 OPEN' : state === 1n ? '🟡 CALCULATING' : '🔴 CLOSED'}`);
   console.log(`🏁 Ended: ${ended ? '✅ Yes' : '❌ No'}`);
+  console.log(`🔗 Blockchain Time: ${new Date(blockTimestamp * 1000).toLocaleString()}`);
   
   if (winner !== ethers.ZeroAddress) {
     console.log(`🏆 Winner: ${winner}`);
@@ -87,15 +80,13 @@ async function main() {
     errors.push("No tickets have been sold");
   }
   
-  if (timeRemaining > 0 && !force) {
+  if (timeRemaining > 0) {
     canEnd = false;
     errors.push(`Lottery period not over (${Math.ceil(timeRemaining / 60)} minutes remaining)`);
   }
   
-  if (targetRound < currentRoundId) {
-    canEnd = false;
-    errors.push("Cannot end past lottery rounds");
-  }
+  // Only current round can be ended - this check is now redundant since targetRound = currentRoundId
+  // but keeping for clarity and future-proofing
   
   if (!canEnd) {
     console.log("❌ CANNOT END LOTTERY");
@@ -104,19 +95,17 @@ async function main() {
     
     if (timeRemaining > 0) {
       console.log();
-      console.log("💡 OPTIONS:");
+      console.log("💡 SOLUTION:");
       console.log("   • Wait for the lottery period to end");
-      console.log(`   • Use --force to end early (if testing)`);
     }
+    
+    console.log();
+    console.log("📊 Note: Only the current round can be ended.");
+    console.log("   Past rounds cannot be ended, and future rounds don't exist yet.");
     
     return;
   }
   
-  if (force && timeRemaining > 0) {
-    console.log("⚠️  WARNING: Using --force to end lottery before scheduled time");
-    console.log("   This should only be used for testing purposes!");
-    console.log();
-  }
   
   // Show gas estimate
   try {
@@ -124,7 +113,7 @@ async function main() {
     console.log("⛽ TRANSACTION DETAILS");
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     console.log(`⛽ Estimated Gas: ${gasEstimate.toString()}`);
-    console.log(`💸 Estimated Cost: ~${ethers.formatEther(gasEstimate * 35000000000n)} MATIC`);
+    console.log(`💸 Estimated Cost: ~${ethers.formatEther(gasEstimate * 35000000000n)} POL`);
     console.log();
   } catch (error) {
     console.warn("⚠️  Could not estimate gas");
@@ -167,7 +156,7 @@ async function main() {
     console.log("• Chainlink VRF is now generating random number");
     console.log("• Winner will be selected automatically when VRF responds");
     console.log("• New lottery round will start automatically");
-    console.log("• Check status with: npm run status:amoy");
+    console.log("• Check status with: npm run status");
     console.log();
     
     console.log("🔗 Monitor VRF Request:");
@@ -182,7 +171,7 @@ async function main() {
     console.error("Error:", error.message);
     
     if (error.message.includes("Lottery period not over")) {
-      console.log("💡 Tip: Wait for the lottery period to end or use --force for testing");
+      console.log("💡 Tip: Wait for the lottery period to end");
     } else if (error.message.includes("Lottery already ended")) {
       console.log("💡 Tip: This lottery has already been ended");
     } else if (error.message.includes("No tickets sold")) {
@@ -193,32 +182,33 @@ async function main() {
 
 // Show usage if help requested
 if (process.argv.includes('--help') || process.argv.includes('-h')) {
-  console.log("🎲 End Lottery Round");
+  console.log("🎲 End Current Lottery Round");
   console.log();
   console.log("Description:");
   console.log("  Ends the current lottery round and triggers VRF random number generation");
   console.log("  for winner selection. Anyone can call this function once the time expires.");
+  console.log("  ONLY the current round can be ended - past rounds cannot be ended.");
   console.log();
   console.log("Usage:");
-  console.log("  npm run end-lottery:amoy");
-  console.log("  npm run end-lottery:amoy -- --round=2");
-  console.log("  npm run end-lottery:amoy -- --force");
+  console.log("  npm run end-lottery");
   console.log();
   console.log("Options:");
-  console.log("  --round=N      Specific round ID (default: current round)");
-  console.log("  --force        End lottery before time expires (testing only)");
   console.log("  --help, -h     Show this help message");
   console.log();
   console.log("Requirements:");
-  console.log("  • Lottery period must be over (7 days from start)");
+  console.log("  • Must be the current active round");
+  console.log("  • Lottery period must be over (1 hour from start)");
   console.log("  • At least one ticket must be sold");
   console.log("  • Lottery must not already be ended");
   console.log("  • Valid VRF subscription with LINK balance");
   console.log();
   console.log("Examples:");
-  console.log("  npm run end-lottery:amoy                    # End current round");
-  console.log("  npm run end-lottery:amoy -- --round=1       # End specific round");
-  console.log("  npm run end-lottery:amoy -- --force         # Force end (testing)");
+  console.log("  npm run end-lottery                    # End current round");
+  console.log();
+  console.log("Note:");
+  console.log("  • Only the current lottery round can be ended");
+  console.log("  • Past rounds are automatically handled by the contract");
+  console.log("  • Future rounds don't exist yet");
   process.exit(0);
 }
 
